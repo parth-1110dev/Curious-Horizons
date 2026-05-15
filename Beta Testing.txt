@@ -1,0 +1,28 @@
+Hey! I’m beta testing my AI productivity/study app called LockedIn and would love your help testing it for bugs, UX issues, or anything confusing.
+
+Please try as many combinations as possible, including:
+
+* Signup / Login / Logout
+* Switching between Free, Pro, and Elite plans
+* Generating sessions with different topics
+* Trying all explanation personas/modes
+* Testing different session durations
+* Mobile responsiveness
+* Navigation between pages
+* Upgrading/downgrading plans
+* Generating notes/knowledge packs
+* Refreshing pages after switching plans
+* Trying weird/random user behavior intentionally 😭
+
+Please report:
+
+* bugs
+* crashes
+* confusing UI
+* buttons not working
+* slow loading
+* anything that feels awkward
+
+Payments are in TEST MODE, so no real money is charged.
+
+Thank you 🙏
