@@ -224,6 +224,7 @@ function showContentState() {
 async function generateKnowledgePack() {
   if (isGenerating) return;
   isGenerating = true;
+  generatedNotes = "";
   showLoadingState();
 
   try {
@@ -246,7 +247,9 @@ async function generateKnowledgePack() {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok || data.error) {
-      throw new Error(data.error || "Failed to generate notes");
+      alert(data.error || "Failed to generate notes. Please try again.");
+      showContentState();
+      return;
     }
 
     generatedNotes = data.notes || "";
@@ -254,7 +257,7 @@ async function generateKnowledgePack() {
   } catch (error) {
     console.error("Error generating notes:", error);
     alert("Failed to generate notes. Please try again.");
-    showLoadingState();
+    showContentState();
   } finally {
     isGenerating = false;
   }

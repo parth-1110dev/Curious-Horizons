@@ -14,12 +14,11 @@ const API_BASE =
     : "https://lockedin-ai.onrender.com";
 const minMinutes = 5;
 const FREE_DAILY_SESSION_LIMIT = 5;
+const SESSION_RENDER_BATCH_SIZE = 8;
 
 function getUserPlan() {
   return currentPlan;
 }
-
-const motivationMessages = ["You're doing great", "Stay locked in", "Keep going"];
 
 const timerDisplayEl = document.getElementById("timerDisplay");
 const exitBtn = document.getElementById("exitBtn");
@@ -28,8 +27,6 @@ const sessionContentEl = document.getElementById("session-content");
 
 const sessionScreen = document.getElementById("sessionScreen");
 const completeScreen = document.getElementById("completeScreen");
-
-const motivationEl = document.getElementById("motivationText");
 
 const starButtons = document.querySelectorAll(".star-btn");
 const feedbackBox = document.getElementById("feedbackBox");
@@ -40,10 +37,11 @@ const generateNotesBtn = document.getElementById("generateNotesBtn");
 const knowledgePackModal = document.createElement("div");
 
 let intervalId = null;
-let motivationIntervalId = null;
 let remainingSeconds = 0;
 let completedSeconds = 0;
 let rating = 0;
+let sessionMarkdownRenderToken = 0;
+let sessionMarkdownRenderFrameId = null;
 
 function normalizePlan(plan) {
   const normalized = String(plan || "").trim().toLowerCase();
@@ -75,20 +73,18 @@ function formatTime(totalSeconds) {
   return `${mm}:${ss}`;
 }
 
-function setMotivation(message) {
-  if (!motivationEl) return;
-  motivationEl.textContent = message;
+function cancelSessionMarkdownRender() {
+  sessionMarkdownRenderToken += 1;
+  if (sessionMarkdownRenderFrameId !== null) {
+    window.cancelAnimationFrame(sessionMarkdownRenderFrameId);
+    sessionMarkdownRenderFrameId = null;
+  }
 }
 
 function clearTimerIntervals() {
   if (intervalId) {
     clearInterval(intervalId);
     intervalId = null;
-  }
-
-  if (motivationIntervalId) {
-    clearInterval(motivationIntervalId);
-    motivationIntervalId = null;
   }
 }
 
@@ -244,19 +240,6 @@ function startTimer() {
   }, 1000);
 }
 
-function startMotivation() {
-  const rotateMs = 13000;
-  let idx = 0;
-
-  setMotivation(motivationMessages[idx % motivationMessages.length]);
-
-  motivationIntervalId = window.setInterval(() => {
-    idx += 1;
-    const next = motivationMessages[idx % motivationMessages.length];
-    setMotivation(next);
-  }, rotateMs);
-}
-
 function setRating(nextRating) {
   rating = nextRating;
 
@@ -396,6 +379,7 @@ function syncPlanDependentState() {
 
 function clearSessionContent() {
   if (!sessionContentEl) return;
+  cancelSessionMarkdownRender();
   sessionContentEl.innerHTML = "";
 }
 
@@ -407,6 +391,59 @@ function resetSessionContentLayout() {
   sessionContentEl.style.justifyContent = "";
   sessionContentEl.style.gap = "";
   sessionContentEl.classList.add("session-content");
+}
+
+function createMarkdownBlock(tagName, className, rawText) {
+  const element = document.createElement(tagName);
+  if (className) {
+    element.className = className;
+  }
+  element.innerHTML = applyInlineBold(escapeHtml(rawText));
+  return element;
+}
+
+function appendMarkdownLine(fragment, rendererState, rawLine) {
+  const trimmed = rawLine.trim();
+
+  if (trimmed === "") {
+    rendererState.listEl = null;
+    return;
+  }
+
+  if (/^####\s+/.test(trimmed)) {
+    rendererState.listEl = null;
+    fragment.appendChild(
+      createMarkdownBlock("h4", "session-subheading", trimmed.replace(/^####\s+/, ""))
+    );
+    return;
+  }
+
+  if (/^###\s+/.test(trimmed)) {
+    rendererState.listEl = null;
+    fragment.appendChild(createMarkdownBlock("h3", "", trimmed.replace(/^###\s+/, "")));
+    return;
+  }
+
+  if (/^##\s+/.test(trimmed)) {
+    rendererState.listEl = null;
+    fragment.appendChild(createMarkdownBlock("h2", "", trimmed.replace(/^##\s+/, "")));
+    return;
+  }
+
+  if (/^[-*]\s+/.test(trimmed)) {
+    if (!rendererState.listEl) {
+      rendererState.listEl = document.createElement("ul");
+      fragment.appendChild(rendererState.listEl);
+    }
+
+    rendererState.listEl.appendChild(
+      createMarkdownBlock("li", "", trimmed.replace(/^[-*]\s+/, ""))
+    );
+    return;
+  }
+
+  rendererState.listEl = null;
+  fragment.appendChild(createMarkdownBlock("p", "", trimmed));
 }
 
 function escapeHtml(s) {
@@ -421,76 +458,49 @@ function applyInlineBold(escapedText) {
   return escapedText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 }
 
-/**
- * Lightweight markdown → HTML (headings, lists, bold). Input is escaped first.
- */
-function markdownToHtml(markdown) {
-  const escaped = escapeHtml(markdown);
-  const lines = escaped.split(/\r?\n/);
-  const parts = [];
-  let inList = false;
-
-  function closeList() {
-    if (inList) {
-      parts.push("</ul>");
-      inList = false;
-    }
-  }
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const raw = lines[i];
-    const trimmed = raw.trim();
-
-    if (trimmed === "") {
-      closeList();
-      continue;
-    }
-
-    if (/^####\s+/.test(trimmed)) {
-      closeList();
-      const t = applyInlineBold(trimmed.replace(/^####\s+/, ""));
-      parts.push(`<h4 class="session-subheading">${t}</h4>`);
-      continue;
-    }
-    if (/^###\s+/.test(trimmed)) {
-      closeList();
-      const t = applyInlineBold(trimmed.replace(/^###\s+/, ""));
-      parts.push(`<h3>${t}</h3>`);
-      continue;
-    }
-    if (/^##\s+/.test(trimmed)) {
-      closeList();
-      const t = applyInlineBold(trimmed.replace(/^##\s+/, ""));
-      parts.push(`<h2>${t}</h2>`);
-      continue;
-    }
-
-    if (/^[-*]\s+/.test(trimmed)) {
-      if (!inList) {
-        parts.push("<ul>");
-        inList = true;
-      }
-      const item = applyInlineBold(trimmed.replace(/^[-*]\s+/, ""));
-      parts.push(`<li>${item}</li>`);
-      continue;
-    }
-
-    closeList();
-    parts.push(`<p>${applyInlineBold(trimmed)}</p>`);
-  }
-
-  closeList();
-  return parts.join("");
-}
-
 function renderSessionMarkdown(markdown) {
   if (!sessionContentEl) return;
+  cancelSessionMarkdownRender();
   clearSessionContent();
   resetSessionContentLayout();
-  sessionContentEl.innerHTML = markdownToHtml(markdown);
 
-  // Store session content for knowledge pack generation
-  window.localStorage.setItem(STORAGE_SESSION_CONTENT_KEY, markdown);
+  const normalizedMarkdown = String(markdown || "");
+  window.localStorage.setItem(STORAGE_SESSION_CONTENT_KEY, normalizedMarkdown);
+
+  const lines = normalizedMarkdown.replace(/\r\n/g, "\n").split("\n");
+  if (lines.length === 1 && lines[0] === "") {
+    return;
+  }
+
+  const renderState = { index: 0 };
+  const rendererState = { listEl: null };
+  const renderToken = sessionMarkdownRenderToken;
+
+  const renderNextBatch = () => {
+    if (renderToken !== sessionMarkdownRenderToken || !sessionContentEl) {
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    const batchEnd = Math.min(lines.length, renderState.index + SESSION_RENDER_BATCH_SIZE);
+
+    for (; renderState.index < batchEnd; renderState.index += 1) {
+      appendMarkdownLine(fragment, rendererState, lines[renderState.index]);
+    }
+
+    if (fragment.childNodes.length > 0) {
+      sessionContentEl.appendChild(fragment);
+    }
+
+    if (renderState.index < lines.length) {
+      sessionMarkdownRenderFrameId = window.requestAnimationFrame(renderNextBatch);
+      return;
+    }
+
+    sessionMarkdownRenderFrameId = null;
+  };
+
+  sessionMarkdownRenderFrameId = window.requestAnimationFrame(renderNextBatch);
 }
 
 function renderSessionPlainText(
@@ -755,7 +765,6 @@ window.addEventListener("userPlanUpdated", () => {
     const allowed = initFromStorage();
     if (allowed) {
       sessionIsActive = true;
-      startMotivation();
       startTimer();
     }
   }
@@ -769,7 +778,6 @@ window.addEventListener("beforeunload", clearTimerIntervals);
 
 if (sessionAllowed) {
   sessionIsActive = true;
-  startMotivation();
   startTimer();
 }
 

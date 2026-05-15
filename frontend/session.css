@@ -24,15 +24,10 @@ body {
   margin: 0;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background:
-    radial-gradient(1200px circle at 50% 35%, rgba(255, 77, 109, 0.08), transparent 50%),
-    radial-gradient(900px circle at 50% 70%, rgba(90, 15, 28, 0.08), transparent 55%),
-    radial-gradient(
-      1200px circle at 50% 55%,
-      rgba(11, 11, 15, 0) 30%,
-      rgba(11, 11, 15, 0.85) 78%,
-      rgba(11, 11, 15, 1) 100%
-    );
+  /* Use the same calm base background as the homepage and rely on the shared
+     `.aurora` element for soft gradient distribution. This avoids a harsh
+     central radial and ensures visual parity with `index.html`. */
+  background: var(--base);
   color: var(--text);
   overflow-x: hidden;
   animation: page-in 220ms ease-out both;
@@ -280,6 +275,8 @@ body.session--complete .topbar {
   margin-right: auto;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     Helvetica, Arial, sans-serif;
+  contain: content;
+  overflow-anchor: none;
 }
 
 .ai-output .session-content h2 {
@@ -339,24 +336,6 @@ body.session--complete .topbar {
   max-width: 700px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.motivation {
-  margin-top: 26px;
-  text-align: center;
-  font-weight: 900;
-  color: rgba(255, 255, 255, 0.9);
-  letter-spacing: -0.01em;
-  opacity: 0.92;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.motivation--muted {
-  opacity: 0.45;
-}
-
-.motivation-text {
-  display: inline-block;
 }
 
 .complete-card {

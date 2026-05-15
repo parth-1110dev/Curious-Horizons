@@ -37,10 +37,6 @@
       <section id="sessionScreen" class="screen">
         <div class="content-wrapper">
           <div class="content-card">
-            <div id="motivation" class="motivation" aria-live="polite">
-              <span id="motivationText">You're doing great</span>
-            </div>
-
             <div class="topic-pill">
               Topic:
               <span id="topicDisplay" class="topic-value">—</span>
@@ -120,10 +116,6 @@
     </main>
 
     <script src="./plan-state.js"></script>
-    <script type="module">
-      import { ensureAuthenticated } from './auth.js'
-      await ensureAuthenticated('auth.html')
-    </script>
     <script src="./session.js"></script>
   </body>
 </html>
