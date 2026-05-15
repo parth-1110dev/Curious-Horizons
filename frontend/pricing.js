@@ -399,7 +399,7 @@ function getRazorpayKey() {
     return "rzp_test_Sm5invB2a2uTH4";
   }
 
-  return "rzp_live_Sm5XKbysbWdumY";
+  return "rzp_test_Sm5invB2a2uTH4";
 }
 
 function getPrefilledEmail() {
