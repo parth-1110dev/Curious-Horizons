@@ -17,6 +17,7 @@
 html {
   min-height: 100%;
   overflow-x: hidden;
+  overscroll-behavior-y: none;
 }
 
 body {
@@ -30,6 +31,9 @@ body {
   background: var(--base);
   color: var(--text);
   overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   animation: page-in 220ms ease-out both;
 }
 
@@ -629,6 +633,13 @@ body.session--complete .topbar {
   cursor: pointer;
   transition: transform 0.15s ease, box-shadow 0.15s ease,
     background 0.15s ease, border-color 0.15s ease;
+  touch-action: manipulation;
+}
+
+.exit-btn,
+.back-btn,
+.star-btn {
+  touch-action: manipulation;
 }
 
 .btn:hover {
@@ -656,6 +667,38 @@ body.session--complete .topbar {
 }
 
 @media (max-width: 520px) {
+  .topbar,
+  .content-card,
+  .complete-card,
+  .complete-upgrade-conversion,
+  .modal-card {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .topbar {
+    background: rgba(11, 11, 15, 0.88);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .topbar-timer,
+  .complete-upgrade-conversion {
+    box-shadow: none;
+  }
+
+  .content-card,
+  .complete-card,
+  .modal-card {
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.26);
+  }
+
+  .exit-btn,
+  .btn,
+  .back-btn,
+  .star-btn {
+    transition: none;
+  }
+
   .complete-home-btn {
     top: 16px;
     left: 16px;

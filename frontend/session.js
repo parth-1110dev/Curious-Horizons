@@ -14,7 +14,18 @@ const API_BASE =
     : "https://lockedin-ai.onrender.com";
 const minMinutes = 5;
 const FREE_DAILY_SESSION_LIMIT = 5;
-const SESSION_RENDER_BATCH_SIZE = 8;
+const SESSION_PERF_LOG_ENABLED = (() => {
+  try {
+    const debugFlag = window.localStorage.getItem("lockedin_perf_debug");
+    return (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      debugFlag === "1"
+    );
+  } catch (_error) {
+    return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  }
+})();
 
 function getUserPlan() {
   return getCurrentPlan();
@@ -78,6 +89,15 @@ function cancelSessionMarkdownRender() {
     window.cancelAnimationFrame(sessionMarkdownRenderFrameId);
     sessionMarkdownRenderFrameId = null;
   }
+}
+
+function logSessionPerformance(label, details) {
+  if (!SESSION_PERF_LOG_ENABLED || typeof console === "undefined") return;
+  if (typeof console.debug === "function") {
+    console.debug("[SessionPerf]", label, details);
+    return;
+  }
+  console.log("[SessionPerf]", label, details);
 }
 
 function clearTimerIntervals() {
@@ -505,49 +525,49 @@ function applyInlineBold(escapedText) {
   return escapedText.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
 }
 
-function renderSessionMarkdown(markdown) {
+function renderSessionMarkdown(markdown, { startedAt = null } = {}) {
   if (!sessionContentEl) return;
   cancelSessionMarkdownRender();
   clearSessionContent();
   resetSessionContentLayout();
 
   const normalizedMarkdown = String(markdown || "");
-  window.localStorage.setItem(STORAGE_SESSION_CONTENT_KEY, normalizedMarkdown);
+  try {
+    window.localStorage.setItem(STORAGE_SESSION_CONTENT_KEY, normalizedMarkdown);
+  } catch (_error) {
+    // Ignore storage failures; rendering should still continue.
+  }
 
   const lines = normalizedMarkdown.replace(/\r\n/g, "\n").split("\n");
   if (lines.length === 1 && lines[0] === "") {
     return;
   }
 
-  const renderState = { index: 0 };
   const rendererState = { listEl: null };
   const renderToken = sessionMarkdownRenderToken;
+  const renderStartAt = window.performance.now();
+  const fragment = document.createDocumentFragment();
 
-  const renderNextBatch = () => {
+  for (let index = 0; index < lines.length; index += 1) {
+    appendMarkdownLine(fragment, rendererState, lines[index]);
+  }
+
+  sessionMarkdownRenderFrameId = window.requestAnimationFrame(() => {
     if (renderToken !== sessionMarkdownRenderToken || !sessionContentEl) {
       return;
     }
 
-    const fragment = document.createDocumentFragment();
-    const batchEnd = Math.min(lines.length, renderState.index + SESSION_RENDER_BATCH_SIZE);
-
-    for (; renderState.index < batchEnd; renderState.index += 1) {
-      appendMarkdownLine(fragment, rendererState, lines[renderState.index]);
-    }
-
-    if (fragment.childNodes.length > 0) {
-      sessionContentEl.appendChild(fragment);
-    }
-
-    if (renderState.index < lines.length) {
-      sessionMarkdownRenderFrameId = window.requestAnimationFrame(renderNextBatch);
-      return;
-    }
-
+    const domStartAt = window.performance.now();
+    sessionContentEl.appendChild(fragment);
     sessionMarkdownRenderFrameId = null;
-  };
 
-  sessionMarkdownRenderFrameId = window.requestAnimationFrame(renderNextBatch);
+    logSessionPerformance("render markdown", {
+      lines: lines.length,
+      buildMs: Math.round(domStartAt - renderStartAt),
+      domMs: Math.round(window.performance.now() - domStartAt),
+      totalMs: startedAt ? Math.round(window.performance.now() - startedAt) : undefined,
+    });
+  });
 }
 
 function renderSessionPlainText(
@@ -683,6 +703,7 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
   }
 
   generateRequestInFlight = true;
+  const requestStartedAt = window.performance.now();
   renderSessionPlainText("Generating your session...", { textAlign: "center" });
 
   try {
@@ -725,7 +746,15 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
       incrementFreeSessionsUsedToday();
     }
 
-    renderSessionMarkdown(content);
+    logSessionPerformance("session payload received", {
+      topic,
+      minutes,
+      plan,
+      networkMs: Math.round(window.performance.now() - requestStartedAt),
+      characters: content.length,
+    });
+
+    renderSessionMarkdown(content, { startedAt: requestStartedAt });
   } catch (_error) {
     renderSessionPlainText("Something went wrong. Please try again.", {
       textAlign: "center",

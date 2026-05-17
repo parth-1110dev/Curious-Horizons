@@ -1,0 +1,25 @@
+{
+  "name": "lockedin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/parth-1110dev/lockedin-ai.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/parth-1110dev/lockedin-ai/issues"
+  },
+  "homepage": "https://github.com/parth-1110dev/lockedin-ai#readme",
+  "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.8.0"
+  }
+}

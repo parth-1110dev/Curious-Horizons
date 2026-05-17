@@ -61,21 +61,47 @@ function clamp(value, lower, upper) {
 let maxMinutes = getPlanMinutes(getCurrentPlan());
 let selectedExplanationMode = null;
 let planSyncFrameId = null;
+let planSyncQueuedWhileLoading = false;
+
+const PLAN_SYNC_PERF_LOG_ENABLED = (() => {
+  try {
+    const debugFlag = window.localStorage.getItem("lockedin_perf_debug");
+    return (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      debugFlag === "1"
+    );
+  } catch (_error) {
+    return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  }
+})();
+
+function logPlanSyncPerformance(label, details) {
+  if (!PLAN_SYNC_PERF_LOG_ENABLED || typeof console === "undefined") return;
+  if (typeof console.debug === "function") {
+    console.debug("[TimeSelectionPerf]", label, details);
+    return;
+  }
+  console.log("[TimeSelectionPerf]", label, details);
+}
 
 function schedulePlanStateSync() {
-  if (planSyncFrameId !== null) {
+  if (planSyncFrameId !== null || planSyncQueuedWhileLoading) {
     return;
   }
 
   const runSync = () => {
     planSyncFrameId = null;
+    planSyncQueuedWhileLoading = false;
     syncPlanDependentState();
   };
 
   if (document.readyState === "loading") {
+    planSyncQueuedWhileLoading = true;
     window.addEventListener(
       "DOMContentLoaded",
       () => {
+        planSyncQueuedWhileLoading = false;
         planSyncFrameId = window.requestAnimationFrame(runSync);
       },
       { once: true }
@@ -87,15 +113,10 @@ function schedulePlanStateSync() {
 }
 
 function syncPlanDependentState() {
+  const syncStartedAt = window.performance.now();
   const currentPlan = getCurrentPlan();
   maxMinutes = getPlanMinutes(currentPlan);
   minutes = clamp(minutes, minMinutes, maxMinutes);
-
-  console.log("[TimeSelection] plan sync", {
-    plan: currentPlan,
-    maxMinutes,
-    premiumUnlocked: currentPlan !== "free",
-  });
 
   if (timeValueEl) {
     timeValueEl.textContent = String(minutes);
@@ -111,6 +132,13 @@ function syncPlanDependentState() {
 
   updatePremiumButtonStates();
   updateUpgradeUI();
+
+  logPlanSyncPerformance("plan sync", {
+    plan: currentPlan,
+    maxMinutes,
+    premiumUnlocked: currentPlan !== "free",
+    elapsedMs: Math.round(window.performance.now() - syncStartedAt),
+  });
 }
 
 function isPremiumButton(btn) {
@@ -227,12 +255,6 @@ function updateUpgradeUI() {
 
   const atMax = minutes >= maxMinutes;
 
-  console.log("[TimeSelection] upgrade ui", {
-    plan: tier,
-    maxMinutes,
-    atMax,
-  });
-
   if (tier === "elite") {
     upgradeContainer.style.display = "none";
     upgradeText.style.display = "none";
@@ -259,6 +281,12 @@ function updateUpgradeUI() {
     upgradeButton.style.display = "none";
     upgradeContainer.setAttribute("aria-hidden", "true");
   }
+
+  logPlanSyncPerformance("upgrade ui", {
+    plan: tier,
+    maxMinutes,
+    atMax,
+  });
 }
 
 function setMinutes(next) {

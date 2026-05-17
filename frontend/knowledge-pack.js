@@ -18,6 +18,28 @@ const backBtn = document.getElementById("kpBackBtn");
 const loadingState = document.getElementById("kpLoadingState");
 const contentState = document.getElementById("kpContent");
 
+const KP_PERF_LOG_ENABLED = (() => {
+  try {
+    const debugFlag = window.localStorage.getItem("lockedin_perf_debug");
+    return (
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      debugFlag === "1"
+    );
+  } catch (_error) {
+    return window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  }
+})();
+
+function logKnowledgePackPerformance(label, details) {
+  if (!KP_PERF_LOG_ENABLED || typeof console === "undefined") return;
+  if (typeof console.debug === "function") {
+    console.debug("[KnowledgePackPerf]", label, details);
+    return;
+  }
+  console.log("[KnowledgePackPerf]", label, details);
+}
+
 let selectedFormat = null;
 let generatedNotes = "";
 let isGenerating = false;
@@ -227,6 +249,7 @@ async function generateKnowledgePack() {
   if (isGenerating) return;
   isGenerating = true;
   generatedNotes = "";
+  const generationStartedAt = window.performance.now();
 
   try {
     const topic = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Unknown Topic";
@@ -260,6 +283,12 @@ async function generateKnowledgePack() {
       generatedNotes
     );
     showContentState();
+    logKnowledgePackPerformance("notes generated", {
+      plan,
+      format: effectiveFormat,
+      characters: generatedNotes.length,
+      elapsedMs: Math.round(window.performance.now() - generationStartedAt),
+    });
   } catch (error) {
     console.error("Error generating notes:", error);
     alert("Failed to generate notes. Please try again.");
