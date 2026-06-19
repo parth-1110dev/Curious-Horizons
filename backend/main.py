@@ -55,21 +55,21 @@ PLAN_CONFIGS = {
         "model": "gpt-4o-mini",
         "detail_level": "brief, beginner-friendly overview",
         "max_duration": 30,
-        "max_tokens": 500,
+        "max_tokens": 700,
         "tier_prompt": "Keep it short and simple. Prioritize clarity over depth.",
     },
     "pro": {
         "model": "gpt-4.1",
         "detail_level": "structured explanations with practical examples",
         "max_duration": 45,
-        "max_tokens": 900,
+        "max_tokens": 1400,
         "tier_prompt": "Balance clarity and depth. Include useful examples and step-by-step progression.",
     },
     "elite": {
         "model": "gpt-4.1",
         "detail_level": "deep explanations with analogies and advanced insight",
         "max_duration": 60,
-        "max_tokens": 1400,
+        "max_tokens": 2200,
         "tier_prompt": """You are an elite-level AI coach focused on behavior change, execution, and real-world results.
 Goal: NOT textbook explanations, but actionable guidance that diagnoses the user's situation.
 
@@ -922,7 +922,12 @@ async def generate_content(request: Request, data: dict):
                 temperature=0.7,
                 max_tokens=max_tokens,
             )
-            print("SUCCESS RESPONSE")
+            finish_reason = None
+            if getattr(response, "choices", None):
+                finish_reason = getattr(response.choices[0], "finish_reason", None)
+            print(
+                f"[OpenAI][Generate] model={model} max_tokens={max_tokens} finish_reason={finish_reason}"
+            )
             return {"content": response.choices[0].message.content}
         except Exception as e:
             print("ERROR OCCURRED:", str(e))
