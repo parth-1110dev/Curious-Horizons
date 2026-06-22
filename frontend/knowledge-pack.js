@@ -1,3 +1,5 @@
+console.log("KNOWLEDGE PACK JS LOADED");
+
 const STORAGE_TOPIC_KEY = "lockedin_selected_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
 
@@ -587,6 +589,7 @@ function downloadBlob(content, mimeType, filename) {
 }
 
 async function buildPdfFromText(rawText, title, filename) {
+  console.log("PDF FUNCTION STARTED");
   const jspdfNs = window.jspdf;
   if (!jspdfNs || typeof jspdfNs.jsPDF !== "function") {
     throw new Error("PDF engine unavailable");
@@ -595,7 +598,11 @@ async function buildPdfFromText(rawText, title, filename) {
   const doc = new jspdfNs.jsPDF({ unit: "pt", format: "a4" });
   const exportContainer = document.createElement("div");
   exportContainer.style.position = "fixed";
-  exportContainer.style.left = "-10000px";
+  exportContainer.style.left = "0";
+  exportContainer.style.top = "0";
+  exportContainer.style.opacity = "0.01";
+  exportContainer.style.pointerEvents = "none";
+  exportContainer.style.zIndex = "-1";
   exportContainer.style.top = "0";
   exportContainer.style.width = "760px";
   exportContainer.style.padding = "36px 40px";
@@ -624,6 +631,7 @@ async function buildPdfFromText(rawText, title, filename) {
   titleEl.textContent = title;
   exportContainer.appendChild(titleEl);
   exportContainer.appendChild(buildMarkdownFragment(String(rawText || "")));
+  console.log(exportContainer.innerHTML);
   document.body.appendChild(exportContainer);
 
   try {
@@ -788,6 +796,9 @@ async function downloadNotes() {
       const fileName = effectiveFormat === "exam"
         ? `${baseName}-exam-mode-notes.pdf`
         : `${baseName}-notes.pdf`;
+      console.log("ABOUT TO CALL PDF");
+      console.log("FORMAT:", effectiveFormat);
+      console.log("CONTENT LENGTH:", content.length);
       await buildPdfFromText(content, title, fileName);
       window.localStorage.removeItem("lockedin_generated_notes");
       return;
