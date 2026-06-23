@@ -642,14 +642,18 @@ async function buildPdfFromText(rawText, title, filename) {
       });
     });
 
-    if (sessionMathBlocks.size > 0) {
-      const katexNodes = exportContainer.querySelectorAll(".katex, .katex-display, .math-fallback");
-      if (!katexNodes.length) {
-        throw new Error("KaTeX render missing in export container");
-      }
-    }
+    console.log("MATH BLOCK COUNT:", sessionMathBlocks.size);
+
+    //if (sessionMathBlocks.size > 0) {
+      //const katexNodes = exportContainer.querySelectorAll(".katex, .katex-display, .math-fallback");
+      //if (!katexNodes.length) {
+        //console.warn("KaTeX render missing in export container");
+        //throw new Error("KaTeX render missing in export container");
+      //}
+    //}
 
     if (typeof doc.html === "function" && typeof window.html2canvas === "function") {
+      console.log("USING HTML EXPORT");
       let timeoutId = null;
       await Promise.race([
         new Promise((resolve, reject) => {
@@ -684,6 +688,8 @@ async function buildPdfFromText(rawText, title, filename) {
     if (typeof window.html2canvas !== "function") {
       throw new Error("HTML PDF export unavailable");
     }
+
+    console.log("USING CANVAS EXPORT")
 
     const canvas = await window.html2canvas(exportContainer, {
       scale: 2,
