@@ -230,6 +230,37 @@ body {
   display: flex;
   flex-direction: column;
   gap: 18px;
+  position: relative;
+}
+
+.account-sidebar-close {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.account-sidebar-close:hover {
+  border-color: rgba(255, 77, 109, 0.5);
+  background: rgba(255, 77, 109, 0.1);
+}
+
+.account-sidebar-close:focus-visible {
+  outline: 2px solid rgba(255, 77, 109, 0.5);
+  outline-offset: 2px;
 }
 
 .account-sidebar-top {
@@ -289,13 +320,28 @@ body {
 
 @media (max-width: 520px) {
   .account-sidebar {
-    width: min(100vw, 340px);
-    padding: 12px;
+    top: 12px;
+    right: 12px;
+    width: min(calc(100vw - 24px), 340px);
+    min-height: 0;
+    height: auto;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .account-sidebar.is-open {
+    pointer-events: none;
   }
 
   .account-sidebar-inner {
     border-radius: 20px;
     padding: 20px;
+    min-height: 0;
+    pointer-events: auto;
+  }
+
+  .account-sidebar-close {
+    display: inline-flex;
   }
 }
 

@@ -55,6 +55,18 @@
     <div id="accountOverlay" class="account-overlay" aria-hidden="true"></div>
     <aside id="accountSidebar" class="account-sidebar" aria-hidden="true">
       <div class="account-sidebar-inner">
+        <button
+          id="sidebarCloseBtn"
+          class="account-sidebar-close"
+          type="button"
+          aria-label="Close account sidebar"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M3.5 3.5L12.5 12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            <path d="M12.5 3.5L3.5 12.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+          </svg>
+        </button>
+
         <div class="account-sidebar-top">
           <div class="account-avatar" id="sidebarAvatar" aria-hidden="true"></div>
           <div class="account-meta">
@@ -358,9 +370,11 @@
       const profileBtn = document.getElementById('profileBtn')
       const accountOverlay = document.getElementById('accountOverlay')
       const accountSidebar = document.getElementById('accountSidebar')
+      const sidebarCloseBtn = document.getElementById('sidebarCloseBtn')
       const sidebarLogoutBtn = document.getElementById('sidebarLogoutBtn')
 
       let isSidebarOpen = false
+      let overlayTouchDismissedAt = 0
 
       function setSidebarOpen(nextOpen) {
         isSidebarOpen = Boolean(nextOpen)
@@ -381,9 +395,48 @@
         })
       }
 
+      function dismissSidebarFromOverlayTouch() {
+        const now = Date.now()
+        if (now - overlayTouchDismissedAt < 600) return
+        overlayTouchDismissedAt = now
+        setSidebarOpen(false)
+      }
+
       // Account overlay click handler
       if (accountOverlay) {
+        accountOverlay.addEventListener(
+          'pointerdown',
+          (event) => {
+            if (event.pointerType === 'touch') {
+              dismissSidebarFromOverlayTouch()
+            }
+          },
+        )
+
+        accountOverlay.addEventListener(
+          'touchstart',
+          () => {
+            dismissSidebarFromOverlayTouch()
+          },
+          { passive: true },
+        )
+
+        accountOverlay.addEventListener(
+          'click',
+          (event) => {
+            if (Date.now() - overlayTouchDismissedAt < 600) {
+              overlayTouchDismissedAt = 0
+              event.stopImmediatePropagation()
+            }
+          },
+          true,
+        )
+
         accountOverlay.addEventListener('click', () => setSidebarOpen(false))
+      }
+
+      if (sidebarCloseBtn) {
+        sidebarCloseBtn.addEventListener('click', () => setSidebarOpen(false))
       }
 
       // Sidebar logout button handler
