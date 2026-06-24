@@ -50,6 +50,7 @@ const knowledgePackModal = document.createElement("div");
 let intervalId = null;
 let remainingSeconds = 0;
 let completedSeconds = 0;
+let totalSessionSeconds = 0;
 let rating = 0;
 let sessionMarkdownRenderToken = 0;
 let sessionMarkdownRenderFrameId = null;
@@ -189,7 +190,7 @@ window.addEventListener("resize", () => {
 
 function showCompleteScreen() {
   if (remainingSeconds > 0) {
-    completedSeconds = remainingSeconds;
+    completedSeconds = Math.max(0, totalSessionSeconds - remainingSeconds);
   }
   clearTimerIntervals();
 
@@ -1148,6 +1149,7 @@ function initFromStorage() {
 
   remainingSeconds = safeMinutes * 60;
   completedSeconds = remainingSeconds;
+  totalSessionSeconds = remainingSeconds;
 
   document.body.classList.remove("session--complete");
 
