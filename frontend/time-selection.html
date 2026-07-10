@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <title>LockedIn - Time Selection</title>
+    <title>Curious Horizons - Session Configuration</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -20,23 +20,23 @@
 
     <header class="nav">
       <div class="nav-inner">
-        <div class="logo" aria-label="LockedIn">LockedIn</div>
+        <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
       </div>
     </header>
 
     <main class="page">
       <div class="container">
-        <h1 class="title">How long do you want to focus?</h1>
-        <p class="subtext">Commit to your session. Stay locked in.</p>
+        <h1 class="title">How deep would you like to explore?</h1>
+        <p class="subtext">Every journey begins with choosing how deeply to explore.</p>
         <button id="timeBackBtn" class="back-btn" type="button">← Back</button>
 
         <section class="panel" aria-label="Timer selector">
           <div class="time-selector">
-            <button id="minusBtn" class="time-btn" type="button" aria-label="Decrease time">-</button>
+            <button id="minusBtn" class="time-btn" type="button" aria-label="Decrease time">−</button>
 
             <div class="time-display" aria-live="polite">
               <span id="timeValue" class="time-value">30</span>
-              <span class="time-unit">min</span>
+              <span class="time-unit">MIN</span>
             </div>
 
             <button id="plusBtn" class="time-btn" type="button" aria-label="Increase time">+</button>
@@ -118,7 +118,7 @@
 
           <button
             id="startSessionBtn"
-            class="btn btn-outline change-topic-btn start-session-btn"
+            class="btn btn-primary start-session-btn"
             type="button"
           >
             Start Session
@@ -133,11 +133,11 @@
           aria-hidden="true"
         >
           <div class="elite-upgrade-copy">
-            <div class="elite-upgrade-eyebrow">Elite plan</div>
+            <div class="elite-upgrade-eyebrow">Scholar Plan</div>
             <div id="upgradeText" class="elite-upgrade-text"></div>
           </div>
 
-          <div class="elite-upgrade-benefits" aria-label="Elite benefits">
+          <div class="elite-upgrade-benefits" aria-label="Scholar benefits">
             <div class="elite-benefit">
               <div class="elite-benefit-icon" aria-hidden="true">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -145,7 +145,7 @@
                   <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
                 </svg>
               </div>
-              <div class="elite-benefit-title">Longer Focus Sessions</div>
+              <div class="elite-benefit-title">Longer Exploration Sessions</div>
             </div>
 
             <div class="elite-benefit">
@@ -157,7 +157,7 @@
                   <path d="M12 15.8v4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
                 </svg>
               </div>
-              <div class="elite-benefit-title">Advanced AI Personas</div>
+              <div class="elite-benefit-title">Advanced AI Depth</div>
             </div>
 
             <div class="elite-benefit">
@@ -172,7 +172,7 @@
           </div>
 
           <button id="upgradeButton" class="btn btn-primary elite-upgrade-btn" type="button">
-            Unlock Elite
+            Unlock Scholar
           </button>
         </div>
       </div>
@@ -182,7 +182,7 @@
       <div class="modal-card">
         <h2 id="explainUpgradeTitle">Unlock Premium Explanation Styles</h2>
         <p>
-          Technical Deep Dive and Exam Focused are available on Pro and Elite plans.
+          Technical Deep Dive and Exam Focused are available on Pro and Scholar plans.
         </p>
         <div class="modal-actions">
           <button id="explainUpgradeNowBtn" class="btn btn-primary" type="button">Upgrade</button>
@@ -195,4 +195,3 @@
     <script src="./time-selection.js"></script>
   </body>
 </html>
-

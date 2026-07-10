@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <title>LockedIn - Session</title>
+    <title>Curious Horizons - Session</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,13 +31,27 @@
     <div class="aurora" aria-hidden="true"></div>
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="topbar-left" aria-hidden="true"></div>
+        <div class="topbar-left">
+          <div class="topic-badge">
+            <span class="topic-badge-label">TOPIC:</span>
+            <span id="topicDisplay" class="topic-badge-value">—</span>
+          </div>
+        </div>
         <div class="topbar-timer" aria-live="polite">
+          <svg class="timer-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"/>
+            <path d="M12 7v5l3 2"/>
+          </svg>
           <span id="timerDisplay" class="timer-display">00:00</span>
         </div>
         <div class="topbar-right">
           <button id="exitBtn" class="exit-btn" type="button" aria-label="Exit session">
-            Exit
+            EXIT
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
           </button>
         </div>
       </div>
@@ -47,11 +61,6 @@
       <section id="sessionScreen" class="screen">
         <div class="content-wrapper">
           <div class="content-card">
-            <div class="topic-pill">
-              Topic:
-              <span id="topicDisplay" class="topic-value">—</span>
-            </div>
-
             <article class="ai-output" aria-label="AI instructor output">
               <div id="session-content" class="session-content"></div>
             </article>
@@ -64,7 +73,8 @@
           ← Home
         </button>
         <div class="complete-card">
-          <h1 class="complete-title">Session Complete 🎯</h1>
+          <h1 class="complete-title">Session Complete.</h1>
+          <p class="complete-subtitle">Knowledge synthesized successfully.</p>
 
           <div class="rating-block" aria-label="Session rating">
             <div class="rating-stars" role="radiogroup" aria-label="Select a rating from 1 to 5">
@@ -76,12 +86,12 @@
             </div>
           </div>
 
-          <label for="feedbackBox" class="feedback-label">Optional feedback</label>
+          <label for="feedbackBox" class="feedback-label">Optional Reflection</label>
           <textarea
             id="feedbackBox"
             class="feedback-box"
-            rows="4"
-            placeholder="What helped you stay focused?"
+            rows="3"
+            placeholder="What were your key takeaways from this session?"
           ></textarea>
 
           <div class="complete-actions">
@@ -89,18 +99,18 @@
               Start New Session
             </button>
             <button id="continueBtn" class="btn btn-outline" type="button">
-              Continue Learning
+              Continue Exploring
             </button>
           </div>
 
-          <section class="knowledge-pack-section" aria-label="Generate knowledge pack">
+          <section class="knowledge-pack-section" aria-label="Archive Knowledge">
             <hr class="divider" />
-            <h2 class="knowledge-pack-title">Generate Your Knowledge Pack 📦</h2>
+            <h2 class="knowledge-pack-title">Archive Knowledge</h2>
             <p class="knowledge-pack-description">
-              Turn this session into structured notes, revision sheets & tests.
+              Preserve this session's insights as structured notes and revision material.
             </p>
-            <button id="generateNotesBtn" class="btn btn-primary knowledge-pack-btn" type="button">
-              Generate Notes
+            <button id="generateNotesBtn" class="btn btn-outline knowledge-pack-btn" type="button">
+              Generate Archive
             </button>
           </section>
         </div>

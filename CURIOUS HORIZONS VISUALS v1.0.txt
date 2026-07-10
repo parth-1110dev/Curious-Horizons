@@ -1,0 +1,65 @@
+CURIOUS HORIZONS — VISUAL FREEZE v1.0
+
+COLORS
+Void Black:
+#05050A
+
+Cosmic Blue:
+#1A2E5B
+
+Luminous Violet:
+#9D4EDD
+
+Nebula Gold:
+#D4AF37
+
+Stellar White:
+#F5F5F7
+
+LOGO
+Approved:
+✓ Primary Logo
+✓ Symbol Logo
+✓ Transparent Logo
+✓ Favicon
+
+DESIGN PHILOSOPHY
+NOT:
+- productivity
+- studying
+- AI tool
+
+YES:
+- exploration
+- curiosity
+- philosophy
+- discovery
+- mystery
+- intellectual growth
+
+UI PHILOSOPHY
+Desktop:
+- premium
+- cinematic
+- glass
+- atmospheric
+
+Mobile:
+- simplified
+- performant
+- minimal glass
+- preserve smoothness
+
+CRITICAL RULE
+DO NOT TOUCH:
+- backend
+- APIs
+- authentication
+- payments
+- timers
+- session generation
+- knowledge packs
+- exports
+- mobile optimizations
+- performance optimizations
+- business logic

@@ -1,0 +1,73 @@
+MASTER CODING IMPLEMENTATION PROMPT
+
+You are implementing the approved Curious Horizons rebrand.
+
+THIS IS NOT A REDESIGN.
+
+The product architecture, layouts, spacing, sections, interactions, navigation, clickable UI, and functionality are already finalized and MUST remain unchanged.
+
+STRICT RULES
+
+Never:
+
+- move components
+- redesign layouts
+- change spacing significantly
+- remove sections
+- add sections
+- modify user flows
+- alter navigation
+- change functionality
+- introduce new UI patterns
+
+Only implement the approved visual rebrand.
+
+Your work is limited to:
+
+• replacing LockedIn branding with Curious Horizons
+• updating names and terminology where specified
+• updating color palette
+• updating backgrounds
+• implementing subtle cosmic gradients
+• implementing restrained starfield backgrounds where appropriate
+• implementing premium glassmorphism
+• implementing gold accent system
+• implementing typography improvements
+• implementing subtle animations
+• implementing hover states
+• implementing icon updates where specified
+• improving visual polish
+
+DESIGN LANGUAGE
+
+The website should feel like:
+
+Apple
++
+OpenAI
++
+Interstellar
+
+NOT
+
+Cyberpunk
+Gaming
+Sci-Fi dashboard
+
+Animation rules:
+
+- subtle only
+- GPU friendly
+- slow
+- elegant
+- restrained
+
+Performance is more important than visual effects.
+
+Do not rewrite existing functionality.
+
+Do not refactor working logic unless absolutely required for the visual implementation.
+
+If a requested visual change risks breaking existing functionality, preserve the functionality and implement the closest visual approximation instead.
+
+Before making structural code changes, verify that they are absolutely necessary. Default to preserving existing HTML and JavaScript and updating styles, assets, and copy only.

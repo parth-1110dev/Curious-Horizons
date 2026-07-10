@@ -1,452 +1,1198 @@
-**DESIGN.md**
+**This document has higher priority than any coding model's design preferences. If a proposed change conflicts with this document, follow this document. Do not substitute your own design judgment.**
 
 
 
-🧠 1. Product Design Philosophy
+**# Curious Horizons — Design System**
 
-LockedIn is built around:
 
-Focus → Discipline → Execution
 
+**Version: 1.0 (Frozen)**
 
+**Status: FINAL**
 
-Design must feel:
+**Last Updated: July 2026**
 
-minimal
 
-premium
 
-slightly intense (not playful)
+**---**
 
-distraction-free when needed
 
 
+**# IMPORTANT**
 
-🎯 2. Design Goals
 
-Instantly communicate purpose
 
-Guide user to take action
+**This design system is FINAL.**
 
-Minimize cognitive load
 
-Create emotional connection (discipline + progress)
 
-Balance attraction (landing) and focus (session)
+**The visual identity has been approved.**
 
 
 
-🎨 3. Color System
+**Unless a critical usability issue is discovered, no redesigns, layout changes, or visual experiments should be introduced.**
 
-Primary Palette
 
-Base Background:    #0B0B0F
 
-Maroon Glow:        #5A0F1C
+**The objective of all future implementation work is:**
 
-Primary Red:        #C1121F
 
-Accent Glow:        #FF4D6D
 
+**> Implement the approved design faithfully.**
 
 
-Text Colors
 
-Primary Text:       #FFFFFF
+**NOT**
 
-Secondary Text:     #B8B8B8
 
-Muted Text:         #7A7A7A
 
+**> Improve, redesign, reinterpret, or modernize the UI.**
 
 
-UI Elements
 
-Glass Background:   rgba(255,255,255,0.08)
+**---**
 
-Borders:            rgba(255,255,255,0.12)
 
-Hover Accent:       #FF4D6D
 
+**# PRODUCT PHILOSOPHY**
 
 
-🌌 4. Background System
 
-Landing Pages
+**Curious Horizons is NOT a productivity application.**
 
-Aurora gradient (red + maroon + black)
 
-Smooth blended glow
 
-Dark edges, slightly brighter center
+**It is NOT an AI assistant.**
 
-Subtle, not flashy
 
 
+**It is NOT a note-taking platform.**
 
-Focus Mode (IMPORTANT)
 
-Plain background only (light or dark)
 
-NO gradients
+**It is NOT a traditional study tool.**
 
-NO aurora
 
 
+**Curious Horizons is a premium platform for intellectual exploration.**
 
-Purpose:
 
-👉 maximize concentration
 
+**The experience should feel like entering a beautiful library of ideas rather than opening another software application.**
 
 
-🧱 5. Layout Structure
 
-🔴 Section 1 — Hero (Primary)
+**The emotional feeling should be:**
 
 
 
-Components:
+**Curiosity**
 
-Logo (top-left)
 
-Login + Sign Up (top-right)
 
-Badge: “AI-Powered Productivity”
+**Wonder**
 
-Heading: LockedIn
 
-Tagline: Turn intention into execution
 
+**Exploration**
 
 
-Subtext (clarity line added)
 
-An AI-powered focus system that helps you stay consistent, accountable, and improve every day without excuses.
+**Reflection**
 
 
 
-Input System
+**Discovery**
 
-Large rounded input box
 
 
+**Knowledge**
 
-Placeholder:
 
-What would you like to learn today?
 
-Right-side action button (arrow / CTA)
+**Perspective**
 
-Suggested Topics
 
-Rounded pill buttons
 
-Small “+” icon
+**Calm**
 
 
 
-Examples:
+**Depth**
 
-Productivity
 
-Psychology
 
-AI Basics
+**Timelessness**
 
-Discipline
 
-Communication Skills
 
-Time Management
+**The product should encourage users to seek understanding rather than simply consume information.**
 
 
 
-Social Proof (NEW ADDITION)
+**---**
 
-🔥 Join 10,000+ users building daily discipline
 
 
+**# DESIGN INSPIRATION**
 
-🟣 Section 2 — Feature Explanation
 
-(From Caffeine AI — merged into design)
 
+**The approved visual language combines elements inspired by:**
 
 
-Card Style
 
-Glassmorphism
+**• Apple**
 
-Rounded corners
+**• OpenAI**
 
-Soft glow edges
+**• Interstellar**
 
+**• Premium editorial design**
 
+**• Modern museum exhibitions**
 
-Features:
+**• High-end publishing**
 
-🧠 AI Focus Coach
 
-Your personal AI that adapts to your learning style, keeps you accountable, and surfaces the right content at the right moment.
 
+**Avoid inspiration from:**
 
 
-📅 Dynamic Planner
 
-An intelligent planner that schedules deep work, reading, and reflection sessions automatically.
+**• Cyberpunk**
 
+**• Gaming interfaces**
 
+**• Sci-fi dashboards**
 
-🛡️ Distraction Filter
+**• Hacker aesthetics**
 
-Real-time focus protection that identifies and blocks distractions before they break your flow.
+**• Neon-heavy UI**
 
+**• Crypto websites**
 
+**• Overly futuristic interfaces**
 
-🔵 Section 3 — How It Works
 
-Step 1 — Set Intention
 
-Tell LockedIn what you want to master — a skill, a book, or a concept.
+**The website should feel elegant and timeless.**
 
 
 
-Step 2 — Execute Daily
+**---**
 
-Follow AI-generated focus sessions designed around your schedule and energy levels.
 
 
+**# IMPLEMENTATION RULE #1**
 
-Step 3 — Track \& Level Up
 
-Review your streaks, insights, and growth over time.
 
+**DO NOT REDESIGN THE PRODUCT.**
 
 
-🟢 Section 4 — Final CTA
 
-Ready to get LockedIn?
+**This project is currently in the implementation phase.**
 
-Join thousands building discipline and making real progress.
 
 
+**The following must remain unchanged unless explicitly requested:**
 
-🧩 6. Core UI Components
 
-Buttons
 
-Primary Button
+**- layout**
 
-filled red
+**- navigation**
 
-rounded
+**- spacing**
 
-subtle glow
+**- sections**
 
+**- hierarchy**
 
+**- interactions**
 
-Secondary Button
+**- functionality**
 
-outlined
+**- clickable components**
 
-transparent background
+**- page flow**
 
 
 
-Input Field
+**Implementation work should focus only on:**
 
-rounded
 
-glass effect
 
-blur background
+**• colors**
 
-icon inside
+**• branding**
 
+**• typography**
 
+**• icons**
 
-Cards
+**• backgrounds**
 
-glassmorphism
+**• gradients**
 
-shadow depth
+**• animations**
 
-soft border
+**• glassmorphism**
 
+**• terminology**
 
+**• visual polish**
 
-Topic Pills
 
-rounded
 
-minimal border
+**---**
 
-hover glow
 
 
+**# VISUAL LANGUAGE**
 
-🔤 7. Typography
 
-Font Style
 
-Modern sans-serif
+**Every page must follow one consistent design language.**
 
 
 
-Recommended:
+**Use:**
 
-Inter / Satoshi / Poppins
 
-Hierarchy
 
-Heading: Bold, large
+**Deep cosmic backgrounds**
 
-Subheading: Medium
 
-Body: Regular
 
+**Subtle starfield**
 
 
-🧠 8. UX Principles
 
-1\. Minimal Cognitive Load
+**Soft atmospheric lighting**
 
-one main action per screen
 
 
+**Very restrained gradients**
 
-2\. Guided Flow
 
-Landing → Topic → Time → Session → Feedback
 
+**Thin gold borders**
 
 
-3\. Emotional Reinforcement
 
-During sessions:
+**Premium glassmorphism**
 
-motivational messages
 
-progress feedback
 
+**Soft blue ambient shadows**
 
 
-4\. Clear Purpose
 
-User should always know:
+**Warm white typography**
 
-What to do next
 
 
+**Large breathing whitespace**
 
-⏱️ 9. Session UI (Core Product)
 
-Layout
 
-top: timer
+**The website should never feel busy.**
 
-center: AI content
 
-minimal UI
 
+**Minimalism is preferred over decoration.**
 
 
-Features
 
-countdown timer
+**---**
 
-motivational prompts
 
-dynamic content
 
-Background
+**# COLOR PALETTE**
 
 
 
-👉 plain (no aurora)
+**Primary Background**
 
 
 
-⭐ 10. Post-Session Screen
+**Deep Cosmic Navy**
 
-Components
 
 
+**Near Black**
 
-success message
 
 
+**Secondary Background**
 
-rating (stars)
 
 
+**Dark Midnight Blue**
 
-feedback box
 
 
+**Primary Accent**
 
-Actions
 
-Start New Session
 
-Continue Learning
+**Nebula Gold**
 
-Review Progress
 
-Add:
 
-🔥 Streak Counter
+**Secondary Accent**
 
 
 
-💰 11. Monetization UI
+**Luminous Violet (very restrained)**
 
-Free Tier
 
-limited sessions
 
-basic AI
+**Ambient Accent**
 
-limited time
 
 
+**Soft Cosmic Blue**
 
-Paid Tier 1
 
-unlimited sessions
 
-longer durations
+**Primary Text**
 
-analytics
 
-streak tracking
 
+**Warm White**
 
 
-Paid Tier 2
 
-AI mentor personality
+**Secondary Text**
 
-personalized learning paths
 
-advanced insights
 
-premium experience
+**Muted Gray**
 
 
 
-🎯 12. Design Strategy Summary
+**Borders**
 
-Landing
 
-Visually rich → attract users
 
-App
+**Soft Transparent Gold**
 
-Minimal → maximize focus
 
-Balance
 
-Emotion (landing) + Function (product)
+**Shadows**
+
+
+
+**Blue Ambient Shadow**
+
+
+
+**Do NOT introduce new colors without approval.**
+
+
+
+**---**
+
+
+
+**# BACKGROUND DESIGN**
+
+
+
+**Backgrounds should contain:**
+
+
+
+**subtle stars**
+
+
+
+**soft atmospheric gradients**
+
+
+
+**minimal cosmic dust**
+
+
+
+**gentle horizon glow**
+
+
+
+**very slow movement**
+
+
+
+**Never use:**
+
+
+
+**bright nebula explosions**
+
+
+
+**animated galaxies**
+
+
+
+**moving planets**
+
+
+
+**heavy particle systems**
+
+
+
+**large lens flares**
+
+
+
+**The background exists only to establish atmosphere.**
+
+
+
+**---**
+
+
+
+**# GLASSMORPHISM**
+
+
+
+**Cards should use:**
+
+
+
+**soft transparency**
+
+
+
+**minimal blur**
+
+
+
+**thin gold border**
+
+
+
+**subtle elevation**
+
+
+
+**ambient blue shadow**
+
+
+
+**Avoid:**
+
+
+
+**heavy blur**
+
+
+
+**white frosted glass**
+
+
+
+**thick borders**
+
+
+
+**opaque cards**
+
+
+
+**---**
+
+
+
+**# TYPOGRAPHY**
+
+
+
+**Typography should feel cinematic.**
+
+
+
+**Large headings.**
+
+
+
+**Comfortable line heights.**
+
+
+
+**Generous whitespace.**
+
+
+
+**Excellent readability.**
+
+
+
+**No decorative fonts.**
+
+
+
+**No futuristic fonts.**
+
+
+
+**Hierarchy must remain clear.**
+
+
+
+**---**
+
+
+
+**# BUTTON SYSTEM**
+
+
+
+**Primary Buttons**
+
+
+
+**Nebula Gold**
+
+
+
+**Dark text**
+
+
+
+**Soft glow**
+
+
+
+**Rounded corners**
+
+
+
+**Minimal hover lift**
+
+
+
+**Secondary Buttons**
+
+
+
+**Dark glass**
+
+
+
+**Gold outline**
+
+
+
+**White text**
+
+
+
+**Subtle hover glow**
+
+
+
+**Never create loud buttons.**
+
+
+
+**---**
+
+
+
+**# ICONOGRAPHY**
+
+
+
+**Icons should represent exploration.**
+
+
+
+**Preferred symbols:**
+
+
+
+**Compass**
+
+
+
+**Constellation**
+
+
+
+**Archive**
+
+
+
+**Book**
+
+
+
+**Prism**
+
+
+
+**Horizon**
+
+
+
+**Insight**
+
+
+
+**Telescope**
+
+
+
+**Library**
+
+
+
+**Knowledge**
+
+
+
+**Avoid generic dashboard icons where a more meaningful symbol exists.**
+
+
+
+**---**
+
+
+
+**# ANIMATION SYSTEM**
+
+
+
+**Animations should feel invisible.**
+
+
+
+**Use only:**
+
+
+
+**slow background drift**
+
+
+
+**ambient lighting changes**
+
+
+
+**subtle glow**
+
+
+
+**small fade transitions**
+
+
+
+**2px hover elevation**
+
+
+
+**soft opacity changes**
+
+
+
+**small scale transitions**
+
+
+
+**Performance is always more important than animation.**
+
+
+
+**---**
+
+
+
+**# TERMINOLOGY**
+
+
+
+**The language of Curious Horizons should reinforce exploration.**
+
+
+
+**Prefer words such as:**
+
+
+
+**Journey**
+
+
+
+**Explore**
+
+
+
+**Discovery**
+
+
+
+**Curiosity**
+
+
+
+**Insight**
+
+
+
+**Perspective**
+
+
+
+**Knowledge**
+
+
+
+**Archive**
+
+
+
+**Collection**
+
+
+
+**Library**
+
+
+
+**Understanding**
+
+
+
+**Reflection**
+
+
+
+**Horizon**
+
+
+
+**Depth**
+
+
+
+**Avoid excessive use of:**
+
+
+
+**Productivity**
+
+
+
+**Tasks**
+
+
+
+**Execute**
+
+
+
+**Grind**
+
+
+
+**Efficiency**
+
+
+
+**Downloads**
+
+
+
+**Outputs**
+
+
+
+**Users are explorers, not task managers.**
+
+
+
+**---**
+
+
+
+**# KNOWLEDGE EXPERIENCE**
+
+
+
+**Knowledge Packs are not files.**
+
+
+
+**They represent:**
+
+
+
+**personal archives**
+
+
+
+**collections**
+
+
+
+**discoveries**
+
+
+
+**knowledge libraries**
+
+
+
+**lasting understanding**
+
+
+
+**The user is preserving knowledge rather than downloading notes.**
+
+
+
+**---**
+
+
+
+**# PRICING LANGUAGE**
+
+
+
+**Plan hierarchy:**
+
+
+
+**Free**
+
+
+
+**Explorer**
+
+
+
+**Pro**
+
+
+
+**Thinker**
+
+
+
+**Elite**
+
+
+
+**Scholar**
+
+
+
+**The implementation should preserve the actual pricing logic while presenting the experiential tier names.**
+
+
+
+**---**
+
+
+
+**# PROFILE EXPERIENCE**
+
+
+
+**The profile popup should feel like opening an explorer passport.**
+
+
+
+**Use:**
+
+
+
+**gold accents**
+
+
+
+**glassmorphism**
+
+
+
+**soft shadows**
+
+
+
+**Initial-based avatar (PN, A, etc.)**
+
+
+
+**Avoid generic profile styling.**
+
+
+
+**---**
+
+
+
+**# READING EXPERIENCE**
+
+
+
+**Session pages prioritize reading.**
+
+
+
+**Increase comfortable reading width.**
+
+
+
+**Avoid narrow text columns.**
+
+
+
+**Maintain excellent readability for long-form educational content.**
+
+
+
+**---**
+
+
+
+**# MICRO INTERACTIONS**
+
+
+
+**Hover**
+
+
+
+**2px elevation**
+
+
+
+**slightly stronger shadow**
+
+
+
+**slightly brighter border**
+
+
+
+**Buttons**
+
+
+
+**gentle glow**
+
+
+
+**slight lift**
+
+
+
+**Dropdowns**
+
+
+
+**soft fade**
+
+
+
+**Profile**
+
+
+
+**fade + scale**
+
+
+
+**Animations should never distract from reading.**
+
+
+
+**---**
+
+
+
+**# RESPONSIVE DESIGN**
+
+
+
+**The existing responsive behavior should be preserved.**
+
+
+
+**Visual changes must not break:**
+
+
+
+**mobile layout**
+
+
+
+**tablet layout**
+
+
+
+**desktop layout**
+
+
+
+**Navigation**
+
+
+
+**Spacing**
+
+
+
+**Interactions**
+
+
+
+**---**
+
+
+
+**# PERFORMANCE**
+
+
+
+**Performance takes priority over visuals.**
+
+
+
+**Avoid:**
+
+
+
+**large JS animation libraries**
+
+
+
+**expensive particle systems**
+
+
+
+**heavy rendering**
+
+
+
+**Prefer:**
+
+
+
+**CSS transforms**
+
+
+
+**opacity transitions**
+
+
+
+**GPU-friendly animations**
+
+
+
+**minimal repainting**
+
+
+
+**---**
+
+
+
+**# ACCESSIBILITY**
+
+
+
+**Maintain excellent contrast.**
+
+
+
+**Readable font sizes.**
+
+
+
+**Visible focus states.**
+
+
+
+**Buttons must remain distinguishable.**
+
+
+
+**Animations should not reduce readability.**
+
+
+
+**---**
+
+
+
+**# IMPLEMENTATION PHILOSOPHY**
+
+
+
+**Every implementation decision should ask:**
+
+
+
+**"Does this preserve the approved design?"**
+
+
+
+**NOT**
+
+
+
+**"Can I make this prettier?"**
+
+
+
+**The design phase is complete.**
+
+
+
+**Implementation should prioritize consistency over creativity.**
+
+
+
+**---**
+
+
+
+**# FINAL DESIGN GOAL**
+
+
+
+**Curious Horizons should feel like:**
+
+
+
+**"A beautifully designed digital library where curious people come to think deeply."**
+
+
+
+**NOT**
+
+
+
+**"A redesigned productivity application."**
+
+
+
+**Every visual decision should reinforce curiosity, knowledge, exploration, and timeless elegance.**
+
+
+
+**---**
+
+
+
+**END OF DESIGN SYSTEM**
 

@@ -1,0 +1,58 @@
+SOCIAL MEDIA (TIER WISE RANKING):
+🥇 S-TIER (Non-negotiable)
+
+These are the platforms I would absolutely keep if I were you.
+
+Rank	Platform	Why
+🥇 #1	X (Twitter)	    Best place for founder storytelling + AI + build-in-public
+🥈 #2	LinkedIn	    Best for founder credibility and long-form storytelling
+🥉 #3	Substack	    Perfect for your new storytelling strategy
+#4	Indie Hackers	Literal target audience: startup founders and builders
+#5	Peerlist	Growing founder/developer community with low competition
+
+🥈 A-TIER (Useful but secondary)
+These platforms are useful but should not consume much time.
+
+Rank	Platform	Why
+#6	Threads	        Lower competition than X, founder content performs well
+#7	Product Hunt	Essential for launch, less useful pre-launch
+#8	Betalist	Great for early users and launch prep
+#9	Microlaunch	Good indie startup audience
+#10	FoundersList	Small but founder-focused
+#11	Dang AI	        Good because you're in AI
+#12	Versily	        Decent exposure for AI/startups
+
+
+POSTING FREQUENCY:
+🚀 Posting Frequency Matrix
+
+DAILY
+These platforms reward consistency and storytelling.
+Platform	Frequency
+X	        Daily
+Threads	        Daily or every alternate day
+
+2–3 TIMES PER WEEK
+These platforms reward quality over quantity.
+Platform	Frequency
+LinkedIn	2–3/week
+Peerlist	2–3/week
+
+ONCE PER WEEK
+Long-form and community-driven.
+Platform	Frequency
+Substack	Weekly
+Indie Hackers	Weekly
+
+ONCE EVERY TWO WEEKS
+Update-oriented platforms.
+Platform	Frequency
+FoundersList	Biweekly
+Microlaunch	Biweekly
+Versily	        Biweekly
+Dang AI	        Biweekly
+
+ONLY DURING BETA / LAUNCH
+Platform	Frequency
+Product Hunt	Launch only
+Betalist	Beta/Launch only

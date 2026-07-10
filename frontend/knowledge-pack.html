@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <title>LockedIn - Knowledge Pack</title>
+    <title>Curious Horizons - Knowledge Archive</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -31,7 +31,7 @@
 
     <header class="nav">
       <div class="nav-inner">
-        <div class="logo" aria-label="LockedIn">LockedIn</div>
+        <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
         <button id="kpBackBtn" class="btn btn-outline" type="button" title="Go back">
           ← Back
         </button>
@@ -40,7 +40,8 @@
 
     <main class="knowledge-pack-page">
       <div class="kp-container">
-        <h1 class="kp-header">Your Knowledge Pack is Ready 📦</h1>
+        <h1 class="kp-header">Your Knowledge Archive is Ready</h1>
+        <p class="kp-subtitle">Preserve this session's insights as structured notes and revision material.</p>
 
         <section class="kp-loading" id="kpLoadingState" aria-live="polite">
           <div class="loading-steps">
@@ -150,7 +151,7 @@
 
           <div class="kp-actions">
             <button id="downloadNotesBtn" class="btn btn-primary" type="button">
-              Download
+              Archive Knowledge Pack
             </button>
             <button id="copyNotesBtn" class="btn btn-outline" type="button">
               Copy to Clipboard
@@ -159,6 +160,20 @@
         </section>
       </div>
     </main>
+
+    <footer class="footer" style="padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 60px;">
+      <div class="footer-links" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+        <span>Curious Horizons</span>
+        <span>Philosophy</span>
+        <span>Science</span>
+        <span>Cosmology</span>
+        <span>Terms</span>
+        <span>Privacy</span>
+      </div>
+      <div class="footer-copy" style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">
+        © 2024 Curious Horizons. For the seekers of the infinite.
+      </div>
+    </footer>
 
     <script defer src="./plan-state.js"></script>
     <script type="module">

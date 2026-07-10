@@ -1,0 +1,39 @@
+CHAT WINDOW CONTEXT
+New Chat
+
+MASTER IMPLEMENTATION PROMPT
+
+DESIGN.md
+
+IMPLEMENTATION.md
+
+ARCHITECTURE.md
+
+ROADMAP.md
+
+Tell the model:
+
+These instructions remain active for the entire conversation.
+Do not forget them.
+Every future page implementation must follow them unless I explicitly override them.
+Acknowledge when understood.
+
+
+
+
+CONTINUITY:
+IMPORTANT
+
+Continue following ALL previously provided project documentation:
+
+• DESIGN.md
+• IMPLEMENTATION.md
+• ARCHITECTURE.md
+• ROADMAP.md
+• MASTER IMPLEMENTATION PROMPT
+
+These instructions remain active.
+
+Do NOT ignore them.
+
+Implement ONLY this page.

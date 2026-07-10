@@ -1,0 +1,416 @@
+MASTER IMPLEMENTATION NOTES
+
+(Save this. This is now our implementation bible.)
+
+1. Core Principle
+
+This is NOT a redesign.
+
+Never:
+
+move components
+resize sections
+redesign layouts
+redesign interactions
+add/remove UI
+change navigation
+change functionality
+
+Only implement the approved visual rebrand.
+
+2. Visual Language
+
+Every page must follow:
+
+Deep cosmic navy / near-black backgrounds
+Very subtle starfield
+Soft atmospheric gradients
+Gentle horizon glow
+Restrained gold accents
+Soft blue ambient shadows
+Premium glassmorphism
+Thin gold borders
+Minimal blur
+Large breathing whitespace
+
+The feeling:
+
+Apple
+
+OpenAI
+
+Interstellar
+
+Never:
+
+Cyberpunk
+
+Gaming UI
+
+Sci-fi dashboard
+
+Neon
+
+3. Color Palette
+
+Primary Background
+
+Void Black / Deep Navy
+
+Primary Accent
+
+Nebula Gold
+
+Secondary Accent
+
+Luminous Violet (very restrained)
+
+Ambient
+
+Soft Cosmic Blue
+
+Text
+
+Warm White
+
+Secondary Text
+
+Muted Gray
+
+Borders
+
+Transparent Gold
+
+4. Animations
+
+Only use:
+
+Very slow background drift
+
+Tiny star movement
+
+Soft ambient glow
+
+2px hover elevation
+
+Button glow
+
+Subtle opacity transitions
+
+Small blur fade
+
+No flashy motion.
+
+5. Glassmorphism
+
+Cards:
+
+Very subtle blur
+
+Soft transparency
+
+Gold border
+
+Blue ambient shadow
+
+No heavy frosted glass.
+
+6. Typography
+
+Large cinematic headings.
+
+Generous spacing.
+
+Readable line height.
+
+No decorative fonts.
+
+Premium.
+
+Minimal.
+
+7. Buttons
+
+Primary:
+
+Gold fill
+
+Dark text
+
+Soft glow
+
+Rounded
+
+Secondary:
+
+Dark glass
+
+Gold outline
+
+Hover glow
+
+No gradient buttons except the final CTA.
+
+8. Hover Effects
+
+Cards
+
+2px lift
+
+Gold border slightly brighter
+
+Shadow slightly stronger
+
+Buttons
+
+Small glow
+
+Tiny lift
+
+Nothing excessive.
+
+9. Session Reading Experience
+
+Increase maximum reading width.
+
+Current content container is too narrow.
+
+Allow more comfortable long-form reading.
+
+Do NOT change page layout.
+
+Only increase readable width.
+
+10. Knowledge Journey
+
+Every page should reinforce:
+
+Discover
+
+↓
+
+Understand
+
+↓
+
+Reflect
+
+↓
+
+Preserve
+
+↓
+
+Return
+
+instead of
+
+Generate
+
+↓
+
+Download
+
+↓
+
+Leave
+
+11. Terminology
+
+Prefer words like:
+
+Journey
+
+Discovery
+
+Explore
+
+Perspective
+
+Insight
+
+Knowledge
+
+Archive
+
+Collection
+
+Library
+
+Horizon
+
+Curiosity
+
+Understanding
+
+Reflection
+
+Avoid overusing:
+
+Productivity
+
+Execute
+
+Tasks
+
+Grinding
+
+Notes
+
+Downloads
+
+12. Archive Experience
+
+Knowledge Packs are not files.
+
+They are:
+
+Knowledge Archives
+
+Collections
+
+Discoveries
+
+Personal Library
+
+Archive
+
+13. Profile
+
+Use user initials.
+
+Example:
+
+PN
+
+instead of generic letter.
+
+Avatar should resemble
+
+Explorer Badge
+
+not
+
+Profile Picture.
+
+14. Pricing Philosophy
+
+Free
+
+Explorer
+
+Pro
+
+Thinker
+
+Elite
+
+Scholar
+
+Keep Free / Pro / Elite visible.
+
+Explorer / Thinker / Scholar become the experiential tier names.
+
+15. Session Flow
+
+We discussed dividing the learning experience into three mental phases.
+
+Future implementation:
+
+Explore
+
+↓
+
+Understand
+
+↓
+
+Apply
+
+This is a UX improvement.
+
+Not required immediately.
+
+Can be added later.
+
+16. CTA Philosophy
+
+Every CTA should invite curiosity.
+
+Examples:
+
+Begin Your Journey
+
+Continue Exploring
+
+Archive Knowledge
+
+Preserve Discoveries
+
+Avoid productivity language.
+
+17. Micro-interactions
+
+Buttons
+
+Very subtle glow.
+
+Cards
+
+Tiny elevation.
+
+Profile popup
+
+Small scale + fade.
+
+Dropdowns
+
+Opacity transition.
+
+Nothing more.
+
+18. Icons
+
+Use symbolic icons.
+
+Compass
+
+Constellation
+
+Prism
+
+Archive
+
+Book
+
+Telescope
+
+Horizon
+
+Insight
+
+Avoid generic dashboard icons where a more meaningful exploration symbol fits.
+
+19. Overall Feeling
+
+Every page should answer this question:
+
+"Does this feel like entering a beautiful library of ideas?"
+
+If yes
+
+Ship it.
+
+If not
+
+Simplify.
+
+20. Performance Rule
+
+Never sacrifice performance for visuals.
+
+Animations should always remain GPU-friendly.
+
+Avoid heavy particle systems.
+
+Prefer CSS transforms and opacity over expensive effects.

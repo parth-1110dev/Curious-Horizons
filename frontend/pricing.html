@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="dark" />
-    <title>LockedIn - Pricing</title>
+    <title>Curious Horizons - Pricing</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -22,14 +22,14 @@
 
     <header class="nav">
       <div class="nav-inner">
-        <div class="logo" aria-label="LockedIn">LockedIn</div>
+        <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
       </div>
     </header>
 
     <main class="page">
       <div class="container">
-        <h1 class="title">Choose Your Plan</h1>
-        <p class="subtext">Stop consuming. Start executing.</p>
+        <h1 class="title">Choose Your Journey</h1>
+        <p class="subtext">Select the journey that expands your horizons.<br />Turn curiosity into lifelong expertise.</p>
 
         <section class="plans" aria-label="Pricing plans">
           <button id="pricingBackBtn" class="back-btn" type="button">
@@ -38,14 +38,18 @@
 
           <article id="planFree" class="plan-card" aria-label="Free plan">
             <div class="plan-top">
-              <div class="plan-name">FREE</div>
+              <div class="plan-name">EXPLORER</div>
               <div class="plan-badge plan-badge--muted">Basic AI</div>
+            </div>
+
+            <div class="price">
+              <div class="price-line">FREE</div>
             </div>
 
             <ul class="feature-list">
               <li>5 sessions/day</li>
               <li>Max 30 minutes per session</li>
-              <li>Basic AI</li>
+              <li>Guided Exploration</li>
             </ul>
 
             <button id="freeCurrentBtn" class="btn btn-outline" type="button" disabled>
@@ -55,20 +59,20 @@
 
           <article id="planPro" class="plan-card plan-card--recommended" aria-label="Pro plan">
             <div class="recommended-row">
-              <div class="plan-name">PRO</div>
-              <div class="plan-badge">Recommended</div>
+              <div class="plan-name">THINKER</div>
+              <div class="plan-badge">MOST POPULAR</div>
             </div>
-
-            <ul class="feature-list">
-              <li>Unlimited sessions</li>
-              <li>Up to 60 minutes</li>
-              <li>Better AI quality</li>
-            </ul>
 
             <div class="price">
               <div class="price-line">₹299/month (India)</div>
               <div class="price-line">$9/month (International)</div>
             </div>
+
+            <ul class="feature-list">
+              <li>Unlimited sessions</li>
+              <li>Up to 60 minutes per session</li>
+              <li>Deeper Insights</li>
+            </ul>
 
             <button id="proUpgradeBtn" class="btn btn-primary" type="button">
               Upgrade to Pro
@@ -77,20 +81,20 @@
 
           <article id="planElite" class="plan-card" aria-label="Elite plan">
             <div class="plan-top">
-              <div class="plan-name">ELITE</div>
+              <div class="plan-name">SCHOLAR</div>
               <div class="plan-badge plan-badge--muted">Advanced AI</div>
             </div>
-
-            <ul class="feature-list">
-              <li>Unlimited sessions</li>
-              <li>Up to 90 minutes</li>
-              <li>Best AI quality</li>
-            </ul>
 
             <div class="price">
               <div class="price-line">₹599/month (India)</div>
               <div class="price-line">$19/month (International)</div>
             </div>
+
+            <ul class="feature-list">
+              <li>Unlimited sessions</li>
+              <li>Up to 90 minutes per session</li>
+              <li>Highest Depth of Exploration</li>
+            </ul>
 
             <button id="eliteUpgradeBtn" class="btn btn-outline" type="button">
               Upgrade to Elite
@@ -99,6 +103,20 @@
         </section>
       </div>
     </main>
+
+    <footer class="footer" style="padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 60px;">
+      <div class="footer-links" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+        <span>Curious Horizons</span>
+        <span>Philosophy</span>
+        <span>Science</span>
+        <span>Cosmology</span>
+        <span>Terms</span>
+        <span>Privacy</span>
+      </div>
+      <div class="footer-copy" style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">
+        © 2024 Curious Horizons. For the seekers of the infinite.
+      </div>
+    </footer>
 
     <script src="./plan-state.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>

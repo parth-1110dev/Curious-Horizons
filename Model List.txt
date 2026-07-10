@@ -1,0 +1,59 @@
+Model List
+Claude Sonnet 4.6 Thinking
+        ↓
+Gemini 3.1 Pro High
+        ↓
+Claude Opus 4.6
+        ↓
+Gemini 3.1 Pro Low
+        ↓
+Gemini Flash High
+        ↓
+Gemini Flash Medium
+        ↓
+Gemini Flash Low
+        ↓
+GPT OSS 120B
+
+Claude Sonnet 4.6
+
+Major page implementations
+Homepage
+Session page
+Knowledge Archive
+
+Gemini 3.1 Pro
+
+Pricing
+Login
+Session Setup
+Completion Page
+
+Gemini Flash
+
+Bug fixes
+Responsiveness
+Small visual tweaks
+Refactoring CSS
+
+GPT-OSS
+
+Explain code
+Generate comments
+Small utilities
+Regex
+CSS cleanup
+Documentation
+
+
+| Page                  | Complexity | Prompts      |
+| --------------------- | ---------- | ------------ |
+| Homepage              | ⭐⭐⭐⭐⭐      | **6 phases** |
+| Login / Signup        | ⭐          | **1 prompt** |
+| Pricing               | ⭐⭐         | **1 prompt** |
+| Session Configuration | ⭐⭐         | **1 prompt** |
+| Learning Session      | ⭐⭐⭐⭐⭐      | **4 phases** |
+| Session Complete      | ⭐⭐         | **1 prompt** |
+| Knowledge Generation  | ⭐          | **1 prompt** |
+| Knowledge Archive     | ⭐⭐⭐        | **2 phases** |
+| Profile Popup         | ⭐          | **1 prompt** |
