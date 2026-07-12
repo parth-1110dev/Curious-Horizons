@@ -19,6 +19,7 @@ from fastapi.middleware.cors import CORSMiddleware
 origins = [
     "http://localhost:5500",
     "http://127.0.0.1:5500",
+    "https://curious-horizons.vercel.app",
     "https://lockedin-ai-ten.vercel.app",
 ]
 
