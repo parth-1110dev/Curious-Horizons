@@ -1,5 +1,5 @@
 {
-  "name": "lockedin",
+  "name": "curious-horizons",
   "version": "1.0.0",
   "main": "index.js",
   "directories": {
@@ -17,7 +17,7 @@
     "url": "https://github.com/parth-1110dev/lockedin-ai/issues"
   },
   "homepage": "https://github.com/parth-1110dev/lockedin-ai#readme",
-  "description": "",
+  "description": "Cure your curiosity. Discover what lies beyond.",
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "@types/node": "^25.8.0"

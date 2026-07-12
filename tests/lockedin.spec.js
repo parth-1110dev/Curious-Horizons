@@ -3,7 +3,7 @@ const { test, expect } = require('@playwright/test');
 test('Homepage loads correctly', async ({ page }) => {
   await page.goto('https://lockedin-ai-ten.vercel.app');
 
-  await expect(page).toHaveTitle(/LockedIn/i);
+  await expect(page).toHaveTitle(/Curious Horizons/i);
 
   await expect(
     page.locator('text=Start Session')

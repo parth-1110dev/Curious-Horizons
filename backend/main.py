@@ -32,7 +32,7 @@ app.add_middleware(
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-SYSTEM_PROMPT_BASE = """You are LockedIn's learning engine.
+SYSTEM_PROMPT_BASE = """You are Curious Horizons' learning engine.
 Write concise, high-signal lesson content in Markdown.
 HIGH-PRIORITY MATH FORMATTING:
 - Always format mathematical content in valid LaTeX.

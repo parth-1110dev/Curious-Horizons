@@ -222,7 +222,7 @@ async function installMocks(page) {
   });
 }
 
-test('LockedIn flow upgrades to Elite, unlocks premium personas, and downloads notes', async ({ page }) => {
+test('Curious Horizons flow upgrades to Elite, unlocks premium personas, and downloads notes', async ({ page }) => {
   test.setTimeout(120000);
 
   await installMocks(page);

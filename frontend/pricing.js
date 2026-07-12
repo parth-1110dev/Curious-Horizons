@@ -653,7 +653,7 @@ async function startCheckout(plan) {
         amount: order.amount,
         currency: order.currency,
         order_id: order.order_id,
-        name: "LockedIn AI",
+        name: "Curious Horizons",
         description: `${PLAN_CONFIG[normalizedPlan].label} Plan Upgrade`,
         prefill: {
           email: prefillEmail,

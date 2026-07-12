@@ -50,6 +50,7 @@ body {
     opacity: 0;
     transform: translateY(4px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -62,6 +63,7 @@ body {
     opacity: 0;
     transform: translateY(14px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -72,12 +74,22 @@ body {
   animation: section-fade-up 0.5s ease-out both;
 }
 
-.section-features { animation-delay: 0.08s; }
-.section-steps    { animation-delay: 0.16s; }
-.section-cta      { animation-delay: 0.24s; }
+.section-features {
+  animation-delay: 0.08s;
+}
+
+.section-steps {
+  animation-delay: 0.16s;
+}
+
+.section-cta {
+  animation-delay: 0.24s;
+}
 
 @media (prefers-reduced-motion: reduce) {
-  body, .section {
+
+  body,
+  .section {
     animation: none;
   }
 }
@@ -137,38 +149,38 @@ html::before {
   /* Multi-size star dots via stacked radial-gradients, slightly stronger opacity */
   background-image:
     /* Large dim stars */
-    radial-gradient(1px 1px at 12% 8%, rgba(255,255,255,0.35) 0%, transparent 100%),
-    radial-gradient(1px 1px at 87% 5%, rgba(255,255,255,0.28) 0%, transparent 100%),
-    radial-gradient(1px 1px at 34% 19%, rgba(255,255,255,0.24) 0%, transparent 100%),
-    radial-gradient(1px 1px at 68% 22%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 34%, rgba(255,255,255,0.18) 0%, transparent 100%),
-    radial-gradient(1px 1px at 23% 44%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 79% 47%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 42% 58%, rgba(255,255,255,0.24) 0%, transparent 100%),
-    radial-gradient(1px 1px at 91% 63%, rgba(255,255,255,0.28) 0%, transparent 100%),
-    radial-gradient(1px 1px at 7%  71%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 61% 76%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1px 1px at 29% 84%, rgba(255,255,255,0.18) 0%, transparent 100%),
-    radial-gradient(1px 1px at 74% 88%, rgba(255,255,255,0.24) 0%, transparent 100%),
-    radial-gradient(1px 1px at 47% 93%, rgba(255,255,255,0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 12% 8%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 87% 5%, rgba(255, 255, 255, 0.28) 0%, transparent 100%),
+    radial-gradient(1px 1px at 34% 19%, rgba(255, 255, 255, 0.24) 0%, transparent 100%),
+    radial-gradient(1px 1px at 68% 22%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 34%, rgba(255, 255, 255, 0.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 23% 44%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 79% 47%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 42% 58%, rgba(255, 255, 255, 0.24) 0%, transparent 100%),
+    radial-gradient(1px 1px at 91% 63%, rgba(255, 255, 255, 0.28) 0%, transparent 100%),
+    radial-gradient(1px 1px at 7% 71%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
+    radial-gradient(1px 1px at 61% 76%, rgba(255, 255, 255, 0.25) 0%, transparent 100%),
+    radial-gradient(1px 1px at 29% 84%, rgba(255, 255, 255, 0.18) 0%, transparent 100%),
+    radial-gradient(1px 1px at 74% 88%, rgba(255, 255, 255, 0.24) 0%, transparent 100%),
+    radial-gradient(1px 1px at 47% 93%, rgba(255, 255, 255, 0.2) 0%, transparent 100%),
     /* Medium stars */
-    radial-gradient(1.5px 1.5px at 5%  14%, rgba(255,255,255,0.18) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 96% 28%, rgba(255,255,255,0.16) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 38% 38%, rgba(255,255,255,0.14) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 82% 54%, rgba(255,255,255,0.16) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 19% 62%, rgba(255,255,255,0.14) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 65% 69%, rgba(255,255,255,0.18) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 50% 82%, rgba(255,255,255,0.14) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 5% 14%, rgba(255, 255, 255, 0.18) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 96% 28%, rgba(255, 255, 255, 0.16) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 38% 38%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 82% 54%, rgba(255, 255, 255, 0.16) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 19% 62%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 65% 69%, rgba(255, 255, 255, 0.18) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 50% 82%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
     /* Tiny faint background scatter */
-    radial-gradient(0.8px 0.8px at 15% 30%, rgba(255,255,255,0.14) 0%, transparent 100%),
-    radial-gradient(0.8px 0.8px at 72% 15%, rgba(255,255,255,0.12) 0%, transparent 100%),
-    radial-gradient(0.8px 0.8px at 44% 67%, rgba(255,255,255,0.14) 0%, transparent 100%),
-    radial-gradient(0.8px 0.8px at 88% 79%, rgba(255,255,255,0.12) 0%, transparent 100%),
-    radial-gradient(0.8px 0.8px at 31% 91%, rgba(255,255,255,0.14) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 15% 30%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 72% 15%, rgba(255, 255, 255, 0.12) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 44% 67%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 88% 79%, rgba(255, 255, 255, 0.12) 0%, transparent 100%),
+    radial-gradient(0.8px 0.8px at 31% 91%, rgba(255, 255, 255, 0.14) 0%, transparent 100%),
     /* Gold-tinted accent stars */
-    radial-gradient(1.2px 1.2px at 58% 11%, rgba(220,180,78,0.4) 0%, transparent 100%),
-    radial-gradient(1.2px 1.2px at 17% 52%, rgba(220,180,78,0.3) 0%, transparent 100%),
-    radial-gradient(1.2px 1.2px at 83% 37%, rgba(220,180,78,0.25) 0%, transparent 100%);
+    radial-gradient(1.2px 1.2px at 58% 11%, rgba(220, 180, 78, 0.4) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 17% 52%, rgba(220, 180, 78, 0.3) 0%, transparent 100%),
+    radial-gradient(1.2px 1.2px at 83% 37%, rgba(220, 180, 78, 0.25) 0%, transparent 100%);
   opacity: 1;
 }
 
@@ -176,9 +188,11 @@ html::before {
   0% {
     transform: translate3d(0, 0, 0);
   }
+
   50% {
     transform: translate3d(28px, -18px, 0);
   }
+
   100% {
     transform: translate3d(0, 0, 0);
   }
@@ -188,9 +202,11 @@ html::before {
   0% {
     transform: translate3d(0, 0, 0);
   }
+
   50% {
     transform: translate3d(-22px, 16px, 0);
   }
+
   100% {
     transform: translate3d(0, 0, 0);
   }
@@ -480,8 +496,8 @@ html::before {
   font-weight: 600;
   font-size: 13px;
   letter-spacing: 0.01em;
-  transition: transform 0.18s ease, box-shadow 0.18s ease,
-    border-color 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    border-color 0.2s ease, background 0.2s ease, opacity 0.2s ease;
 }
 
 .btn:focus-visible {
@@ -510,14 +526,14 @@ html::before {
   color: #0e0c08;
   border: 1px solid rgba(220, 180, 78, 0.6);
   background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold) 100%);
-  box-shadow: 0 8px 32px rgba(220, 180, 78, 0.22), 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 8px 32px rgba(220, 180, 78, 0.22), 0 2px 8px rgba(0, 0, 0, 0.3);
   font-weight: 750;
   letter-spacing: 0.02em;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(220, 180, 78, 0.32), 0 2px 10px rgba(0,0,0,0.3);
+  box-shadow: 0 12px 40px rgba(220, 180, 78, 0.32), 0 2px 10px rgba(0, 0, 0, 0.3);
   background: linear-gradient(135deg, #f5d57b 0%, var(--gold-bright) 100%);
 }
 
@@ -527,7 +543,11 @@ html::before {
   align-items: center;
   justify-content: center;
   padding: 120px 20px 80px;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Old horizon system removed. Replaced by strict 5-layer architecture below */
 
 .hero-inner {
   width: 100%;
@@ -544,8 +564,8 @@ html::before {
   gap: 10px;
   padding: 8px 14px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   color: rgba(245, 243, 238, 0.88);
   font-weight: 600;
@@ -586,13 +606,124 @@ html::before {
   margin: 6px 0 0;
 }
 
-/* Hero mini-feature cards */
+/* Ensure all content above the hero-features sits perfectly IN FRONT of the rising atmosphere */
+.hero-content>*:not(.hero-features):not(.horizon-system) {
+  position: relative;
+  z-index: 2;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PURE CSS PERFECT PLANETARY HORIZON 
+   Blueprint Implementation
+══════════════════════════════════════════════════════════════ */
+
+.horizon-system {
+  position: absolute;
+  /* Takes zero layout space, acting strictly as a background */
+  left: 0;
+  /* Explicitly anchors the absolute container to the left, preventing shift from text-align: center */
+  width: 100%;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  transform: translateY(-30px);
+  /* Shifts the entire horizon up slightly to prevent card intersection */
+}
+
+/* Shared wrappers for isolating and masking atmospheric blooms */
+.horizon-wrapper {
+  position: absolute;
+  top: -300px;
+  /* Expands upward to allow glow to dissipate naturally */
+  left: 0;
+  width: 100%;
+  height: 800px;
+}
+
+/* The Core Bloom Wrapper - Tightly masked to center */
+.horizon-core-wrapper {
+  mask-image: linear-gradient(to right, transparent 20%, rgba(0, 0, 0, 0.3) 35%, black 50%, rgba(0, 0, 0, 0.3) 65%, transparent 80%);
+  -webkit-mask-image: linear-gradient(to right, transparent 20%, rgba(0, 0, 0, 0.3) 35%, black 50%, rgba(0, 0, 0, 0.3) 65%, transparent 80%);
+}
+
+/* The Mid Bloom Wrapper - Wider atmospheric spread */
+.horizon-bloom-wrapper {
+  mask-image: linear-gradient(to right, transparent 5%, rgba(0, 0, 0, 0.2) 20%, black 45%, black 55%, rgba(0, 0, 0, 0.2) 80%, transparent 95%);
+  -webkit-mask-image: linear-gradient(to right, transparent 5%, rgba(0, 0, 0, 0.2) 20%, black 45%, black 55%, rgba(0, 0, 0, 0.2) 80%, transparent 95%);
+}
+
+/* The Arc Wrapper - Softens the crisp line at extreme edges */
+.horizon-arc-wrapper {
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.3) 10%, black 30%, black 70%, rgba(0, 0, 0, 0.3) 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.3) 10%, black 30%, black 70%, rgba(0, 0, 0, 0.3) 90%, transparent 100%);
+}
+
+/* Mathematical Perfection: A Single Circular Radius */
+.horizon-layer {
+  position: absolute;
+  top: 345px;
+  /* Pins the apex exactly 45px above the informative cards */
+  left: 50%;
+  transform: translateX(-50%);
+  width: max(285vw, 2500px);
+  height: max(285vw, 2500px);
+  border-radius: 50%;
+  /* Perfect circle creates flawless natural curvature */
+}
+
+/* 1. Base Haze - The solid planet and uniform outer atmosphere */
+.horizon-haze {
+  /* Inherits top: 345px but has no wrapper, so we manually offset it to match */
+  top: 45px;
+  background: transparent;
+  /* Allows existing cosmic tones to flow naturally without creating a separate dark block */
+  box-shadow:
+    0 0 40px rgba(147, 109, 250, 0.25),
+    0 0 100px rgba(114, 48, 237, 0.15),
+    0 0 200px rgba(81, 23, 182, 0.08);
+}
+
+/* 2. Mid Bloom - Volumetric scattering */
+.horizon-bloom {
+  background: transparent;
+  box-shadow:
+    0 0 20px rgba(180, 150, 255, 0.4),
+    0 0 60px rgba(147, 109, 250, 0.3),
+    0 0 120px rgba(114, 48, 237, 0.2);
+}
+
+/* 3. Core Bloom - Intense central heat */
+.horizon-core {
+  background: transparent;
+  box-shadow:
+    0 0 10px rgba(255, 255, 255, 0.6),
+    0 0 30px rgba(220, 200, 255, 0.5),
+    0 0 70px rgba(180, 150, 255, 0.4);
+}
+
+/* 4. The Arc - Physical limb */
+.horizon-arc {
+  background: transparent;
+  border-top: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.8),
+    inset 0 2px 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Hero mini-feature cards (Informative Cards Container) */
 .hero-features {
-  margin: 36px auto 0;
+  margin: 90px auto 0;
+  /* Restored original vertical layout spacing */
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  max-width: 880px; /* aligned to hero-inner width */
+  max-width: 880px;
+  /* aligned to hero-inner width */
+  position: relative;
+  z-index: 1;
 }
 
 .hero-feature {
@@ -601,8 +732,8 @@ html::before {
   gap: 12px;
   text-align: left;
   color: rgba(210, 208, 220, 0.9);
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 20px 18px 22px;
   backdrop-filter: blur(14px);
@@ -617,7 +748,7 @@ html::before {
   border-color: rgba(220, 180, 78, 0.2);
   box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(220, 180, 78, 0.06);
+    0 0 0 1px rgba(220, 180, 78, 0.08);
 }
 
 /* Gold icon badge — top of each card */
@@ -672,7 +803,7 @@ html::before {
   font-size: 15.5px;
   font-family: inherit;
   outline: none;
-  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+  box-shadow: 0 16px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -701,7 +832,7 @@ html::before {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   box-shadow: 0 4px 20px rgba(220, 180, 78, 0.25);
 }
 
@@ -734,6 +865,8 @@ html::before {
   flex-wrap: wrap;
   justify-content: center;
   gap: 8px;
+  transform: translateY(-25px);
+  /* Raises pills to create breathing room above horizon */
 }
 
 .topic-pill {
@@ -867,12 +1000,12 @@ html::before {
 .feature-card {
   border-radius: 20px;
   padding: 32px 28px 34px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(16px);
   box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.15),
-    0 1px 0 rgba(255, 255, 255, 0.03) inset;
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
   transition: transform 0.25s ease, border-color 0.25s ease,
     box-shadow 0.25s ease;
 }
@@ -929,10 +1062,12 @@ html::before {
   align-items: flex-start;
   padding: 26px 24px;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(14px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.15),
+    0 1px 0 rgba(255, 255, 255, 0.04) inset;
   transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -1001,21 +1136,15 @@ html::before {
   position: absolute;
   inset: -100px;
   background:
-    radial-gradient(
-      600px circle at 30% 20%,
+    radial-gradient(600px circle at 30% 20%,
       rgba(110, 70, 210, 0.25),
-      transparent 60%
-    ),
-    radial-gradient(
-      500px circle at 70% 80%,
+      transparent 60%),
+    radial-gradient(500px circle at 70% 80%,
       rgba(70, 30, 150, 0.2),
-      transparent 60%
-    ),
-    radial-gradient(
-      350px circle at 50% 50%,
+      transparent 60%),
+    radial-gradient(350px circle at 50% 50%,
       rgba(220, 180, 78, 0.05),
-      transparent 65%
-    );
+      transparent 65%);
   filter: blur(40px);
   opacity: 0.9;
   pointer-events: none;
@@ -1114,4 +1243,3 @@ html::before {
     font-size: 12px;
   }
 }
-

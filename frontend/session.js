@@ -255,7 +255,7 @@ function renderCompletionUpgradeConversion() {
 
   titleEl.textContent = `You just completed ${completedMinutes} minutes 🚀`;
   introEl.textContent = "You're building real consistency. Most people quit — you're not.";
-  headingEl.textContent = "Unlock more with LockedIn Pro:";
+  headingEl.textContent = "Unlock more with Curious Horizons Pro:";
   bullet1El.textContent = "Longer sessions";
   bullet2El.textContent = "Deeper AI explanations";
   bullet3El.textContent = "Better learning structure";
