@@ -240,7 +240,7 @@ function getApiBase() {
   }
 
   // Production / deployed frontend
-  return "https://lockedin-ai.onrender.com"
+  return "https://curious-horizons.onrender.com"
 }
 
 function normalizeStoredPlan(plan) {

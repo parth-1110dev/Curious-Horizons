@@ -11,7 +11,7 @@ const API_BASE =
   window.location.hostname === "localhost" ||
   window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
-    : "https://lockedin-ai.onrender.com";
+    : "https://curious-horizons.onrender.com";
 const minMinutes = 5;
 const FREE_DAILY_SESSION_LIMIT = 5;
 const SESSION_PERF_LOG_ENABLED = (() => {
