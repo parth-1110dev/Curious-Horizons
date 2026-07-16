@@ -59,10 +59,21 @@ body {
   color: var(--text);
   overflow-x: hidden;
   overscroll-behavior: none;
-  animation: page-in 220ms ease-out both;
+  /* Opacity only — body must never hold a non-none transform.
+     A transform on body makes it a containing block for position:fixed
+     (e.g. Razorpay Checkout), which breaks viewport-relative positioning. */
+  animation: body-fade-in 220ms ease-out both;
 }
 
-@keyframes page-in {
+/* Body fades in opacity only — NO transform. */
+@keyframes body-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The slide-up entrance lives on the scrollable content wrapper,
+   NOT on body, so fixed-position elements remain viewport-anchored. */
+@keyframes page-slide-in {
   from {
     opacity: 0;
     transform: translateY(4px);
@@ -73,8 +84,13 @@ body {
   }
 }
 
+.page {
+  animation: page-slide-in 220ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  body {
+  body,
+  .page {
     animation: none;
   }
 }
@@ -379,16 +395,10 @@ body {
   pointer-events: none;
 }
 
-/* Payment modal state: lock scrolling and position fixed */
+/* Payment modal state: lock scrolling on both html and body */
 body.payment-open {
   overflow: hidden;
-  /*position: fixed;
-  width: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
   overscroll-behavior: none;
-  touch-action: none;*/
 }
 
 html.payment-open {

@@ -65,16 +65,32 @@ body {
   background: var(--base);
   color: var(--text);
   overflow-x: hidden;
-  animation: page-in 220ms ease-out both;
+  /* Opacity only — body must never hold a non-none transform.
+     A transform on body makes it a containing block for position:fixed
+     elements (e.g. Razorpay, modals), breaking viewport-relative positioning. */
+  animation: body-fade-in 220ms ease-out both;
 }
 
+/* Body fades in opacity only — NO transform. */
+@keyframes body-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* The slide-up entrance lives on the content wrapper,
+   NOT on body, so fixed-position elements remain viewport-anchored. */
 @keyframes page-in {
   from { opacity: 0; transform: translateY(4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+.page {
+  animation: page-in 220ms ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  body { animation: none; }
+  body,
+  .page { animation: none; }
 }
 
 /* ── Aurora Atmosphere ── */

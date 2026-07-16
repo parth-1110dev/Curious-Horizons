@@ -278,8 +278,20 @@ function setButtonBusy(button, busy) {
   }
 }
 
+function getScrollY() {
+  // After the CSS fix (body no longer has a transform), window.scrollY is correct.
+  // Reading all three ensures correctness across every browser and any edge case
+  // where the scroll container differs.
+  return Math.max(
+    window.scrollY || 0,
+    window.pageYOffset || 0,
+    document.body.scrollTop || 0,
+    document.documentElement.scrollTop || 0
+  );
+}
+
 function lockCheckoutScroll() {
-  checkoutScrollY = window.scrollY || window.pageYOffset || 0;
+  checkoutScrollY = getScrollY();
   checkoutTargetsState = checkoutLockTargets.map((element) => ({
     element,
     inert: element.inert,
@@ -291,9 +303,8 @@ function lockCheckoutScroll() {
     element.setAttribute("aria-hidden", "true");
   });
 
-  //document.body.classList.add("payment-open");
   document.documentElement.classList.add("payment-open");
-  document.body.style.top = `-${checkoutScrollY}px`;
+  document.body.classList.add("payment-open");
 
   if (checkoutBackdrop) {
     checkoutBackdrop.hidden = false;
@@ -323,11 +334,16 @@ function unlockCheckoutScroll() {
     checkoutBackdrop.classList.remove("is-visible");
     checkoutBackdrop.hidden = true;
   }
-  
+
   // Restore scroll position on next frame to ensure DOM is updated
+  const savedY = checkoutScrollY;
+  checkoutScrollY = 0;
   requestAnimationFrame(() => {
-    window.scrollTo(0, checkoutScrollY);
-    checkoutScrollY = 0;
+    window.scrollTo(0, savedY);
+    // Belt-and-suspenders: also restore body.scrollTop in case it is the scroll container
+    if (document.body.scrollTop !== savedY) {
+      document.body.scrollTop = savedY;
+    }
   });
 }
 
@@ -436,7 +452,7 @@ function waitForScrollToSettle(timeoutMs = 700) {
     };
 
     const checkScrollPosition = () => {
-      const currentY = window.scrollY || window.pageYOffset || 0;
+      const currentY = getScrollY();
 
       if (currentY <= 1) {
         finish();
