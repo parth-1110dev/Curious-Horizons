@@ -291,7 +291,7 @@ function lockCheckoutScroll() {
     element.setAttribute("aria-hidden", "true");
   });
 
-  document.body.classList.add("payment-open");
+  //document.body.classList.add("payment-open");
   document.documentElement.classList.add("payment-open");
   document.body.style.top = `-${checkoutScrollY}px`;
 

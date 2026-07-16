@@ -382,13 +382,13 @@ body {
 /* Payment modal state: lock scrolling and position fixed */
 body.payment-open {
   overflow: hidden;
-  position: fixed;
+  /*position: fixed;
   width: 100%;
   top: 0;
   left: 0;
   right: 0;
   overscroll-behavior: none;
-  touch-action: none;
+  touch-action: none;*/
 }
 
 html.payment-open {
