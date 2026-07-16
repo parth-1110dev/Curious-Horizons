@@ -4,7 +4,7 @@ import time
 import traceback
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from openai import OpenAI
 from razorpay_config import get_razorpay_client as _get_razorpay_client
@@ -1000,76 +1000,49 @@ Preserve any mathematical, scientific, or technical notation as valid LaTeX usin
 Return only the formatted notes content."""
 
             if note_format == "exam":
-                format_instruction = """Convert the session into a highly compact, high-density EXAM MODE revision sheet.
-Its purpose is rapid revision 30 minutes before an exam, interview, quiz, or viva. Prioritize information density over explanation.
-Target length: 1-3 pages maximum.
+                format_instruction = """DO NOT write a textbook chapter or a standard summary. 
+You are creating a hyper-condensed, ultra-high-density PROFESSOR'S CHEAT SHEET. 
 
-STRICT STRUCTURE (INCLUDE APPLICABLE SECTIONS EXACTLY):
+PURPOSE:
+Rapid revision 30 minutes before an exam. Optimize entirely for scannability, memorization, and rapid recall.
 
-# [TOPIC NAME] -- EXAM MODE NOTES
+FORMATTING & STYLE:
+- HIGH INFORMATION DENSITY. 
+- MINIMAL PARAGRAPHS. 
+- NO STORYTELLING. NO TEXTBOOK WRITING. NO LONG EXPLANATIONS.
+- Heavily utilize: bullet points, comparison tables, callout boxes (using > blockquotes), quick facts, memory tricks, mnemonics, and exam traps.
+- Target Length: 1-3 pages of pure, dense facts.
 
----
+REQUIRED STRUCTURE (Follow this exactly, skip sections only if completely irrelevant):
 
-## 1. Topic in One Line
-- A single-sentence definition of the topic.
+## 1. One-line definition
+- Provide a single, punchy, easily memorized definition of the topic.
 
----
-
-## 2. Core Formula Sheet
-- ONLY formulas that must be remembered.
-- Highlight the most important equations.
-- No derivations unless absolutely necessary.
-
----
+## 2. Most Important Formula Box
+- ONLY the core equations/formulas. No derivations. 
 
 ## 3. Key Points
-- A concise bullet list of the most exam-relevant facts.
-- Avoid paragraphs entirely.
+- Rapid-fire bullet points of the most crucial, testable facts. 
 
----
-
-## 4. Memory Tricks / Mnemonics
-- Create memorable associations (acronyms, short memory tricks, analogies for recall).
-
----
+## 4. Memory Tricks
+- Provide mnemonics, acronyms, or vivid associations to help memorize complex parts of the topic.
 
 ## 5. Comparison Tables
-- If multiple concepts are related (e.g., TCP vs UDP), present them in a compact Markdown comparison table.
-
----
+- Create Markdown tables contrasting this concept against related concepts (e.g., Pros/Cons, Approach A vs Approach B).
 
 ## 6. Frequently Asked Exam Questions
-- Generate likely questions (Define..., Explain..., Advantages, Limitations, Differences, Applications, Viva questions).
-- DO NOT answer them in full. Only list them as revision cues.
+- List highly probable exam questions (e.g., "Define X", "Compare Y and Z", "What are the limitations of..."). Do NOT write out full answers.
 
----
-
-## 7. Common Mistakes
-- List mistakes students commonly make. (e.g., "Do not confuse X with Y.")
-
----
+## 7. Exam Traps
+- Warn the student about common misconceptions, easy mistakes, or trap questions professors use.
 
 ## 8. Quick Revision Checklist
-- Checklist of concepts to remember:
-  ✓ Definition
-  ✓ Formula
-  ✓ Applications
-  ✓ Advantages
-  ✓ Limitations
+- Checkboxes for core sub-topics the student must know before walking into the exam.
 
----
+## 9. If You Remember Only Three Things...
+- The absolute highest-priority takeaways. 
 
-## 9. Last Minute Revision
-- Finish with: "If you remember only three things..."
-- List the three highest-priority takeaways.
-
----
-
-STRICT FORMATTING RULES:
-1. Extremely concise, high information density, bullet-point driven. Minimal paragraphs.
-2. Scan-friendly, optimized for rapid recall. Printable cheat sheet style.
-3. Avoid storytelling, large blocks of text, repetition, excessive examples, or textbook-style writing.
-4. Preserve all mathematical content as valid LaTeX using $...$ and $$...$$.
+Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$.
 """
             elif note_format == "markdown":
                 format_instruction = """Convert the session content into structured notes.
@@ -1086,25 +1059,35 @@ Keep it clean, structured, and easy to revise.
 Preserve math notation in valid LaTeX if present.
 Return valid Markdown only."""
             else:  # PDF
-                format_instruction = """Convert the session content into a comprehensive learning resource for PDF export.
-Think of it as a "concise textbook chapter". Users should be able to revisit it weeks later to relearn the topic. Its purpose is deep understanding.
+                format_instruction = """DO NOT write a summary or a cheat sheet. 
+You are authoring a concise, high-quality TEXTBOOK CHAPTER for deep, long-term understanding.
 
-FORMAT AND CONTENT REQUIREMENTS:
-- Provide detailed explanations and concept intuition.
-- Include practical examples and step-by-step reasoning.
-- Provide mathematical derivations where appropriate.
-- Discuss practical applications and historical context where useful.
-- Use analogies and best practices.
-- References or further reading where applicable.
+PURPOSE: 
+Deep learning and conceptual mastery. The reader should be able to revisit this document weeks later to completely relearn the topic from scratch. 
+
+FORMATTING & STYLE:
+- Optimize for understanding. Use clear, detailed explanations and intuition.
+- Use paragraphs, structured headings, and professional academic prose.
+- Do NOT use cheat-sheet style bullet-point dumps. Use prose to explain the 'why' and 'how'.
+
+REQUIRED INCLUSIONS (where applicable):
+- Detailed explanations and conceptual intuition.
+- Worked examples and step-by-step derivations.
+- Practical applications and real-world use cases.
+- Advantages, limitations, and trade-offs.
+- Historical context or background information.
+- Best practices and common conventions.
+- References or areas for further reading.
 
 STRUCTURE:
-Topic Overview
-Detailed Explanations & Intuition
-Mathematical Derivations & Examples (if applicable)
-Practical Applications & Analogies
-Summary & Best Practices
+1. Introduction & Intuition (Historical context, conceptual understanding)
+2. Core Theory (Detailed explanations, mathematical derivations)
+3. Worked Examples (Step-by-step reasoning)
+4. Practical Applications (Real-world use cases)
+5. Analysis (Advantages, limitations, best practices)
+6. Summary & References
 
-Keep the explanations thorough but structured cleanly. Preserve math notation in valid LaTeX if present."""
+Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$."""
 
             prompt = {
                 "topic": topic,
@@ -1137,6 +1120,29 @@ Keep the explanations thorough but structured cleanly. Preserve math notation in
         print("UNEXPECTED ERROR IN KNOWLEDGE PACK:", str(e))
         return {"error": "Internal error", "details": str(e)}
 
+from pdf_generator import create_pdf_from_markdown
+
+@app.post("/generate-pdf")
+async def generate_pdf(request: Request, data: dict):
+    try:
+        document_type = data.get("document_type", "Generated Notes").strip()
+        topic_name = data.get("topic_name", "Topic Name").strip()
+        markdown_content = data.get("content", "").strip()
+        
+        if not markdown_content:
+            return JSONResponse(status_code=400, content={"error": "No markdown content provided"})
+            
+        pdf_buffer = create_pdf_from_markdown(markdown_content, topic_name=topic_name, document_type=document_type)
+        
+        return Response(
+            content=pdf_buffer.read(),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{topic_name}.pdf"'}
+        )
+    except Exception as e:
+        print("ERROR GENERATING PDF:", str(e))
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"error": "Failed to generate PDF", "details": str(e)})
 
 # LAN / mobile: run with
 #   uvicorn main:app --host 0.0.0.0 --port 8000

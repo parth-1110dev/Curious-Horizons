@@ -51,34 +51,7 @@ let generatedNotes = "";
 let isGenerating = false;
 let isDownloading = false;
 let sessionMathBlocks = new Map();
-let pdfLibrariesPromise = null;
 
-function loadScript(src) {
-  return new Promise((resolve, reject) => {
-    if (document.querySelector(`script[src="${src}"]`)) {
-      resolve();
-      return;
-    }
-
-    const script = document.createElement("script");
-    script.src = src;
-    script.onload = () => resolve();
-    script.onerror = () => reject(new Error(`Failed to load script: ${src}`));
-    document.head.appendChild(script);
-  });
-}
-
-function loadPdfLibraries() {
-  if (pdfLibrariesPromise) {
-    return pdfLibrariesPromise;
-  }
-
-  pdfLibrariesPromise = Promise.all([
-    loadScript(PDF_JSPDF_SRC),
-    loadScript(PDF_HTML2CANVAS_SRC),
-  ]);
-  return pdfLibrariesPromise;
-}
 
 function isKatexAvailable() {
   return typeof window.katex !== "undefined" && typeof window.katex.renderToString === "function";
@@ -587,100 +560,7 @@ function downloadBlob(content, mimeType, filename) {
   window.URL.revokeObjectURL(url);
 }
 
-async function buildPdfFromText(rawText, title, filename) {
-  console.log("PDF FUNCTION STARTED");
-  const jspdfNs = window.jspdf;
-  if (!jspdfNs || typeof jspdfNs.jsPDF !== "function") {
-    throw new Error("PDF engine unavailable");
-  }
 
-  const doc = new jspdfNs.jsPDF({ unit: "pt", format: "a4" });
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const sidePaddingPx = 60;
-  const sideMarginPt = 45;
-  const exportContainer = document.createElement("div");
-  exportContainer.style.position = "fixed";
-  exportContainer.style.left = "-10000px";
-  exportContainer.style.top = "0";
-  exportContainer.style.opacity = "1";
-  exportContainer.style.pointerEvents = "none";
-  exportContainer.style.zIndex = "-1";
-  exportContainer.style.width = "760px";
-  exportContainer.style.padding = `36px ${sidePaddingPx}px`;
-  exportContainer.style.background = "#ffffff";
-  exportContainer.style.color = "#111827";
-  exportContainer.style.boxSizing = "border-box";
-  exportContainer.style.fontFamily = "Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif";
-  exportContainer.style.lineHeight = "1.6";
-  exportContainer.style.wordBreak = "break-word";
-  exportContainer.innerHTML = `
-    <style>
-      h1, h2, h3, h4, p, ul { margin-top: 0; }
-      h1 { font-size: 24px; margin-bottom: 18px; }
-      h2 { font-size: 18px; margin: 18px 0 10px; }
-      h3 { font-size: 16px; margin: 16px 0 8px; }
-      h4 { font-size: 15px; margin: 14px 0 8px; }
-      p, li { font-size: 12px; margin-bottom: 8px; }
-      ul { padding-left: 20px; margin-bottom: 12px; }
-      .math-block { margin: 10px 0; overflow-x: auto; }
-      .katex-display { margin: 0; overflow-x: auto; overflow-y: hidden; }
-      .math-fallback { white-space: pre-wrap; word-break: break-word; }
-    </style>
-  `;
-
-  const titleEl = document.createElement("h1");
-  titleEl.textContent = title;
-  exportContainer.appendChild(titleEl);
-  exportContainer.appendChild(buildMarkdownFragment(String(rawText || "")));
-  document.body.appendChild(exportContainer);
-
-  try {
-    await new Promise((resolve) => {
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(resolve);
-      });
-    });
-
-    console.log("MATH BLOCK COUNT:", sessionMathBlocks.size);
-
-    if (typeof window.html2canvas !== "function") {
-      throw new Error("HTML PDF export unavailable");
-    }
-
-    const canvas = await window.html2canvas(exportContainer, {
-      scale: 2,
-      backgroundColor: "#ffffff",
-      useCORS: true,
-    });
-
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const margin = sideMarginPt;
-    const imageWidth = pageWidth - margin * 2;
-    const imageHeight = (canvas.height * imageWidth) / canvas.width;
-    const pageHeightAvailable = pageHeight - margin * 2;
-    const imageData = canvas.toDataURL("image/png");
-
-    let remainingHeight = imageHeight;
-    let yOffset = margin;
-
-    doc.addImage(imageData, "PNG", margin, yOffset, imageWidth, imageHeight);
-    remainingHeight -= pageHeightAvailable;
-
-    while (remainingHeight > 0) {
-      yOffset = remainingHeight - imageHeight + margin;
-      doc.addPage();
-      doc.addImage(imageData, "PNG", margin, yOffset, imageWidth, imageHeight);
-      remainingHeight -= pageHeightAvailable;
-    }
-
-    doc.save(filename);
-    return doc;
-  } finally {
-    if (exportContainer.parentNode) {
-      exportContainer.parentNode.removeChild(exportContainer);
-    }
-  }
-}
 
 function showLoadingState() {
   loadingState.removeAttribute("hidden");
@@ -771,8 +651,28 @@ async function downloadNotes() {
       const fileName = effectiveFormat === "exam"
         ? `${baseName}-exam-mode-notes.pdf`
         : `${baseName}-notes.pdf`;
-      await loadPdfLibraries();
-      await buildPdfFromText(content, title, fileName);
+      
+      const topicName = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Topic Name";
+      const response = await window.fetch(`${API_BASE}/generate-pdf`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ document_type: title, topic_name: topicName, content: content })
+      });
+      
+      if (!response.ok) {
+        throw new Error("Failed to generate PDF from server");
+      }
+      
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      
       window.localStorage.removeItem("lockedin_generated_notes");
       return;
     }
