@@ -573,40 +573,7 @@ function normalizeContentOrNull() {
   return text.length > 0 ? text : null;
 }
 
-function toNotionMarkdown(text) {
-  const cleaned = String(text || "").trim();
-  if (!cleaned) return "";
 
-  const lines = cleaned.split(/\r?\n/).map((line) => line.trimRight());
-  const out = ["# Notion Ready Notes", ""];
-
-  for (let i = 0; i < lines.length; i += 1) {
-    const line = lines[i].trim();
-    if (!line) {
-      out.push("");
-      continue;
-    }
-
-    if (/^#{1,6}\s+/.test(line)) {
-      out.push(line);
-      continue;
-    }
-
-    if (/^[-*]\s+/.test(line) || /^\d+\.\s+/.test(line)) {
-      out.push(line);
-      continue;
-    }
-
-    if (/^[A-Za-z][A-Za-z\s]+:$/.test(line)) {
-      out.push(`## ${line.slice(0, -1)}`);
-      continue;
-    }
-
-    out.push(line);
-  }
-
-  return out.join("\n").replace(/\n{3,}/g, "\n\n").trim() + "\n";
-}
 
 function downloadBlob(content, mimeType, filename) {
   const blob = new Blob([content], { type: mimeType });
@@ -810,16 +777,7 @@ async function downloadNotes() {
       return;
     }
 
-    if (effectiveFormat === "notion") {
-      const notionContent = toNotionMarkdown(content);
-      if (!notionContent.trim()) {
-        alert("Could not format notes for Notion.");
-        return;
-      }
-      downloadBlob(notionContent, "text/markdown;charset=utf-8", `${baseName}-notion-ready.md`);
-      window.localStorage.removeItem("lockedin_generated_notes");
-      return;
-    }
+
 
     if (effectiveFormat === "markdown") {
       downloadBlob(content, "text/markdown;charset=utf-8", `${baseName}-notes.md`);

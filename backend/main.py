@@ -973,7 +973,7 @@ async def generate_knowledge_pack(request: Request, data: dict):
 
         format_raw = data.get("format", "exam")
         note_format = str(format_raw).strip().lower() if format_raw else "exam"
-        if note_format not in ["pdf", "exam", "markdown", "notion"]:
+        if note_format not in ["pdf", "exam", "markdown"]:
             note_format = "exam"
 
         plan_raw = data.get("plan", "free")
@@ -1000,117 +1000,77 @@ Preserve any mathematical, scientific, or technical notation as valid LaTeX usin
 Return only the formatted notes content."""
 
             if note_format == "exam":
-                format_instruction = """Convert the session into HIGH-YIELD, PDF-READY exam notes.
+                format_instruction = """Convert the session into a highly compact, high-density EXAM MODE revision sheet.
+Its purpose is rapid revision 30 minutes before an exam, interview, quiz, or viva. Prioritize information density over explanation.
+Target length: 1-3 pages maximum.
 
-STRICT STRUCTURE (FOLLOW EXACTLY):
+STRICT STRUCTURE (INCLUDE APPLICABLE SECTIONS EXACTLY):
 
-# [TOPIC NAME] -- HIGH-YIELD EXAM NOTES
-
----
-
-## 1. Key Concepts
-
-- Only the most important ideas
-- Keep each point short and precise
+# [TOPIC NAME] -- EXAM MODE NOTES
 
 ---
 
-## 2. Important Definitions
-
-- Clear, exam-ready definitions
-- Easy to memorize
-- No long paragraphs
+## 1. Topic in One Line
+- A single-sentence definition of the topic.
 
 ---
 
-## 3. Frequently Asked Questions
-
-- Include questions most likely to appear in exams
-- Focus on conceptual and theory-based questions
-
----
-
-## 4. Short Answer Explanations
-
-- 2-4 line answers
-- Direct and to the point
-- No unnecessary explanation
+## 2. Core Formula Sheet
+- ONLY formulas that must be remembered.
+- Highlight the most important equations.
+- No derivations unless absolutely necessary.
 
 ---
 
-## 5. Quick Revision Sheet (MOST IMPORTANT)
-
-- Ultra-condensed version of the topic
-- Bullet points only
-- Designed for 1-2 minute revision
+## 3. Key Points
+- A concise bullet list of the most exam-relevant facts.
+- Avoid paragraphs entirely.
 
 ---
 
-## 6. High Probability Topics
+## 4. Memory Tricks / Mnemonics
+- Create memorable associations (acronyms, short memory tricks, analogies for recall).
 
-- Identify what is most likely to be asked
-- Focus only on important areas
+---
+
+## 5. Comparison Tables
+- If multiple concepts are related (e.g., TCP vs UDP), present them in a compact Markdown comparison table.
+
+---
+
+## 6. Frequently Asked Exam Questions
+- Generate likely questions (Define..., Explain..., Advantages, Limitations, Differences, Applications, Viva questions).
+- DO NOT answer them in full. Only list them as revision cues.
 
 ---
 
 ## 7. Common Mistakes
-
-- List mistakes students commonly make
-- Keep each point short and actionable
+- List mistakes students commonly make. (e.g., "Do not confuse X with Y.")
 
 ---
 
-## 8. Memory Triggers
-
-- Add short memory cues
-- Keep them simple and easy to recall
-
----
-
-## 9. 30-Second Strategy (VERY IMPORTANT)
-
-- Give a quick decision-making approach
-- Help user identify how to solve questions fast
+## 8. Quick Revision Checklist
+- Checklist of concepts to remember:
+  ✓ Definition
+  ✓ Formula
+  ✓ Applications
+  ✓ Advantages
+  ✓ Limitations
 
 ---
 
-## 10. Where This Appears
-
-- List common problem patterns or use-cases
-- Help user recognize the concept in exams
+## 9. Last Minute Revision
+- Finish with: "If you remember only three things..."
+- List the three highest-priority takeaways.
 
 ---
 
-STRICT FORMATTING RULES (NON-NEGOTIABLE):
-
-1. Use ASCII characters for normal text, but preserve all mathematical content as valid LaTeX.
-- Use <=, >= instead of special symbols
-- Use -> instead of arrows
-- DO NOT use fancy quotes or symbols
-- Exception: mathematical content should remain valid LaTeX with $...$ and $$...$$ delimiters.
-
-2. Avoid broken characters or encoding artifacts
-
-3. Keep formatting CLEAN
-- Proper spacing between sections
-- Consistent bullet points
-- No random line breaks
-
-4. Keep content SCANNABLE
-- Short lines
-- No large paragraphs
-
-5. No repetition
-
-6. Do NOT over-explain
-
-PDF OPTIMIZATION:
-- Output must look clean when converted to PDF
-- Avoid special characters that break rendering
-- Keep alignment consistent
-
-GOAL:
-This should feel like a last-minute revision cheat sheet that a student can confidently use just before entering an exam."""
+STRICT FORMATTING RULES:
+1. Extremely concise, high information density, bullet-point driven. Minimal paragraphs.
+2. Scan-friendly, optimized for rapid recall. Printable cheat sheet style.
+3. Avoid storytelling, large blocks of text, repetition, excessive examples, or textbook-style writing.
+4. Preserve all mathematical content as valid LaTeX using $...$ and $$...$$.
+"""
             elif note_format == "markdown":
                 format_instruction = """Convert the session content into structured notes.
 
@@ -1125,31 +1085,26 @@ FORMAT:
 Keep it clean, structured, and easy to revise.
 Preserve math notation in valid LaTeX if present.
 Return valid Markdown only."""
-            elif note_format == "notion":
-                format_instruction = """Convert the session content into structured notes for Notion.
-
-FORMAT:
-# Topic Overview
-# Key Concepts
-- Bullet points
-# Important Explanations
-# Examples (if applicable)
-# Summary
-
-Keep it clean, structured, and easy to revise.
-Preserve math notation in valid LaTeX if present.
-Use headings and bullets only. Avoid raw/unformatted text."""
             else:  # PDF
-                format_instruction = """Convert the session content into structured notes for PDF export.
+                format_instruction = """Convert the session content into a comprehensive learning resource for PDF export.
+Think of it as a "concise textbook chapter". Users should be able to revisit it weeks later to relearn the topic. Its purpose is deep understanding.
 
-FORMAT:
+FORMAT AND CONTENT REQUIREMENTS:
+- Provide detailed explanations and concept intuition.
+- Include practical examples and step-by-step reasoning.
+- Provide mathematical derivations where appropriate.
+- Discuss practical applications and historical context where useful.
+- Use analogies and best practices.
+- References or further reading where applicable.
+
+STRUCTURE:
 Topic Overview
-Key Concepts (bullet points)
-Important Explanations
-Examples (if applicable)
-Summary
+Detailed Explanations & Intuition
+Mathematical Derivations & Examples (if applicable)
+Practical Applications & Analogies
+Summary & Best Practices
 
-Keep it clean, structured, and easy to revise."""
+Keep the explanations thorough but structured cleanly. Preserve math notation in valid LaTeX if present."""
 
             prompt = {
                 "topic": topic,
