@@ -1005,28 +1005,35 @@ Return only the formatted notes content."""
                 return {"notes": content}
                 
             if note_format == "exam":
-                format_instruction = """DO NOT regenerate the topic or write a textbook chapter. 
-You are creating a hyper-condensed EXAM CHEAT SHEET based strictly on the provided learning session.
+                format_instruction = """DO NOT regenerate the topic.
+Analyze the completed learning session.
+Compress it aggressively.
+Retain only the highest-value exam information.
 
 PURPOSE:
-Create the ultimate revision sheet from the completed learning session.
-Night before the exam. NOT "Teach me the topic."
+Last-minute revision.
+The Cheat Sheet should feel like something a student prints the night before an exam.
+
+REQUIRED INCLUSIONS (Include ONLY these elements):
+## One-line definitions
+## Core formulas
+## Key facts
+## Comparison tables
+## Memory tricks
+## Frequently asked exam questions
+## Common mistakes
+## Exam traps
+## Quick revision checklist
+## Three Things to Remember
+
+REMOVALS (Do NOT include):
+- Long explanations
+- Background context
+- Detailed discussions
+- Narrative teaching
 
 FORMATTING & STYLE:
 - Target Length: 2–4 pages.
-- Every sentence should earn its place.
-- Remove unnecessary explanations.
-- Extract and compress only the highest-value information.
-
-REQUIRED STRUCTURE:
-## One-line Definitions
-## Core Formulas & Equations
-## Comparison Tables
-## Memory Tricks
-## Frequently Asked Exam Questions
-## Common Mistakes & Exam Traps
-## Quick Revision Checklist
-## Three Things to Remember
 
 Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$.
 """

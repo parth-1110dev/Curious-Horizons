@@ -313,8 +313,8 @@ def create_pdf_from_markdown(markdown_text, topic_name="Generated Notes", docume
                     with PILImage.open(tmp_path) as pil_img:
                         w, h = pil_img.size
                     # Scale down inline math slightly so it fits line height better
-                    w_pt = w * 0.65
-                    h_pt = h * 0.65
+                    w_pt = w * 0.60
+                    h_pt = h * 0.60
                     # Inline math uses a real file path so ReportLab Paragraph can read it directly
                     paragraph_xml += f'<img src="{tmp_path}" width="{w_pt}" height="{h_pt}" valign="middle"/>'
                 else:
@@ -326,8 +326,16 @@ def create_pdf_from_markdown(markdown_text, topic_name="Generated Notes", docume
                     buf.seek(0)
                     with PILImage.open(buf) as pil_img:
                         w, h = pil_img.size
-                    w_pt = w * 0.75
-                    h_pt = h * 0.75
+                    # Reduce display math size by 40% (0.45 instead of 0.75)
+                    w_pt = w * 0.45
+                    h_pt = h * 0.45
+                    
+                    # Dynamically scale equations based on available width
+                    max_w = doc.width - 72 # Account for margins and padding
+                    if w_pt > max_w:
+                        scale = max_w / w_pt
+                        w_pt = max_w
+                        h_pt = h_pt * scale
                     # Display math gets extracted into a centered Image flowable
                     paragraph_xml += f'<img src="data:image/png;base64,{img_b64}" width="{w_pt}" height="{h_pt}"/>'
                 else:
