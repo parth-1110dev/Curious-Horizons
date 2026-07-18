@@ -986,18 +986,16 @@ async def generate_knowledge_pack(request: Request, data: dict):
 
         # Generate knowledge pack based on format
         try:
-            system_prompt = """You are a knowledge extraction specialist.
-Convert the provided session content into structured notes.
-Be concise, organized, and focus on key learnings.
+            system_prompt = """You are an expert exam preparation assistant.
+Your job is to analyze a provided AI learning session and transform it.
+You are NOT generating new content. You are compressing and extracting from the provided session.
 MATHEMATICAL FORMATTING (MANDATORY):
 - When mathematical, scientific, engineering, economics, statistics, physics, chemistry, or machine-learning notation appears, always use valid LaTeX.
 - Inline formulas must use $...$.
 - Display formulas must use $$...$$.
 - Never output mathematical expressions outside LaTeX delimiters.
 - Preserve fractions, derivatives, integrals, summations, matrices, gradients, superscripts, subscripts, and scientific notation as valid LaTeX.
-- Before returning notes, verify that every formula, exponent, fraction, derivative, integral, summation, matrix, gradient, or scientific expression is wrapped in LaTeX delimiters.
-Preserve any mathematical, scientific, or technical notation as valid LaTeX using $...$ or $$...$$.
-Return only the formatted notes content."""
+Return only the formatted notes content. Do not include preamble or meta-commentary."""
 
             if note_format == "pdf":
                 # PDF Notes should simply be a beautifully formatted version of the complete AI learning session.
@@ -1005,38 +1003,43 @@ Return only the formatted notes content."""
                 return {"notes": content}
                 
             if note_format == "exam":
-                format_instruction = """DO NOT regenerate the topic.
-Analyze the completed learning session.
-Compress it aggressively.
-Retain only the highest-value exam information.
+                format_instruction = """You are given the COMPLETE transcript of an AI learning session below.
+Do NOT invent new content. Do NOT reteach the topic.
+Analyze ONLY what is in the provided session.
+Extract and compress it into the ultimate night-before-exam revision sheet.
 
-PURPOSE:
-Last-minute revision.
-The Cheat Sheet should feel like something a student prints the night before an exam.
+RETAIN ONLY (pull directly from the session content):
+- One-line definitions of each key concept mentioned
+- Every formula, equation, and mathematical expression (preserve ALL LaTeX exactly)
+- Key facts and keywords students must memorize
+- Comparison tables (e.g. Pros vs Cons, Method A vs B, Concept X vs Y)
+- Mnemonics or memory tricks if any appear in the session
+- Exam-style questions that could be derived from this topic
+- Common mistakes and misconceptions that could trap a student
+- A quick revision checklist of the most critical subtopics
+- The THREE most important takeaways from the entire session
 
-REQUIRED INCLUSIONS (Include ONLY these elements):
-## One-line definitions
-## Core formulas
-## Key facts
-## Comparison tables
-## Memory tricks
-## Frequently asked exam questions
-## Common mistakes
-## Exam traps
-## Quick revision checklist
+STRICTLY REMOVE:
+- Paragraphs of explanation
+- Teaching narrative and storytelling
+- Background and historical context
+- Intuitive analogies (unless they reduce to a one-liner)
+- Any sentence a student doesn't need at 2am before an exam
+
+FORMAT using these exact section headings:
+## One-line Definitions
+## Core Formulas & Equations
+## Key Facts & Keywords
+## Comparison Tables
+## Memory Tricks
+## Likely Exam Questions
+## Common Mistakes & Exam Traps
+## Quick Revision Checklist
 ## Three Things to Remember
 
-REMOVALS (Do NOT include):
-- Long explanations
-- Background context
-- Detailed discussions
-- Narrative teaching
-
-FORMATTING & STYLE:
-- Target Length: 2–4 pages.
-
-Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$.
-"""
+TARGET: 2–4 dense, scannable pages.
+Every line must justify its existence.
+Preserve all LaTeX notation exactly as it appears using $...$ and $$...$$."""
             elif note_format == "markdown":
                 format_instruction = """Convert the session content into structured notes.
 
@@ -1082,24 +1085,17 @@ STRUCTURE:
 
 Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$."""
 
-            prompt = {
-                "topic": topic,
-                "session_content": content,
-                "format": note_format,
-                "instruction": format_instruction,
-            }
-
             response = client.chat.completions.create(
                 model="gpt-4o-mini" if plan_normalized == "free" else "gpt-4.1",
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {
                         "role": "user",
-                        "content": json.dumps(prompt, ensure_ascii=False, separators=(",", ":")),
+                        "content": f"TOPIC: {topic}\n\nLEARNING SESSION CONTENT:\n{content}\n\nINSTRUCTION:\n{format_instruction}",
                     },
                 ],
-                temperature=0.7,
-                max_tokens=2000,
+                temperature=0.3,
+                max_tokens=4000,
             )
 
             notes = response.choices[0].message.content.strip()

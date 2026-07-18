@@ -628,66 +628,134 @@ async function generateKnowledgePack() {
 async function downloadNotes() {
   if (!downloadNotesBtn || isDownloading) return;
 
-  if (!generatedNotes) {
-    generatedNotes =
-      window.localStorage.getItem("lockedin_generated_notes") || "";
-  }
-
-  const content = normalizeContentOrNull();
-  if (!content) {
-    alert("No notes available yet. Please generate notes first.");
-    return;
-  }
-
   isDownloading = true;
   downloadNotesBtn.disabled = true;
 
   try {
     const baseName = getSafeTopicSlug();
     const effectiveFormat = selectedFormat || "exam";
+    const topicName = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Topic Name";
+    const rawSession = window.localStorage.getItem(STORAGE_SESSION_CONTENT_KEY) || "";
 
-    if (effectiveFormat === "pdf" || effectiveFormat === "exam") {
-      const title = effectiveFormat === "exam" ? "Exam Cheat Sheet" : "PDF Notes";
-      const fileName = effectiveFormat === "exam"
-        ? `${baseName}-exam-cheat-sheet.pdf`
-        : `${baseName}-notes.pdf`;
-      
-      const topicName = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Topic Name";
+    // ── PDF NOTES ──────────────────────────────────────────────────────────────
+    // Send the raw, unmodified learning session directly to /generate-pdf.
+    // No AI transformation. No summarization. The session IS the document.
+    if (effectiveFormat === "pdf") {
+      if (!rawSession) {
+        alert("No session content available. Please complete a learning session first.");
+        return;
+      }
+
       const response = await window.fetch(`${API_BASE}/generate-pdf`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ document_type: title, topic_name: topicName, content: content })
+        body: JSON.stringify({
+          document_type: "PDF Notes",
+          topic_name: topicName,
+          content: rawSession
+        })
       });
-      
-      if (!response.ok) {
-        throw new Error("Failed to generate PDF from server");
-      }
-      
+
+      if (!response.ok) throw new Error("Failed to generate PDF");
+
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = fileName;
+      link.download = `${baseName}-notes.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      
-      window.localStorage.removeItem("lockedin_generated_notes");
       return;
     }
 
+    // ── EXAM CHEAT SHEET ───────────────────────────────────────────────────────
+    // Pipeline: raw session → AI compression → /generate-pdf
+    // The AI receives the complete session and transforms it into a revision doc.
+    if (effectiveFormat === "exam") {
+      if (!rawSession) {
+        alert("No session content available. Please complete a learning session first.");
+        return;
+      }
 
+      // Step 1: Transform the session into a cheat sheet via AI
+      const packResponse = await window.fetch(`${API_BASE}/generate-knowledge-pack`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          topic: topicName,
+          content: rawSession,
+          format: "exam",
+          plan: getUserPlan(),
+        }),
+      });
 
+      const packData = await packResponse.json().catch(() => ({}));
+
+      if (!packResponse.ok || packData.error) {
+        alert(packData.error || "Failed to generate Exam Cheat Sheet. Please try again.");
+        return;
+      }
+
+      const cheatSheetContent = packData.notes || "";
+      if (!cheatSheetContent) {
+        alert("No content was generated. Please try again.");
+        return;
+      }
+
+      // Step 2: Convert the compressed cheat sheet into a PDF
+      const pdfResponse = await window.fetch(`${API_BASE}/generate-pdf`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          document_type: "Exam Cheat Sheet",
+          topic_name: topicName,
+          content: cheatSheetContent
+        })
+      });
+
+      if (!pdfResponse.ok) throw new Error("Failed to generate PDF");
+
+      const blob = await pdfResponse.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${baseName}-exam-cheat-sheet.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      return;
+    }
+
+    // ── MARKDOWN ───────────────────────────────────────────────────────────────
     if (effectiveFormat === "markdown") {
+      if (!generatedNotes) {
+        generatedNotes = window.localStorage.getItem("lockedin_generated_notes") || "";
+      }
+      const content = normalizeContentOrNull();
+      if (!content) {
+        alert("No notes available yet. Please generate notes first.");
+        return;
+      }
       downloadBlob(content, "text/markdown;charset=utf-8", `${baseName}-notes.md`);
       window.localStorage.removeItem("lockedin_generated_notes");
       return;
     }
 
-    downloadBlob(content, "text/plain;charset=utf-8", `${baseName}-notes.txt`);
-    window.localStorage.removeItem("lockedin_generated_notes");
+    // Fallback plain text
+    if (!generatedNotes) {
+      generatedNotes = window.localStorage.getItem("lockedin_generated_notes") || "";
+    }
+    const content = normalizeContentOrNull();
+    if (content) {
+      downloadBlob(content, "text/plain;charset=utf-8", `${baseName}-notes.txt`);
+      window.localStorage.removeItem("lockedin_generated_notes");
+    }
+
   } catch (_err) {
+    console.error("Download failed:", _err);
     alert("Download failed. Please try again.");
   } finally {
     window.setTimeout(() => {
