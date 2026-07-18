@@ -9,6 +9,8 @@ from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 from reportlab.lib import colors
 import matplotlib.pyplot as plt
 import re
+import base64
+from PIL import Image as PILImage
 
 # Colors from Curious Horizons Design Language
 NEBULA_GOLD = colors.HexColor("#dcb44e")
@@ -175,12 +177,89 @@ def create_pdf_from_markdown(markdown_text, topic_name="Generated Notes", docume
                 xml += " "
             elif child.type == 'hardbreak':
                 xml += "<br/>"
+            elif child.type == 'html_inline':
+                xml += child.content
+            elif child.type == 'image':
+                src = child.attrs.get('src', '')
+                alt = child.content
+                xml += f'<img src="{src}" alt="{alt}"/>'
         return xml
+
+    def split_xml_and_images(xml_text, style):
+        result_flowables = []
+        current_xml = ""
+        open_tags = []
+        
+        # Match <img ... src="data:image/..." ... >
+        pattern = re.compile(r'(<img\s+[^>]*src=["\']data:image/[^>]+>)')
+        
+        parts = pattern.split(xml_text)
+        for part in parts:
+            if part.startswith('<img') and 'data:image/' in part:
+                try:
+                    src_match = re.search(r'src=["\']data:image/([a-zA-Z0-9]+);base64,([^"\']+)["\']', part)
+                    if not src_match:
+                        raise ValueError("Could not parse data URI")
+                        
+                    img_type, b64_data = src_match.groups()
+                    img_bytes = base64.b64decode(b64_data)
+                    img_io = BytesIO(img_bytes)
+                    
+                    width_match = re.search(r'width=["\']([0-9\.]+)["\']', part)
+                    height_match = re.search(r'height=["\']([0-9\.]+)["\']', part)
+                    
+                    pil_img = PILImage.open(img_io)
+                    orig_w, orig_h = pil_img.size
+                    img_io.seek(0)
+                    
+                    w_pt = float(width_match.group(1)) if width_match else orig_w * 0.75
+                    h_pt = float(height_match.group(1)) if height_match else orig_h * 0.75
+                    
+                    img_flowable = Image(img_io, width=w_pt, height=h_pt)
+                    
+                    if current_xml.strip():
+                        closed_xml = current_xml
+                        for tag in reversed(open_tags):
+                            tag_name = tag.split()[0]
+                            closed_xml += f"</{tag_name}>"
+                        result_flowables.append(Paragraph(closed_xml, style))
+                        current_xml = ""
+                        for tag in open_tags:
+                            if tag == 'b': current_xml += "<b>"
+                            elif tag == 'i': current_xml += "<i>"
+                            elif tag.startswith('font'): current_xml += f"<{tag}>"
+                    
+                    result_flowables.append(img_flowable)
+                except Exception as e:
+                    print("Skipping malformed base64 image:", e)
+                    current_xml += "[Diagram]"
+            else:
+                tag_pattern = re.compile(r'(</?(?:b|i|font)[^>]*>)')
+                subparts = tag_pattern.split(part)
+                for sub in subparts:
+                    if sub.startswith('<') and sub.endswith('>'):
+                        if sub.startswith('</'):
+                            tag_name = sub[2:-1].split()[0]
+                            if open_tags and open_tags[-1].startswith(tag_name):
+                                open_tags.pop()
+                        elif not sub.endswith('/>'):
+                            tag_name = sub[1:-1]
+                            open_tags.append(tag_name)
+                    current_xml += sub
+
+        if current_xml.strip():
+            closed_xml = current_xml
+            for tag in reversed(open_tags):
+                tag_name = tag.split()[0]
+                closed_xml += f"</{tag_name}>"
+            result_flowables.append(Paragraph(closed_xml, style))
+            
+        return result_flowables
 
     def handle_text_with_math(xml_text, style):
         parts = extract_math(xml_text)
         if len(parts) == 1 and parts[0][0] == 'text':
-            return [Paragraph(parts[0][1], style)]
+            return split_xml_and_images(parts[0][1], style)
             
         import base64
         from PIL import Image as PILImage
@@ -214,7 +293,7 @@ def create_pdf_from_markdown(markdown_text, topic_name="Generated Notes", docume
                 else:
                     paragraph_xml += f"<br/>$${content}$$<br/>"
         
-        return [Paragraph(paragraph_xml, style)]
+        return split_xml_and_images(paragraph_xml, style)
 
     i = 0
     while i < len(tokens):
@@ -243,6 +322,10 @@ def create_pdf_from_markdown(markdown_text, topic_name="Generated Notes", docume
                 inline_tok = tokens[i]
                 text = process_inline_tokens(inline_tok)
                 append_flowable(handle_text_with_math(text, styles['CustomNormal']))
+                
+        elif tok.type == 'html_block':
+            if '<img ' in tok.content and 'data:image/' in tok.content:
+                append_flowable(split_xml_and_images(tok.content, styles['CustomNormal']))
                 
         elif tok.type == 'bullet_list_open' or tok.type == 'ordered_list_open':
             state.in_list = True
