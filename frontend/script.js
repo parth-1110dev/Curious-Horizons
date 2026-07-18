@@ -1,5 +1,9 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const topicForm = document.getElementById("topicForm");
 const topicInput = document.getElementById("topicInput");
@@ -79,4 +83,43 @@ if (startBtn) {
 
 const lenis = new Lenis({
   autoRaf: true,
+});
+
+gsap.set([".title", ".subtext", ".learn-form"], {
+  opacity: 0,
+  y: 40
+});
+
+gsap.timeline()
+  .to(".title", {
+    opacity: 1,
+    y: 0,
+    duration: 1.8,
+    ease: "power4.out"
+  })
+  .to(".subtext", {
+    opacity: 1,
+    y: 0,
+    duration: 1.4,
+    ease: "power4.out"
+  }, "-=1.0")
+  .to(".learn-form", {
+    opacity: 1,
+    y: 0,
+    duration: 1.4,
+    ease: "power4.out"
+  }, "-=0.9");
+
+gsap.utils.toArray(".section").forEach((section) => {
+  gsap.from(section, {
+    opacity: 0,
+    y: 80,
+    duration: 1.2,
+    ease: "power4.out",
+    scrollTrigger: {
+      trigger: section,
+      start: "top 85%",
+      toggleActions: "play none none none",
+    },
+  });
 });
