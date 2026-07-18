@@ -780,8 +780,102 @@ function isMathTokenLine(trimmedLine) {
   return typeof trimmedLine === "string" && sessionMathBlocks.has(trimmedLine);
 }
 
+function flushTable(fragment, rendererState) {
+  if (!rendererState.tableRows || rendererState.tableRows.length < 2) {
+    // Not a valid table — emit as paragraphs
+    if (rendererState.tableRows) {
+      for (const raw of rendererState.tableRows) {
+        fragment.appendChild(createMarkdownBlock("p", "", raw));
+      }
+    }
+    rendererState.tableRows = null;
+    return;
+  }
+
+  const rows = rendererState.tableRows;
+  rendererState.tableRows = null;
+
+  // Parse cells from a raw markdown table row string
+  function parseCells(row) {
+    return row
+      .replace(/^\|/, "")
+      .replace(/\|$/, "")
+      .split("|")
+      .map((c) => c.trim());
+  }
+
+  // Determine which row is the separator row (---, :---:, etc.)
+  const sepIndex = rows.findIndex((r) => /^\|?[\s:|-]+\|/.test(r) && /---/.test(r));
+
+  let headerRows = [];
+  let bodyRows = [];
+
+  if (sepIndex === 1) {
+    headerRows = [rows[0]];
+    bodyRows = rows.slice(2);
+  } else if (sepIndex > 1) {
+    headerRows = rows.slice(0, sepIndex);
+    bodyRows = rows.slice(sepIndex + 1);
+  } else {
+    bodyRows = rows;
+  }
+
+  const table = document.createElement("table");
+  table.className = "session-table";
+
+  if (headerRows.length > 0) {
+    const thead = document.createElement("thead");
+    for (const headerRow of headerRows) {
+      const tr = document.createElement("tr");
+      for (const cell of parseCells(headerRow)) {
+        const th = document.createElement("th");
+        th.innerHTML = renderInlineContent(cell);
+        tr.appendChild(th);
+      }
+      thead.appendChild(tr);
+    }
+    table.appendChild(thead);
+  }
+
+  if (bodyRows.length > 0) {
+    const tbody = document.createElement("tbody");
+    for (const bodyRow of bodyRows) {
+      const tr = document.createElement("tr");
+      for (const cell of parseCells(bodyRow)) {
+        const td = document.createElement("td");
+        td.innerHTML = renderInlineContent(cell);
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+  }
+
+  fragment.appendChild(table);
+}
+
 function appendMarkdownLine(fragment, rendererState, rawLine) {
   const trimmed = rawLine.trim();
+
+  // ── Table detection ─────────────────────────────────────────────────
+  // A table row starts with '|' OR contains at least two '|' separators
+  const isTableRow = trimmed.startsWith("|") || (trimmed.includes("|") && (trimmed.match(/\|/g) || []).length >= 2);
+
+  if (isTableRow) {
+    if (!rendererState.tableRows) {
+      // Flush any open list before starting a table
+      rendererState.listEl = null;
+      rendererState.tableRows = [];
+    }
+    rendererState.tableRows.push(trimmed);
+    return;
+  }
+
+  // Non-table line: flush any buffered table first
+  if (rendererState.tableRows) {
+    flushTable(fragment, rendererState);
+  }
+  // ────────────────────────────────────────────────────────────────────
 
   if (isMathTokenLine(trimmed)) {
     rendererState.listEl = null;
@@ -900,13 +994,17 @@ function renderSessionMarkdown(markdown, { startedAt = null } = {}) {
     return;
   }
 
-  const rendererState = { listEl: null, mathBlock: null };
+  const rendererState = { listEl: null, mathBlock: null, tableRows: null };
   const renderToken = sessionMarkdownRenderToken;
   const renderStartAt = window.performance.now();
   const fragment = document.createDocumentFragment();
 
   for (let index = 0; index < lines.length; index += 1) {
     appendMarkdownLine(fragment, rendererState, lines[index]);
+  }
+  // Flush any table that extended to the final line
+  if (rendererState.tableRows) {
+    flushTable(fragment, rendererState);
   }
 
   sessionMarkdownRenderFrameId = window.requestAnimationFrame(() => {
