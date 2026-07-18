@@ -1,0 +1,228 @@
+**The Curious Horizons Design Engineering Stack (v1.0)**
+
+
+
+Let's formally define our stack.
+
+
+
+🏗️ Layer 1 — Core Foundation (Project Backbone)
+
+These are the technologies that power the application.
+
+
+
+| Category       | Technology      | Status      |
+
+| -------------- | --------------- | ----------  |
+
+| Frontend       | React           | ✅ Existing |
+
+| Styling        | Tailwind CSS    | ✅ Existing |
+
+| Backend        | FastAPI         | ✅ Existing |
+
+| Database       | Supabase        | ✅ Existing |
+
+| Authentication | Supabase Auth   | ✅ Existing |
+
+| Deployment     | Vercel + Render | ✅ Existing |
+
+
+
+These are never replaced.
+
+
+
+🎨 Layer 2 — Design System
+
+These establish visual consistency.
+
+
+
+| Purpose             | Tool            | Status     |
+
+| ------------------- | --------------- | ---------  |
+
+| Component System    | shadcn/ui       | ⭐ Install |
+
+| Icons               | Lucide          | ⭐ Install |
+
+| Forms               | React Hook Form | ⭐ Install |
+
+| Validation          | Zod             | ⭐ Install |
+
+| Toast Notifications | Sonner          | ⭐ Install |
+
+| Popovers / Tooltips | Floating UI     | ⭐ Install |
+
+
+
+These become part of the project.
+
+
+
+✨ Layer 3 — Premium Component Sources
+
+These are where we "shop" for premium UI building blocks.
+
+
+
+| Library       | Purpose                                     |
+
+| ------------- | ------------------------------------------- |
+
+| Magic UI      | Hero sections, backgrounds, premium effects |
+
+| Aceternity UI | Interactive cards, spotlight, timelines     |
+
+| React Bits    | Creative interactions and subtle effects    |
+
+| UI Verse      | CSS snippets, loaders, buttons              |
+
+| 21st.dev      | AI component search engine                  |
+
+
+
+These are not necessarily fully installed. We'll pull in only the components we actually need.
+
+
+
+🎬 Layer 4 — Motion System
+
+Motion is what separates an MVP from a polished product.
+
+
+
+| Tool   | Purpose                                                       |
+
+| ------ | ------------------------------------------------------------- |
+
+| Motion | Component and page animations                                 |
+
+| Lenis  | Smooth scrolling                                              |
+
+| GSAP   | Advanced animation (only when Motion isn't enough)            |
+
+| Lottie | Lightweight vector animations for onboarding and empty states |
+
+
+
+💡 Layer 5 — Inspiration Sources
+
+Never installed.
+
+Used only for research.
+
+
+
+| Website     | Purpose                    |
+
+| ----------- | -------------------------- |
+
+| Mobbin      | SaaS UI inspiration        |
+
+| Awwwards    | Award-winning interactions |
+
+| Land-book   | Landing page ideas         |
+
+| DesignIndex | Modern UI inspiration      |
+
+
+
+🤖 Layer 6 — AI Workflow
+
+This is honestly the secret sauce.
+
+Instead of prompting
+
+Improve my homepage
+
+we'll have specialized prompt templates.
+
+
+
+Examples:
+
+
+
+UI Enhancement Prompt
+
+Motion Enhancement Prompt
+
+Accessibility Audit Prompt
+
+Performance Optimization Prompt
+
+Component Replacement Prompt
+
+Mobile Optimization Prompt
+
+Premium Polish Prompt
+
+
+
+These will become reusable templates.
+
+
+
+🏛️ Layer 7 — Engineering Rules
+
+These are permanent.
+
+
+
+Rule #1
+
+Never redesign approved layouts.
+
+
+
+Rule #2
+
+Never change backend logic unless requested.
+
+
+
+Rule #3
+
+Never change information architecture.
+
+
+
+Rule #4
+
+Every enhancement must improve
+
+usability
+
+accessibility
+
+responsiveness
+
+perceived quality
+
+
+
+Rule #5
+
+Every library must justify its existence.
+
+No unnecessary dependencies.
+
+
+
+Rule #6
+
+Performance first.
+
+No fancy animation should noticeably reduce performance.
+
+
+
+Rule #7
+
+Enhance.
+
+Never rebuild.
+

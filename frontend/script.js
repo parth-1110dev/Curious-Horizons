@@ -1,3 +1,6 @@
+import Lenis from "lenis";
+import "lenis/dist/lenis.css";
+
 const topicForm = document.getElementById("topicForm");
 const topicInput = document.getElementById("topicInput");
 const hint = document.getElementById("hint");
@@ -74,3 +77,6 @@ if (startBtn) {
   });
 }
 
+const lenis = new Lenis({
+  autoRaf: true,
+});
