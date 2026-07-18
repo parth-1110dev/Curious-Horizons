@@ -921,7 +921,7 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
   }
 
   if (trimmed === "") {
-    rendererState.listEl = null;
+    // Do NOT close the list on empty lines. Markdown lists can contain empty lines.
     return;
   }
 
@@ -962,7 +962,22 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
   }
 
   if (/^[-*]\s+/.test(trimmed)) {
-    // Close any open ordered list before starting an unordered one
+    const isIndented = /^\s+/.test(rawLine);
+    const content = trimmed.replace(/^[-*]\s+/, "");
+
+    // If indented and a list is active, attach as a nested sub-list
+    if (isIndented && rendererState.listEl && rendererState.listEl.lastChild) {
+      const lastLi = rendererState.listEl.lastChild;
+      let subList = lastLi.querySelector("ul");
+      if (!subList) {
+        subList = document.createElement("ul");
+        lastLi.appendChild(subList);
+      }
+      subList.appendChild(createMarkdownBlock("li", "", content));
+      return;
+    }
+
+    // Close any open ordered list before starting a top-level unordered one
     if (rendererState.listEl && rendererState.listEl.tagName === "OL") {
       rendererState.listEl = null;
     }
@@ -971,14 +986,29 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
       fragment.appendChild(rendererState.listEl);
     }
     rendererState.listEl.appendChild(
-      createMarkdownBlock("li", "", trimmed.replace(/^[-*]\s+/, ""))
+      createMarkdownBlock("li", "", content)
     );
     return;
   }
 
   // Numbered list: "1. item", "2. item", etc.
   if (/^\d+\.\s+/.test(trimmed)) {
-    // Close any open unordered list before starting an ordered one
+    const isIndented = /^\s+/.test(rawLine);
+    const content = trimmed.replace(/^\d+\.\s+/, "");
+
+    // If indented and a list is active, attach as a nested sub-list
+    if (isIndented && rendererState.listEl && rendererState.listEl.lastChild) {
+      const lastLi = rendererState.listEl.lastChild;
+      let subList = lastLi.querySelector("ol");
+      if (!subList) {
+        subList = document.createElement("ol");
+        lastLi.appendChild(subList);
+      }
+      subList.appendChild(createMarkdownBlock("li", "", content));
+      return;
+    }
+
+    // Close any open unordered list before starting a top-level ordered one
     if (rendererState.listEl && rendererState.listEl.tagName === "UL") {
       rendererState.listEl = null;
     }
@@ -987,8 +1017,18 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
       fragment.appendChild(rendererState.listEl);
     }
     rendererState.listEl.appendChild(
-      createMarkdownBlock("li", "", trimmed.replace(/^\d+\.\s+/, ""))
+      createMarkdownBlock("li", "", content)
     );
+    return;
+  }
+
+  // Handle regular paragraphs
+  const isIndented = /^\s+/.test(rawLine);
+  
+  // If a line is indented and a list is active, it's a multiline list item
+  // Append it as a paragraph inside the current list item instead of breaking the list.
+  if (isIndented && rendererState.listEl && rendererState.listEl.lastChild) {
+    rendererState.listEl.lastChild.appendChild(createMarkdownBlock("p", "", trimmed));
     return;
   }
 
