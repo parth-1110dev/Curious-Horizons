@@ -925,6 +925,8 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
     return;
   }
 
+  // Heading handlers — checked most-specific first to prevent short patterns
+  // (## or #) from matching longer ones (### or ####).
   if (/^####\s+/.test(trimmed)) {
     rendererState.listEl = null;
     fragment.appendChild(
@@ -945,14 +947,40 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
     return;
   }
 
+  // Single # heading maps to h2 (same visual weight — document title level)
+  if (/^#\s+/.test(trimmed)) {
+    rendererState.listEl = null;
+    fragment.appendChild(createMarkdownBlock("h2", "", trimmed.replace(/^#\s+/, "")));
+    return;
+  }
+
   if (/^[-*]\s+/.test(trimmed)) {
+    // Close any open ordered list before starting an unordered one
+    if (rendererState.listEl && rendererState.listEl.tagName === "OL") {
+      rendererState.listEl = null;
+    }
     if (!rendererState.listEl) {
       rendererState.listEl = document.createElement("ul");
       fragment.appendChild(rendererState.listEl);
     }
-
     rendererState.listEl.appendChild(
       createMarkdownBlock("li", "", trimmed.replace(/^[-*]\s+/, ""))
+    );
+    return;
+  }
+
+  // Numbered list: "1. item", "2. item", etc.
+  if (/^\d+\.\s+/.test(trimmed)) {
+    // Close any open unordered list before starting an ordered one
+    if (rendererState.listEl && rendererState.listEl.tagName === "UL") {
+      rendererState.listEl = null;
+    }
+    if (!rendererState.listEl || rendererState.listEl.tagName !== "OL") {
+      rendererState.listEl = document.createElement("ol");
+      fragment.appendChild(rendererState.listEl);
+    }
+    rendererState.listEl.appendChild(
+      createMarkdownBlock("li", "", trimmed.replace(/^\d+\.\s+/, ""))
     );
     return;
   }

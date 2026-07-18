@@ -336,6 +336,8 @@ body.session--complete .topbar {
     Helvetica, Arial, sans-serif;
   contain: content;
   overflow-anchor: none;
+  /* Anchor all content to left alignment at the container level */
+  text-align: left;
   /* Prevent awkward orphan headings */
   orphans: 3;
   widows: 3;
@@ -462,28 +464,15 @@ body.session--complete .topbar {
   margin-bottom: 6px;
 }
 
-/* ── Action-level list items with prominent circle bullet ── */
-/* Make Execution Plan items feel more structured and action-oriented   */
+/* ── Standardized list items: one consistent structure ── */
+/* All li items use padding-left for the absolute-positioned bullet */
+/* li:has(strong:first-child) previously used a hollow circle bullet —
+   now normalized to the same filled gold dot as every other bullet,
+   ensuring visual consistency across ALL sections. */
 .ai-output .session-content li:has(strong:first-child) {
-  padding-left: 28px;
-  padding-top: 4px;
-  padding-bottom: 4px;
-  margin-bottom: 20px;
-  color: rgba(225, 220, 210, 0.92);
-}
-
-/* Circle bullet for action step items */
-.ai-output .session-content li:has(strong:first-child)::before {
-  content: "";
-  position: absolute;
-  left: 2px;
-  top: 6px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: transparent;
-  border: 1.5px solid rgba(220, 180, 78, 0.55);
-  opacity: 1;
+  padding-left: 22px;
+  margin-bottom: 12px;
+  color: rgba(210, 205, 195, 0.88);
 }
 
 /* ── Progressive section spacing: later sections breathe more ── */
@@ -528,6 +517,7 @@ body.session--complete .topbar {
   color: rgba(210, 205, 195, 0.88);
   font-size: 16px;
   line-height: 1.8;
+  text-align: left;
 }
 
 .ai-output .session-content ol li {
@@ -647,28 +637,18 @@ body.session--complete .topbar {
   font-size: 15px;
   color: rgba(190, 185, 210, 0.82);
   line-height: 1.7;
-  max-width: 520px;
-  margin: 0 auto 24px;
-  text-align: center;
+  max-width: 780px;
+  text-align: left;
 }
 
-/* The final ul after the last h2 is the CTA action container */
+/* The final ul after the last h2 — same uniform left-aligned rendering as all others */
 .ai-output .session-content h2:last-of-type ~ ul:last-of-type,
 .ai-output .session-content h2:last-of-type ~ ol:last-of-type {
-  margin: 0 auto 0;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  margin: 4px 0 24px;
+  text-align: left;
 }
 
-/* ── BEGIN EXECUTION / primary CTA button inside session content ── */
-/* The AI generates "BEGIN EXECUTION >>" as a list item or paragraph  */
-/* which we style as the gold primary action button                   */
-.ai-output .session-content li:last-child:only-child,
-.ai-output .session-content > p:only-child {
-  text-align: center;
-}
+/* No special centering for single items — everything stays left-aligned */
 
 /* ── Bottom-of-page CTA region: the START NOW block as a glass card ── */
 .session-cta-block {
