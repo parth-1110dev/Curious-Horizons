@@ -365,37 +365,73 @@ body.session--complete .topbar {
   padding-top: 0;
 }
 
+/* ── Subheadings (h3 / h4 / .session-subheading) ── */
+/* Hollow circle marker prefix separates category labels from body content */
 .ai-output .session-content h3 {
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 750;
   margin: 0;
-  padding-top: 32px;
-  margin-bottom: 14px;
+  padding-top: 24px;
+  margin-bottom: 10px;
   color: var(--gold-bright);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 1.2;
   text-align: left;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  /* No border-top — subheadings sit inside a section, not between sections */
+  border-top: none;
+  /* Hollow circle prefix rendered via padding so it doesn't affect layout */
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+.ai-output .session-content h3::before {
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  opacity: 0.8;
+  position: relative;
+  top: 0;
+}
+
+/* Remove the border-top override for h3:first-child (no longer needed) */
 .ai-output .session-content h3:first-child {
   border-top: none;
-  padding-top: 0;
+  padding-top: 12px;
 }
 
 .ai-output .session-content h4,
 .ai-output .session-content .session-subheading {
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 750;
   margin: 0;
-  padding-top: 28px;
-  margin-bottom: 12px;
+  padding-top: 22px;
+  margin-bottom: 8px;
   color: var(--gold-bright);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  line-height: 1;
+  line-height: 1.2;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-output .session-content h4::before,
+.ai-output .session-content .session-subheading::before {
+  content: "";
+  display: inline-block;
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  opacity: 0.7;
 }
 
 /* ── Body paragraphs ── */
@@ -427,8 +463,8 @@ body.session--complete .topbar {
   letter-spacing: 0.005em;
 }
 
-/* Gold dot bullet */
-.ai-output .session-content li::before {
+/* Gold dot bullet — ONLY for unordered list items */
+.ai-output .session-content ul li::before {
   content: "";
   position: absolute;
   left: 4px;
@@ -508,12 +544,12 @@ body.session--complete .topbar {
   color: rgba(220, 215, 205, 0.85);
 }
 
-/* Ordered lists */
+/* Ordered lists — numbered only, NO bullets */
 .ai-output .session-content ol {
   margin: 4px 0 24px;
   padding: 0;
   list-style: none;
-  counter-reset: section-counter;
+  counter-reset: ol-counter;
   color: rgba(210, 205, 195, 0.88);
   font-size: 16px;
   line-height: 1.8;
@@ -522,22 +558,29 @@ body.session--complete .topbar {
 
 .ai-output .session-content ol li {
   margin-bottom: 12px;
-  padding-left: 28px;
+  padding-left: 32px;
   position: relative;
   color: rgba(210, 205, 195, 0.88);
   letter-spacing: 0.005em;
-  counter-increment: section-counter;
+  counter-increment: ol-counter;
 }
 
+/* OL items get their sequential number — suppress the inherited ul dot */
 .ai-output .session-content ol li::before {
-  content: counter(section-counter) ".";
+  content: counter(ol-counter) ".";
   position: absolute;
   left: 0;
   top: 0;
   color: var(--gold);
   font-weight: 700;
-  font-size: 13px;
-  opacity: 0.85;
+  font-size: 14px;
+  opacity: 0.9;
+  background: transparent;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  border: none;
+  line-height: 1.8;
 }
 
 /* ── Markdown Tables ── */
