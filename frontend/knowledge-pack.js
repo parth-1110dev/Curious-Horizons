@@ -647,9 +647,9 @@ async function downloadNotes() {
     const effectiveFormat = selectedFormat || "exam";
 
     if (effectiveFormat === "pdf" || effectiveFormat === "exam") {
-      const title = effectiveFormat === "exam" ? "Exam Mode Notes" : "PDF Notes";
+      const title = effectiveFormat === "exam" ? "Exam Cheat Sheet" : "PDF Notes";
       const fileName = effectiveFormat === "exam"
-        ? `${baseName}-exam-mode-notes.pdf`
+        ? `${baseName}-exam-cheat-sheet.pdf`
         : `${baseName}-notes.pdf`;
       
       const topicName = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Topic Name";

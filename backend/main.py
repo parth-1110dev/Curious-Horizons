@@ -999,48 +999,34 @@ MATHEMATICAL FORMATTING (MANDATORY):
 Preserve any mathematical, scientific, or technical notation as valid LaTeX using $...$ or $$...$$.
 Return only the formatted notes content."""
 
+            if note_format == "pdf":
+                # PDF Notes should simply be a beautifully formatted version of the complete AI learning session.
+                # No summarization, no regeneration. Preserve the exact learning session.
+                return {"notes": content}
+                
             if note_format == "exam":
-                format_instruction = """DO NOT write a textbook chapter or a standard summary. 
-You are creating a hyper-condensed, ultra-high-density PROFESSOR'S CHEAT SHEET. 
+                format_instruction = """DO NOT regenerate the topic or write a textbook chapter. 
+You are creating a hyper-condensed EXAM CHEAT SHEET based strictly on the provided learning session.
 
 PURPOSE:
-Rapid revision 30 minutes before an exam. Optimize entirely for scannability, memorization, and rapid recall.
+Create the ultimate revision sheet from the completed learning session.
+Night before the exam. NOT "Teach me the topic."
 
 FORMATTING & STYLE:
-- HIGH INFORMATION DENSITY. 
-- MINIMAL PARAGRAPHS. 
-- NO STORYTELLING. NO TEXTBOOK WRITING. NO LONG EXPLANATIONS.
-- Heavily utilize: bullet points, comparison tables, callout boxes (using > blockquotes), quick facts, memory tricks, mnemonics, and exam traps.
-- Target Length: 1-3 pages of pure, dense facts.
+- Target Length: 2–4 pages.
+- Every sentence should earn its place.
+- Remove unnecessary explanations.
+- Extract and compress only the highest-value information.
 
-REQUIRED STRUCTURE (Follow this exactly, skip sections only if completely irrelevant):
-
-## 1. One-line definition
-- Provide a single, punchy, easily memorized definition of the topic.
-
-## 2. Most Important Formula Box
-- ONLY the core equations/formulas. No derivations. 
-
-## 3. Key Points
-- Rapid-fire bullet points of the most crucial, testable facts. 
-
-## 4. Memory Tricks
-- Provide mnemonics, acronyms, or vivid associations to help memorize complex parts of the topic.
-
-## 5. Comparison Tables
-- Create Markdown tables contrasting this concept against related concepts (e.g., Pros/Cons, Approach A vs Approach B).
-
-## 6. Frequently Asked Exam Questions
-- List highly probable exam questions (e.g., "Define X", "Compare Y and Z", "What are the limitations of..."). Do NOT write out full answers.
-
-## 7. Exam Traps
-- Warn the student about common misconceptions, easy mistakes, or trap questions professors use.
-
-## 8. Quick Revision Checklist
-- Checkboxes for core sub-topics the student must know before walking into the exam.
-
-## 9. If You Remember Only Three Things...
-- The absolute highest-priority takeaways. 
+REQUIRED STRUCTURE:
+## One-line Definitions
+## Core Formulas & Equations
+## Comparison Tables
+## Memory Tricks
+## Frequently Asked Exam Questions
+## Common Mistakes & Exam Traps
+## Quick Revision Checklist
+## Three Things to Remember
 
 Preserve all mathematical notations in valid LaTeX using $...$ and $$...$$.
 """
