@@ -927,17 +927,24 @@ function appendMarkdownLine(fragment, rendererState, rawLine) {
 
   // Heading handlers — checked most-specific first to prevent short patterns
   // (## or #) from matching longer ones (### or ####).
-  if (/^####\s+/.test(trimmed)) {
+
+  // 1. Universal Subheading Component (h3 with hollow circle)
+  // Maps actual markdown subheadings (###, ####) to the same component
+  if (/^####?\s+/.test(trimmed)) {
     rendererState.listEl = null;
-    fragment.appendChild(
-      createMarkdownBlock("h4", "session-subheading", trimmed.replace(/^####\s+/, ""))
-    );
+    fragment.appendChild(createMarkdownBlock("h3", "", trimmed.replace(/^####?\s+/, "")));
     return;
   }
 
-  if (/^###\s+/.test(trimmed)) {
+  // Intercept pseudo-subheadings (e.g., "- **Normalization:**" or "**Atomicity**")
+  // which the AI frequently generates instead of proper ### tags.
+  const pseudoSubheadingMatch = trimmed.match(/^[-*]?\s*\*\*(.+?)\*\*(\s*:)?\s*$/);
+  if (pseudoSubheadingMatch) {
     rendererState.listEl = null;
-    fragment.appendChild(createMarkdownBlock("h3", "", trimmed.replace(/^###\s+/, "")));
+    let text = pseudoSubheadingMatch[1].trim();
+    // Strip trailing colon (whether it was inside or outside the bold asterisks)
+    text = text.replace(/:\s*$/, "");
+    fragment.appendChild(createMarkdownBlock("h3", "", text));
     return;
   }
 

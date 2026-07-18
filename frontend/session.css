@@ -405,35 +405,6 @@ body.session--complete .topbar {
   padding-top: 12px;
 }
 
-.ai-output .session-content h4,
-.ai-output .session-content .session-subheading {
-  font-size: 13px;
-  font-weight: 750;
-  margin: 0;
-  padding-top: 22px;
-  margin-bottom: 8px;
-  color: var(--gold-bright);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  line-height: 1.2;
-  text-align: left;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.ai-output .session-content h4::before,
-.ai-output .session-content .session-subheading::before {
-  content: "";
-  display: inline-block;
-  flex-shrink: 0;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  border: 1.5px solid var(--gold);
-  opacity: 0.7;
-}
-
 /* ── Body paragraphs ── */
 .ai-output .session-content p {
   font-size: 16px;
@@ -486,30 +457,6 @@ body.session--complete .topbar {
   line-height: 1.85;
 }
 
-/* ── Execution Plan: step label inside li (bold text = STEP X label) ── */
-/* The AI renders "**STEP 1 (2 MINUTES)**" as <strong> inside <li>     */
-/* Give it a gold uppercase treatment to visually anchor each step       */
-.ai-output .session-content li strong:first-child {
-  display: block;
-  font-size: 10px;
-  font-weight: 750;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--gold-bright);
-  opacity: 0.9;
-  margin-bottom: 6px;
-}
-
-/* ── Standardized list items: one consistent structure ── */
-/* All li items use padding-left for the absolute-positioned bullet */
-/* li:has(strong:first-child) previously used a hollow circle bullet —
-   now normalized to the same filled gold dot as every other bullet,
-   ensuring visual consistency across ALL sections. */
-.ai-output .session-content li:has(strong:first-child) {
-  padding-left: 22px;
-  margin-bottom: 12px;
-  color: rgba(210, 205, 195, 0.88);
-}
 
 /* ── Progressive section spacing: later sections breathe more ── */
 /* h2 sections after the 3rd get extra top spacing to feel action-oriented */
