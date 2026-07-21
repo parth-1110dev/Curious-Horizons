@@ -67,8 +67,8 @@
 
 .loading-message-container {
   position: relative;
-  height: 1.5rem;
-  /* Fixed height to prevent layout shifts */
+  height: 3rem;
+  /* Fixed height to prevent layout shifts and allow wrapping */
   width: 100%;
   display: flex;
   align-items: center;
@@ -81,10 +81,13 @@
   font-size: 0.95rem;
   font-weight: 400;
   opacity: 0;
-  white-space: nowrap;
-  /* centering absolute element */
-  left: 50%;
-  transform: translateX(-50%);
+  text-align: center;
+  width: 100%;
+  word-wrap: break-word;
+  /* centering vertically and horizontally */
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Subtle Animated Progress Line */

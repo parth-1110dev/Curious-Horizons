@@ -563,6 +563,11 @@ function downloadBlob(content, mimeType, filename) {
 
 
 
+function showLoadingState() {
+  loadingState.removeAttribute("hidden");
+  contentState.setAttribute("hidden", "");
+}
+
 function showContentState() {
   loadingState.setAttribute("hidden", "");
   contentState.removeAttribute("hidden");
@@ -574,27 +579,10 @@ async function generateKnowledgePack() {
   generatedNotes = "";
   const generationStartedAt = window.performance.now();
 
-  let loadingUi = null;
-  try {
-    loadingUi = await import('./js/ui/loading.js');
-  } catch (e) {
-    console.warn("Failed to load loading UI", e);
-  }
 
-  if (loadingUi) {
-    loadingUi.showLoading({
-      title: "Building your Knowledge Pack",
-      messages: [
-        "Analyzing the learning session...",
-        "Extracting key concepts...",
-        "Organizing information...",
-        "Generating structured notes...",
-        "Preparing your Knowledge Pack..."
-      ]
-    });
-  }
 
   try {
+    showLoadingState();
     const topic = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Unknown Topic";
     const sessionContent = window.localStorage.getItem(STORAGE_SESSION_CONTENT_KEY) || "";
     const plan = getUserPlan();
@@ -637,9 +625,6 @@ async function generateKnowledgePack() {
     showContentState();
   } finally {
     isGenerating = false;
-    if (loadingUi) {
-      loadingUi.hideLoading();
-    }
   }
 }
 
