@@ -872,6 +872,10 @@ if (copyNotesBtn) {
 
 initNavigation();
 
-window.addEventListener("DOMContentLoaded", () => {
+if (document.readyState === "loading") {
+  window.addEventListener("DOMContentLoaded", () => {
+    generateKnowledgePack();
+  });
+} else {
   generateKnowledgePack();
-});
+}
