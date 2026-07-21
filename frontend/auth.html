@@ -6,6 +6,7 @@
     <meta name="color-scheme" content="dark" />
     <title>Curious Horizons — Auth</title>
     <link rel="stylesheet" href="./style.css" />
+    <link rel="stylesheet" href="./css/loading.css" />
     <style>
       /* Auth page specific styles (keeps visual language consistent) */
       .auth-hero {
@@ -406,8 +407,25 @@
           return
         }
 
+        let loadingUi = null;
+        try {
+          loadingUi = await import('./js/ui/loading.js');
+        } catch (e) {
+          console.warn("Failed to load loading UI", e);
+        }
+
         try {
           if (isLoginMode) {
+            if (loadingUi) {
+              loadingUi.showLoading({
+                title: "Signing you in",
+                messages: [
+                  "Verifying your credentials...",
+                  "Securing your session...",
+                  "Preparing your workspace..."
+                ]
+              });
+            }
             const { data, error } = await supabase.auth.signInWithPassword({ email, password })
             if (error) {
               const msg = error.message || 'Login failed'
@@ -429,6 +447,16 @@
           }
 
           // signup flow
+          if (loadingUi) {
+            loadingUi.showLoading({
+              title: "Creating your account",
+              messages: [
+                "Setting up your profile...",
+                "Preparing your workspace...",
+                "Almost ready..."
+              ]
+            });
+          }
           const { data, error } = await supabase.auth.signUp({ email, password })
           if (error) {
             const msg = error.message || 'Signup failed'
@@ -463,6 +491,10 @@
           if (/password/i.test(msg)) setFieldError('password', msg)
           else setFieldError('general', msg)
           submitBtn.disabled = false
+        } finally {
+          if (loadingUi) {
+            loadingUi.hideLoading();
+          }
         }
       })
 

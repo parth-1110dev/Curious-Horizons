@@ -1224,7 +1224,15 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
     return;
   }
 
+  let loadingUi = null;
+  try {
+    loadingUi = await import('./js/ui/loading.js');
+  } catch (e) {
+    console.warn("Failed to load loading UI", e);
+  }
+
   if (!clientRateAllowAndRecord()) {
+    if (loadingUi) loadingUi.hideLoading();
     renderSessionPlainText(
       "You're making requests too quickly. Please wait a moment.",
       { textAlign: "center" }
@@ -1234,7 +1242,21 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
 
   generateRequestInFlight = true;
   const requestStartedAt = window.performance.now();
-  renderSessionPlainText("Generating your session...", { textAlign: "center" });
+  
+  if (loadingUi) {
+    loadingUi.showLoading({
+      title: "Preparing your learning journey",
+      messages: [
+        "Exploring the horizon...",
+        "Understanding your topic...",
+        "Connecting ideas...",
+        "Structuring knowledge...",
+        "Preparing your learning session..."
+      ]
+    });
+  } else {
+    renderSessionPlainText("Generating your session...", { textAlign: "center" });
+  }
 
   try {
     const payload = {
@@ -1291,6 +1313,9 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
     });
   } finally {
     generateRequestInFlight = false;
+    if (loadingUi) {
+      loadingUi.hideLoading();
+    }
   }
 }
 

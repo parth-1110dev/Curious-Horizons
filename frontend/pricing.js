@@ -646,6 +646,20 @@ async function startCheckout(plan) {
     return;
   }
 
+  let loadingUi = null;
+  try {
+    loadingUi = await import('./js/ui/loading.js');
+  } catch (e) {
+    console.warn("Failed to load loading UI", e);
+  }
+
+  if (loadingUi) {
+    loadingUi.showLoading({
+      title: "Preparing Checkout",
+      messages: ["Securely connecting to payment provider..."]
+    });
+  }
+
   try {
     console.log("[CHECKOUT] Starting checkout for plan:", normalizedPlan);
     const order = await createOrder(normalizedPlan);
@@ -664,6 +678,7 @@ async function startCheckout(plan) {
       const prefillEmail = getPrefilledEmail();
 
       console.log("[CHECKOUT] Opening Razorpay modal");
+      if (loadingUi) loadingUi.hideLoading();
       const checkout = openCheckout({
         key: keyId,
         amount: order.amount,
@@ -686,6 +701,17 @@ async function startCheckout(plan) {
         },
         handler: (response) => {
           (async () => {
+            if (loadingUi) {
+              loadingUi.showLoading({
+                title: "Finalizing your upgrade",
+                messages: [
+                  "Verifying payment...",
+                  "Activating your subscription...",
+                  "Updating your account...",
+                  "Almost done..."
+                ]
+              });
+            }
             console.log("[PAYMENT HANDLER] Payment returned from Razorpay:", {
               payment_id: response.razorpay_payment_id,
               order_id: response.razorpay_order_id,
@@ -723,6 +749,7 @@ async function startCheckout(plan) {
               console.error("[PAYMENT HANDLER] Verification failed:", message);
               window.alert(message);
             } finally {
+              if (loadingUi) loadingUi.hideLoading();
               // ALWAYS reset UI after payment flow completes (success or failure)
               resetCheckoutUi(button);
             }
@@ -733,17 +760,20 @@ async function startCheckout(plan) {
       if (checkout && typeof checkout.on === "function") {
         checkout.on("payment.failed", (response) => {
           console.log("[CHECKOUT] Payment failed in Razorpay:", response);
+          if (loadingUi) loadingUi.hideLoading();
           resetCheckoutUi(button);
           window.alert(`Payment failed: ${response.error.description}`);
         });
       }
     } catch (error) {
       console.error("[CHECKOUT] Error opening Razorpay:", error);
+      if (loadingUi) loadingUi.hideLoading();
       resetCheckoutUi(button);
       window.alert(error && error.message ? error.message : "Unable to open checkout. Please try again.");
     }
   } catch (error) {
     console.error("[CHECKOUT] Error starting checkout:", error);
+    if (loadingUi) loadingUi.hideLoading();
     resetCheckoutUi(button);
     window.alert(error && error.message ? error.message : "Unable to start checkout. Please try again.");
   }

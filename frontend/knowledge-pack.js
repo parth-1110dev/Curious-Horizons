@@ -562,10 +562,6 @@ function downloadBlob(content, mimeType, filename) {
 
 
 
-function showLoadingState() {
-  loadingState.removeAttribute("hidden");
-  contentState.setAttribute("hidden", "");
-}
 
 function showContentState() {
   loadingState.setAttribute("hidden", "");
@@ -577,6 +573,26 @@ async function generateKnowledgePack() {
   isGenerating = true;
   generatedNotes = "";
   const generationStartedAt = window.performance.now();
+
+  let loadingUi = null;
+  try {
+    loadingUi = await import('./js/ui/loading.js');
+  } catch (e) {
+    console.warn("Failed to load loading UI", e);
+  }
+
+  if (loadingUi) {
+    loadingUi.showLoading({
+      title: "Building your Knowledge Pack",
+      messages: [
+        "Analyzing the learning session...",
+        "Extracting key concepts...",
+        "Organizing information...",
+        "Generating structured notes...",
+        "Preparing your Knowledge Pack..."
+      ]
+    });
+  }
 
   try {
     const topic = window.localStorage.getItem(STORAGE_TOPIC_KEY) || "Unknown Topic";
@@ -602,7 +618,6 @@ async function generateKnowledgePack() {
       showContentState();
       return;
     }
-    showLoadingState();
 
     generatedNotes = data.notes || "";
     window.localStorage.setItem(
@@ -622,6 +637,9 @@ async function generateKnowledgePack() {
     showContentState();
   } finally {
     isGenerating = false;
+    if (loadingUi) {
+      loadingUi.hideLoading();
+    }
   }
 }
 
@@ -630,6 +648,13 @@ async function downloadNotes() {
 
   isDownloading = true;
   downloadNotesBtn.disabled = true;
+
+  let loadingUi = null;
+  try {
+    loadingUi = await import('./js/ui/loading.js');
+  } catch (e) {
+    console.warn("Failed to load loading UI", e);
+  }
 
   try {
     const baseName = getSafeTopicSlug();
@@ -644,6 +669,18 @@ async function downloadNotes() {
       if (!rawSession) {
         alert("No session content available. Please complete a learning session first.");
         return;
+      }
+
+      if (loadingUi) {
+        loadingUi.showLoading({
+          title: "Preparing your PDF",
+          messages: [
+            "Organizing your notes...",
+            "Formatting document layout...",
+            "Optimizing for readability...",
+            "Preparing your download..."
+          ]
+        });
       }
 
       const response = await window.fetch(`${API_BASE}/generate-pdf`, {
@@ -677,6 +714,18 @@ async function downloadNotes() {
       if (!rawSession) {
         alert("No session content available. Please complete a learning session first.");
         return;
+      }
+
+      if (loadingUi) {
+        loadingUi.showLoading({
+          title: "Preparing Exam Notes",
+          messages: [
+            "Selecting key concepts...",
+            "Building your revision sheet...",
+            "Optimizing for quick review...",
+            "Preparing your download..."
+          ]
+        });
       }
 
       // Step 1: Transform the session into a cheat sheet via AI
@@ -730,6 +779,7 @@ async function downloadNotes() {
     }
 
     // ── MARKDOWN ───────────────────────────────────────────────────────────────
+    // ── MARKDOWN ───────────────────────────────────────────────────────────────
     if (effectiveFormat === "markdown") {
       if (!generatedNotes) {
         generatedNotes = window.localStorage.getItem("lockedin_generated_notes") || "";
@@ -739,6 +789,19 @@ async function downloadNotes() {
         alert("No notes available yet. Please generate notes first.");
         return;
       }
+
+      if (loadingUi) {
+        loadingUi.showLoading({
+          title: "Preparing Markdown",
+          messages: [
+            "Structuring content...",
+            "Formatting Markdown...",
+            "Finalizing your notes...",
+            "Preparing your download..."
+          ]
+        });
+      }
+
       downloadBlob(content, "text/markdown;charset=utf-8", `${baseName}-notes.md`);
       window.localStorage.removeItem("lockedin_generated_notes");
       return;
@@ -750,6 +813,16 @@ async function downloadNotes() {
     }
     const content = normalizeContentOrNull();
     if (content) {
+      if (loadingUi) {
+        loadingUi.showLoading({
+          title: "Preparing Download",
+          messages: [
+            "Structuring content...",
+            "Finalizing your notes...",
+            "Preparing your download..."
+          ]
+        });
+      }
       downloadBlob(content, "text/plain;charset=utf-8", `${baseName}-notes.txt`);
       window.localStorage.removeItem("lockedin_generated_notes");
     }
@@ -758,6 +831,9 @@ async function downloadNotes() {
     console.error("Download failed:", _err);
     alert("Download failed. Please try again.");
   } finally {
+    if (loadingUi) {
+      loadingUi.hideLoading();
+    }
     window.setTimeout(() => {
       isDownloading = false;
       if (downloadNotesBtn) downloadNotesBtn.disabled = false;
