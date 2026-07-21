@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>Curious Horizons — Auth</title>
+    <style>
+      /* Auth page specific styles (keeps visual language consistent) */
+      .auth-hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+      }
+
+      .auth-card {
+        width: 100%;
+        max-width: 460px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 24px;
+        padding: 48px 40px;
+        box-shadow: 0 40px 100px rgba(0,0,0,0.4), 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+        backdrop-filter: blur(20px);
+      }
+
+      .auth-home-btn {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 30;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        pointer-events: auto;
+        justify-content: center;
+        white-space: nowrap;
+      }
+
+      .auth-home-circle {
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(220, 180, 78, 0.08);
+        border: 1px solid rgba(220, 180, 78, 0.18);
+        box-shadow: 0 0 0 4px rgba(220, 180, 78, 0.05);
+        color: var(--gold-bright);
+      }
+
+      .auth-home-icon {
+        width: 16px;
+        height: 16px;
+      }
+
+      .auth-home-text {
+        font-weight: 900;
+      }
+
+      @media (max-width: 520px) {
+        .auth-home-btn {
+          top: 14px;
+          left: 14px;
+        }
+      }
+
+      .auth-title {
+        font-size: 28px;
+        font-weight: 850;
+        letter-spacing: -0.025em;
+        margin: 0 0 12px;
+        color: var(--text);
+        text-align: center;
+        line-height: 1.1;
+      }
+
+      .auth-sub {
+        margin: 0 0 32px;
+        color: rgba(190, 185, 210, 0.9);
+        font-size: 15.5px;
+        line-height: 1.65;
+        text-align: center;
+        letter-spacing: 0.01em;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 32px;
+        background: rgba(255, 255, 255, 0.015);
+        border-radius: 12px;
+        padding: 6px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 10px 16px;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: rgba(210, 208, 220, 0.85);
+        font-weight: 600;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.25s ease;
+      }
+
+      .tab-btn:hover {
+        color: var(--text);
+      }
+
+      .tab-btn.is-active {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border-color: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .input {
+        padding: 16px 18px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.05);
+        background: rgba(255,255,255,0.025);
+        color: var(--text);
+        font-size: 15px;
+        font-family: inherit;
+        outline: none;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        transition: box-shadow 0.25s ease, border-color 0.25s ease;
+      }
+
+      .input:focus {
+        border-color: rgba(220, 180, 78, 0.35);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 0 3px rgba(220, 180, 78, 0.1);
+      }
+      
+      .input::placeholder {
+        color: rgba(155, 153, 168, 0.75);
+      }
+
+      .password-toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        width: fit-content;
+        margin-top: -4px;
+        color: rgba(175, 173, 190, 0.85);
+        font-size: 13.5px;
+        font-weight: 500;
+        cursor: pointer;
+        user-select: none;
+        transition: color 0.2s ease;
+      }
+      
+      .password-toggle:hover {
+        color: var(--text);
+      }
+
+      .password-toggle input {
+        accent-color: var(--gold);
+        margin: 0;
+      }
+
+      .auth-actions {
+        margin-top: 16px;
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: space-between;
+      }
+      
+      #submitBtn {
+        padding: 14px 28px;
+        font-size: 13.5px;
+      }
+
+      .muted {
+        font-size: 13.5px;
+        color: rgba(175, 173, 190, 0.9);
+        font-weight: 500;
+      }
+
+      .helper {
+        margin-top: 24px;
+        font-size: 14px;
+        color: rgba(175, 173, 190, 0.85);
+        text-align: center;
+      }
+      
+      .text-link {
+        background: transparent;
+        border: none;
+        padding: 4px 8px;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 600;
+        color: var(--gold);
+        cursor: pointer;
+        transition: color 0.2s ease, text-shadow 0.2s ease;
+      }
+      
+      .text-link:hover {
+        color: var(--gold-bright);
+        text-shadow: 0 0 12px rgba(220, 180, 78, 0.3);
+      }
+
+      .error {
+        color: #ff6b81;
+        font-size: 13px;
+        margin-top: 6px;
+        min-height: 18px;
+      }
+    </style>
+    <script type="module" crossorigin src="/assets/auth-DPWw5nJa.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
+    <link rel="modulepreload" crossorigin href="/assets/auth-BSAGAUGc.js">
+    <link rel="stylesheet" crossorigin href="/assets/style-QxJYoIaT.css">
+    <link rel="stylesheet" crossorigin href="/assets/loading--A_wD15e.css">
+  </head>
+  <body>
+    <div class="aurora" aria-hidden="true"></div>
+
+    <button class="btn btn-outline auth-home-btn" type="button" aria-label="Go to homepage" title="Home" onclick="window.location.href='index.html'">
+      <span class="auth-home-circle" aria-hidden="true">
+        <svg class="auth-home-icon" width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.5 4.5L6 10L11.5 15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <span class="auth-home-text">Home</span>
+    </button>
+
+    <main class="auth-hero">
+      <div class="auth-card" role="region" aria-label="Authentication">
+        <h1 class="auth-title">Welcome to Curious Horizons</h1>
+        <p class="auth-sub">Continue your journey of exploration and discovery.</p>
+
+        <div class="tabs" role="tablist" aria-label="Auth tabs">
+          <button id="tabLogin" class="tab-btn is-active" role="tab" aria-selected="true">Login</button>
+          <button id="tabSignup" class="tab-btn" role="tab" aria-selected="false">Signup</button>
+        </div>
+
+        <form id="authForm" autocomplete="on">
+          <div class="field">
+            <label class="muted" for="email">Email</label>
+            <input id="email" class="input" type="email" name="email" required autocomplete="email" />
+            <div class="error" id="emailError" aria-live="polite"></div>
+          </div>
+
+          <div class="field">
+            <label class="muted" for="password">Password</label>
+            <input id="password" class="input" type="password" name="password" required autocomplete="current-password" />
+            <label class="password-toggle" for="showPasswordToggle">
+              <input id="showPasswordToggle" type="checkbox" />
+              <span>Show Password</span>
+            </label>
+            <div class="error" id="passwordError" aria-live="polite"></div>
+          </div>
+
+          <div class="error" id="authError" aria-live="polite"></div>
+
+          <div class="auth-actions">
+            <div class="muted" id="authModeText">Logging in</div>
+            <button id="submitBtn" class="btn btn-primary" type="submit">Login</button>
+          </div>
+        </form>
+
+        <p class="helper" id="helperText">
+          Don't have an account?
+          <button id="toggleSmall" class="text-link" type="button">Signup</button>
+        </p>
+      </div>
+    </main>
+
+    <script src="./plan-state.js"></script>
+  </body>
+</html>
