@@ -86,4 +86,4 @@ const lenis = new Lenis({
 
 initHeroAnimation();
 initRevealAnimation();
-initHoverAnimations();c
+initHoverAnimations();
