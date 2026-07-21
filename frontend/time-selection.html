@@ -1,197 +1,160 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <title>Curious Horizons - Session Configuration</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Curious Horizons - Session Configuration</title>
 
-    <link rel="stylesheet" href="./time-selection.css" />
-  </head>
-  <body>
-    <div class="aurora" aria-hidden="true"></div>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-    <header class="nav">
-      <div class="nav-inner">
-        <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
-      </div>
-    </header>
+  <link rel="stylesheet" href="./time-selection.css" />
+</head>
 
-    <main class="page">
-      <div class="container">
-        <h1 class="title">How deep would you like to explore?</h1>
-        <p class="subtext">Every journey begins with choosing how deeply to explore.</p>
-        <button id="timeBackBtn" class="back-btn" type="button">← Back</button>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
 
-        <section class="panel" aria-label="Timer selector">
-          <div class="time-selector">
-            <button id="minusBtn" class="time-btn" type="button" aria-label="Decrease time">−</button>
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
+    </div>
+  </header>
 
-            <div class="time-display" aria-live="polite">
-              <span id="timeValue" class="time-value">30</span>
-              <span class="time-unit">MIN</span>
-            </div>
+  <main class="page">
+    <div class="container">
+      <h1 class="title">How deep would you like to explore?</h1>
+      <p class="subtext">Every journey begins with choosing how deeply to explore.</p>
+      <button id="timeBackBtn" class="back-btn" type="button">← Back</button>
 
-            <button id="plusBtn" class="time-btn" type="button" aria-label="Increase time">+</button>
+      <section class="panel" aria-label="Timer selector">
+        <div class="time-selector">
+          <button id="minusBtn" class="time-btn" type="button" aria-label="Decrease time">−</button>
+
+          <div class="time-display" aria-live="polite">
+            <span id="timeValue" class="time-value">30</span>
+            <span class="time-unit">MIN</span>
           </div>
 
-          <div class="quick-options" aria-label="Quick options">
-            <button class="quick-btn" type="button" data-min="15">15 min</button>
-            <button class="quick-btn" type="button" data-min="20">20 min</button>
-            <button class="quick-btn" type="button" data-min="30">30 min</button>
+          <button id="plusBtn" class="time-btn" type="button" aria-label="Increase time">+</button>
+        </div>
+
+        <div class="quick-options" aria-label="Quick options">
+          <button class="quick-btn" type="button" data-min="15">15 min</button>
+          <button class="quick-btn" type="button" data-min="20">20 min</button>
+          <button class="quick-btn" type="button" data-min="30">30 min</button>
+        </div>
+
+        <section class="explain-section" aria-label="Choose explanation style">
+          <h2 class="explain-title">Choose Explanation Style (Optional)</h2>
+          <div class="explain-options" role="radiogroup" aria-label="Explanation style options">
+            <button class="explain-btn" type="button" data-mode="beginner_friendly" role="radio" aria-checked="false">
+              Beginner Friendly
+            </button>
+            <button class="explain-btn" type="button" data-mode="like_im_5" role="radio" aria-checked="false">
+              Like I'm 5
+            </button>
+            <button class="explain-btn" type="button" data-mode="real_world_analogies" role="radio"
+              aria-checked="false">
+              Real-World Analogies
+            </button>
+            <button class="explain-btn explain-btn-premium" type="button" data-mode="technical_deep_dive"
+              data-premium="true" role="radio" aria-checked="false">
+              <span class="lock-icon" aria-hidden="true">🔒</span>
+              Technical Deep Dive
+            </button>
+            <button class="explain-btn explain-btn-premium" type="button" data-mode="exam_focused" data-premium="true"
+              role="radio" aria-checked="false">
+              <span class="lock-icon" aria-hidden="true">🔒</span>
+              Exam Focused
+            </button>
           </div>
-
-          <section class="explain-section" aria-label="Choose explanation style">
-            <h2 class="explain-title">Choose Explanation Style (Optional)</h2>
-            <div class="explain-options" role="radiogroup" aria-label="Explanation style options">
-              <button
-                class="explain-btn"
-                type="button"
-                data-mode="beginner_friendly"
-                role="radio"
-                aria-checked="false"
-              >
-                Beginner Friendly
-              </button>
-              <button
-                class="explain-btn"
-                type="button"
-                data-mode="like_im_5"
-                role="radio"
-                aria-checked="false"
-              >
-                Like I'm 5
-              </button>
-              <button
-                class="explain-btn"
-                type="button"
-                data-mode="real_world_analogies"
-                role="radio"
-                aria-checked="false"
-              >
-                Real-World Analogies
-              </button>
-              <button
-                class="explain-btn explain-btn-premium"
-                type="button"
-                data-mode="technical_deep_dive"
-                data-premium="true"
-                role="radio"
-                aria-checked="false"
-              >
-                <span class="lock-icon" aria-hidden="true">🔒</span>
-                Technical Deep Dive
-              </button>
-              <button
-                class="explain-btn explain-btn-premium"
-                type="button"
-                data-mode="exam_focused"
-                data-premium="true"
-                role="radio"
-                aria-checked="false"
-              >
-                <span class="lock-icon" aria-hidden="true">🔒</span>
-                Exam Focused
-              </button>
-            </div>
-          </section>
-
         </section>
 
-        <div class="cta-row" role="group" aria-label="Session actions">
-          <button
-            id="changeTopicBtn"
-            class="btn btn-outline change-topic-btn"
-            type="button"
-            aria-label="Change Topic"
-          >
-            <span class="plus" aria-hidden="true">+</span>
-            <span class="change-topic-text">Change Topic</span>
-          </button>
+      </section>
 
-          <button
-            id="startSessionBtn"
-            class="btn btn-primary start-session-btn"
-            type="button"
-          >
-            Start Session
-            <span class="start-session-arrow" aria-hidden="true">→</span>
-          </button>
-        </div>
+      <div class="cta-row" role="group" aria-label="Session actions">
+        <button id="changeTopicBtn" class="btn btn-outline change-topic-btn" type="button" aria-label="Change Topic">
+          <span class="plus" aria-hidden="true">+</span>
+          <span class="change-topic-text">Change Topic</span>
+        </button>
 
-        <div
-          id="upgradeContainer"
-          class="elite-upgrade-card"
-          style="display: none"
-          aria-hidden="true"
-        >
-          <div class="elite-upgrade-copy">
-            <div class="elite-upgrade-eyebrow">Scholar Plan</div>
-            <div id="upgradeText" class="elite-upgrade-text"></div>
-          </div>
-
-          <div class="elite-upgrade-benefits" aria-label="Scholar benefits">
-            <div class="elite-benefit">
-              <div class="elite-benefit-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
-                </svg>
-              </div>
-              <div class="elite-benefit-title">Longer Exploration Sessions</div>
-            </div>
-
-            <div class="elite-benefit">
-              <div class="elite-benefit-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 3c1.8 1.8 2.8 4.1 2.8 6.7 0 2.3-1 4.5-2.8 6.3-1.8-1.8-2.8-4-2.8-6.3C9.2 7.1 10.2 4.8 12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                  <path d="M8.2 10.2c-1.8.7-3.2 2.3-3.7 4.1 1.9.4 3.8.1 5.4-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M15.8 10.2c1.8.7 3.2 2.3 3.7 4.1-1.9.4-3.8.1-5.4-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                  <path d="M12 15.8v4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-              </div>
-              <div class="elite-benefit-title">Advanced AI Depth</div>
-            </div>
-
-            <div class="elite-benefit">
-              <div class="elite-benefit-icon" aria-hidden="true">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 4h10a2 2 0 0 1 2 2v12l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
-                  <path d="M9 8h6M9 11h6M9 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                </svg>
-              </div>
-              <div class="elite-benefit-title">Exam-Ready Knowledge Packs</div>
-            </div>
-          </div>
-
-          <button id="upgradeButton" class="btn btn-primary elite-upgrade-btn" type="button">
-            Unlock Scholar
-          </button>
-        </div>
+        <button id="startSessionBtn" class="btn btn-primary start-session-btn" type="button">
+          Start Session
+          <span class="start-session-arrow" aria-hidden="true">→</span>
+        </button>
       </div>
-    </main>
 
-    <div id="explainUpgradeModal" class="modal-overlay" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="explainUpgradeTitle">
-      <div class="modal-card">
-        <h2 id="explainUpgradeTitle">Unlock Premium Explanation Styles</h2>
-        <p>
-          Technical Deep Dive and Exam Focused are available on Pro and Scholar plans.
-        </p>
-        <div class="modal-actions">
-          <button id="explainUpgradeNowBtn" class="btn btn-primary" type="button">Upgrade</button>
-          <button id="explainUpgradeCloseBtn" class="btn btn-outline" type="button">Not Now</button>
+      <div id="upgradeContainer" class="elite-upgrade-card" style="display: none" aria-hidden="true">
+        <div class="elite-upgrade-copy">
+          <div class="elite-upgrade-eyebrow">Scholar Plan</div>
+          <div id="upgradeText" class="elite-upgrade-text"></div>
         </div>
+
+        <div class="elite-upgrade-benefits" aria-label="Scholar benefits">
+          <div class="elite-benefit">
+            <div class="elite-benefit-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                  stroke-linejoin="round" />
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" />
+              </svg>
+            </div>
+            <div class="elite-benefit-title">Longer Exploration Sessions</div>
+          </div>
+
+          <div class="elite-benefit">
+            <div class="elite-benefit-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 3c1.8 1.8 2.8 4.1 2.8 6.7 0 2.3-1 4.5-2.8 6.3-1.8-1.8-2.8-4-2.8-6.3C9.2 7.1 10.2 4.8 12 3Z"
+                  stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                <path d="M8.2 10.2c-1.8.7-3.2 2.3-3.7 4.1 1.9.4 3.8.1 5.4-1" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M15.8 10.2c1.8.7 3.2 2.3 3.7 4.1-1.9.4-3.8.1-5.4-1" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round" />
+                <path d="M12 15.8v4.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="elite-benefit-title">Advanced AI Depth</div>
+          </div>
+
+          <div class="elite-benefit">
+            <div class="elite-benefit-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 4h10a2 2 0 0 1 2 2v12l-4-2-4 2-4-2-4 2V6a2 2 0 0 1 2-2Z" stroke="currentColor"
+                  stroke-width="2" stroke-linejoin="round" />
+                <path d="M9 8h6M9 11h6M9 14h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div class="elite-benefit-title">Exam-Ready Knowledge Packs</div>
+          </div>
+        </div>
+
+        <button id="upgradeButton" class="btn btn-primary elite-upgrade-btn" type="button">
+          Unlock Scholar
+        </button>
       </div>
     </div>
+  </main>
 
-    <script src="./plan-state.js"></script>
-    <script src="./time-selection.js"></script>
-  </body>
+  <div id="explainUpgradeModal" class="modal-overlay" hidden aria-hidden="true" role="dialog" aria-modal="true"
+    aria-labelledby="explainUpgradeTitle">
+    <div class="modal-card">
+      <h2 id="explainUpgradeTitle">Unlock Premium Explanation Styles</h2>
+      <p>
+        Technical Deep Dive and Exam Focused are available on Pro and Scholar plans.
+      </p>
+      <div class="modal-actions">
+        <button id="explainUpgradeNowBtn" class="btn btn-primary" type="button">Upgrade</button>
+        <button id="explainUpgradeCloseBtn" class="btn btn-outline" type="button">Not Now</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./plan-state.js"></script>
+  <script type="module" src="./time-selection.js"></script>
+</body>
+
 </html>

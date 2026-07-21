@@ -1,177 +1,158 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="color-scheme" content="dark" />
-    <title>Curious Horizons - Knowledge Archive</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
-      media="print"
-      onload="this.media='all'"
-    />
-    <noscript>
-      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
-    </noscript>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark" />
+  <title>Curious Horizons - Knowledge Archive</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" media="print"
+    onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
+  </noscript>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script type="module" crossorigin src="/assets/knowledgePack-CLbv5RCu.js"></script>
-    <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
-    <link rel="modulepreload" crossorigin href="/assets/auth-BSAGAUGc.js">
-    <link rel="stylesheet" crossorigin href="/assets/knowledgePack-HcckK69C.css">
-    <link rel="stylesheet" crossorigin href="/assets/style-QxJYoIaT.css">
-    <link rel="stylesheet" crossorigin href="/assets/loading--A_wD15e.css">
-  </head>
-  <body>
-    <div class="aurora" aria-hidden="true"></div>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script type="module" crossorigin src="/assets/knowledgePack-BPE4vasX.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-Dezn_h7o.js">
+  <link rel="modulepreload" crossorigin href="/assets/preload-helper-Czpn1I53.js">
+  <link rel="modulepreload" crossorigin href="/assets/supabase-B2pavG40.js">
+  <link rel="modulepreload" crossorigin href="/assets/auth-CffO0qgU.js">
+  <link rel="modulepreload" crossorigin href="/assets/plan-state-DN7Bm0zS.js">
+  <link rel="stylesheet" crossorigin href="/assets/knowledgePack-HcckK69C.css">
+  <link rel="stylesheet" crossorigin href="/assets/style-QxJYoIaT.css">
+  <link rel="stylesheet" crossorigin href="/assets/loading--A_wD15e.css">
+</head>
 
-    <header class="nav">
-      <div class="nav-inner">
-        <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
-        <button id="kpBackBtn" class="btn btn-outline" type="button" title="Go back">
-          ← Back
-        </button>
-      </div>
-    </header>
+<body>
+  <div class="aurora" aria-hidden="true"></div>
 
-    <main class="knowledge-pack-page">
-      <div class="kp-container">
-        <h1 class="kp-header">Your Knowledge Archive is Ready</h1>
-        <p class="kp-subtitle">Preserve this session's insights as structured notes and revision material.</p>
+  <header class="nav">
+    <div class="nav-inner">
+      <div class="logo" aria-label="Curious Horizons">Curious Horizons</div>
+      <button id="kpBackBtn" class="btn btn-outline" type="button" title="Go back">
+        ← Back
+      </button>
+    </div>
+  </header>
 
-        <section class="kp-loading" id="kpLoadingState" aria-live="polite" hidden>
-          <div class="loading-steps">
-            <div class="loading-step">
-              <span class="loading-dot"></span>
-              <span class="loading-text">Analyzing your session...</span>
-            </div>
-            <div class="loading-step">
-              <span class="loading-dot"></span>
-              <span class="loading-text">Structuring key concepts...</span>
-            </div>
-            <div class="loading-step">
-              <span class="loading-dot"></span>
-              <span class="loading-text">Creating exam-ready notes...</span>
-            </div>
+  <main class="knowledge-pack-page">
+    <div class="kp-container">
+      <h1 class="kp-header">Your Knowledge Archive is Ready</h1>
+      <p class="kp-subtitle">Preserve this session's insights as structured notes and revision material.</p>
+
+      <section class="kp-loading" id="kpLoadingState" aria-live="polite" hidden>
+        <div class="loading-steps">
+          <div class="loading-step">
+            <span class="loading-dot"></span>
+            <span class="loading-text">Analyzing your session...</span>
           </div>
-        </section>
+          <div class="loading-step">
+            <span class="loading-dot"></span>
+            <span class="loading-text">Structuring key concepts...</span>
+          </div>
+          <div class="loading-step">
+            <span class="loading-dot"></span>
+            <span class="loading-text">Creating exam-ready notes...</span>
+          </div>
+        </div>
+      </section>
 
-        <section class="kp-content" id="kpContent" hidden>
-          <div class="kp-section">
-            <h2 class="kp-section-title">Choose Format</h2>
-            <div class="format-options" role="radiogroup" aria-label="Select note format">
-              <button
-                class="format-btn"
-                type="button"
-                data-format="pdf"
-                role="radio"
-                aria-checked="false"
-              >
-                PDF Notes
-              </button>
-              <div class="format-option-exam">
-                <button
-                  class="format-btn format-btn-exam"
-                  type="button"
-                  data-format="exam"
-                  role="radio"
-                  aria-checked="false"
-                  id="examModeToggle"
-                  aria-expanded="false"
-                  aria-controls="examModeDropdown"
-                >
-                  <span class="format-exam-left">
-                    <span class="format-primary">Exam Cheat Sheet</span>
-                    <span class="format-badge" aria-hidden="true">⭐</span>
-                  </span>
-                  <span class="format-exam-arrow" aria-hidden="true">
-                    <svg class="dropdown-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </span>
-                </button>
-
-                <div class="exam-mode-dropdown" id="examModeDropdown" aria-hidden="true" aria-label="Exam mode options">
-                  <ul class="exam-mode-list">
-                    <li>✓ Key concepts in concise format</li>
-                    <li>✓ Important definitions for exams</li>
-                    <li>✓ Frequently asked questions</li>
-                    <li>✓ Short answer explanations</li>
-                    <li>✓ Quick revision cheat sheet</li>
-                  </ul>
-                </div>
-              </div>
-
-              <button
-                class="format-btn"
-                type="button"
-                data-format="markdown"
-                role="radio"
-                aria-checked="false"
-              >
-                Markdown
+      <section class="kp-content" id="kpContent" hidden>
+        <div class="kp-section">
+          <h2 class="kp-section-title">Choose Format</h2>
+          <div class="format-options" role="radiogroup" aria-label="Select note format">
+            <button class="format-btn" type="button" data-format="pdf" role="radio" aria-checked="false">
+              PDF Notes
+            </button>
+            <div class="format-option-exam">
+              <button class="format-btn format-btn-exam" type="button" data-format="exam" role="radio"
+                aria-checked="false" id="examModeToggle" aria-expanded="false" aria-controls="examModeDropdown">
+                <span class="format-exam-left">
+                  <span class="format-primary">Exam Cheat Sheet</span>
+                  <span class="format-badge" aria-hidden="true">⭐</span>
+                </span>
+                <span class="format-exam-arrow" aria-hidden="true">
+                  <svg class="dropdown-icon" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round" />
+                  </svg>
+                </span>
               </button>
 
-            </div>
-          </div>
-
-          <div class="kp-section">
-            <h2 class="kp-section-title">Preview</h2>
-            <div class="preview-box">
-              <div class="preview-item">
-                <h3 class="preview-label">Key Concepts</h3>
-                <p class="preview-text">Core topics distilled into essential points</p>
-              </div>
-              <div class="preview-item">
-                <h3 class="preview-label">Definitions</h3>
-                <p class="preview-text">Key terms and their precise meanings</p>
-              </div>
-              <div class="preview-item">
-                <h3 class="preview-label">Questions</h3>
-                <p class="preview-text">Practice questions based on session content</p>
-              </div>
-              <div class="preview-item">
-                <h3 class="preview-label">Revision Sheet</h3>
-                <p class="preview-text">Compact summary for quick review</p>
+              <div class="exam-mode-dropdown" id="examModeDropdown" aria-hidden="true" aria-label="Exam mode options">
+                <ul class="exam-mode-list">
+                  <li>✓ Key concepts in concise format</li>
+                  <li>✓ Important definitions for exams</li>
+                  <li>✓ Frequently asked questions</li>
+                  <li>✓ Short answer explanations</li>
+                  <li>✓ Quick revision cheat sheet</li>
+                </ul>
               </div>
             </div>
-          </div>
 
-          <div class="kp-actions">
-            <button id="downloadNotesBtn" class="btn btn-primary" type="button">
-              Archive Knowledge Pack
+            <button class="format-btn" type="button" data-format="markdown" role="radio" aria-checked="false">
+              Markdown
             </button>
-            <button id="copyNotesBtn" class="btn btn-outline" type="button">
-              Copy to Clipboard
-            </button>
+
           </div>
-        </section>
-      </div>
-    </main>
+        </div>
 
-    <footer class="footer" style="padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 60px;">
-      <div class="footer-links" style="display: flex; gap: 24px; justify-content: center; margin-bottom: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
-        <span>Curious Horizons</span>
-        <span>Philosophy</span>
-        <span>Science</span>
-        <span>Cosmology</span>
-        <span>Terms</span>
-        <span>Privacy</span>
-      </div>
-      <div class="footer-copy" style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">
-        © 2024 Curious Horizons. For the seekers of the infinite.
-      </div>
-    </footer>
+        <div class="kp-section">
+          <h2 class="kp-section-title">Preview</h2>
+          <div class="preview-box">
+            <div class="preview-item">
+              <h3 class="preview-label">Key Concepts</h3>
+              <p class="preview-text">Core topics distilled into essential points</p>
+            </div>
+            <div class="preview-item">
+              <h3 class="preview-label">Definitions</h3>
+              <p class="preview-text">Key terms and their precise meanings</p>
+            </div>
+            <div class="preview-item">
+              <h3 class="preview-label">Questions</h3>
+              <p class="preview-text">Practice questions based on session content</p>
+            </div>
+            <div class="preview-item">
+              <h3 class="preview-label">Revision Sheet</h3>
+              <p class="preview-text">Compact summary for quick review</p>
+            </div>
+          </div>
+        </div>
 
-    <script defer src="./plan-state.js"></script>
-    <script defer src="./knowledge-pack.js"></script>
-  </body>
+        <div class="kp-actions">
+          <button id="downloadNotesBtn" class="btn btn-primary" type="button">
+            Archive Knowledge Pack
+          </button>
+          <button id="copyNotesBtn" class="btn btn-outline" type="button">
+            Copy to Clipboard
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="footer"
+    style="padding: 40px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.05); margin-top: 60px;">
+    <div class="footer-links"
+      style="display: flex; gap: 24px; justify-content: center; margin-bottom: 20px; font-size: 14px; color: rgba(255, 255, 255, 0.7);">
+      <span>Curious Horizons</span>
+      <span>Philosophy</span>
+      <span>Science</span>
+      <span>Cosmology</span>
+      <span>Terms</span>
+      <span>Privacy</span>
+    </div>
+    <div class="footer-copy" style="font-size: 13px; color: rgba(255, 255, 255, 0.5);">
+      © 2024 Curious Horizons. For the seekers of the infinite.
+    </div>
+  </footer>
+
+</body>
+
 </html>
