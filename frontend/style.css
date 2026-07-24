@@ -553,15 +553,35 @@ html::before {
 }
 
 @keyframes usp-glow-pulse {
-  0%, 100% { box-shadow: 0 8px 32px rgba(220, 180, 78, 0.22), 0 2px 8px rgba(0,0,0,0.3); }
-  50%       { box-shadow: 0 8px 40px rgba(220, 180, 78, 0.38), 0 2px 12px rgba(0,0,0,0.3), 0 0 28px rgba(220, 180, 78, 0.18); }
+  0%, 100% { box-shadow: 0 8px 36px rgba(220, 180, 78, 0.28), 0 2px 8px rgba(0,0,0,0.3); }
+  50%       { box-shadow: 0 8px 48px rgba(220, 180, 78, 0.50), 0 2px 12px rgba(0,0,0,0.3), 0 0 40px rgba(220, 180, 78, 0.26); }
+}
+
+@keyframes usp-behind-glow {
+  0%, 100% { opacity: 0.50; transform: scale(1); }
+  50%       { opacity: 0.80; transform: scale(1.06); }
 }
 
 .btn-usp {
   position: relative;
-  overflow: hidden;
+  overflow: visible; /* allow ::before to bleed outside button bounds */
+  isolation: isolate;
   animation: usp-glow-pulse 4s ease-in-out infinite;
   animation-delay: 2s; /* stagger so it doesn't fire on page load */
+}
+
+/* Diffused glow blob — lives behind the button, never over text */
+.btn-usp::before {
+  content: '';
+  position: absolute;
+  inset: -8px -12px; /* bleed outside the button edge */
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at center, rgba(220, 180, 78, 0.30) 0%, transparent 70%);
+  filter: blur(14px);
+  pointer-events: none;
+  animation: usp-behind-glow 4s ease-in-out infinite;
+  animation-delay: 2s;
 }
 
 /* Shimmer sweep pseudo-element */
@@ -599,10 +619,16 @@ html::before {
 .btn-usp:hover {
   animation-play-state: paused; /* freeze pulse, swap to hover state */
   box-shadow:
-    0 12px 44px rgba(220, 180, 78, 0.45),
+    0 12px 44px rgba(220, 180, 78, 0.52),
     0 2px 12px rgba(0, 0, 0, 0.3),
-    0 0 36px rgba(220, 180, 78, 0.22);
+    0 0 44px rgba(220, 180, 78, 0.28);
   transform: translateY(-2px);
+}
+
+.btn-usp:hover::before {
+  opacity: 1;
+  transform: scale(1.12);
+  animation-play-state: paused;
 }
 
 .btn-usp:hover::after {
@@ -618,6 +644,7 @@ html::before {
 /* Respect reduced-motion preference */
 @media (prefers-reduced-motion: reduce) {
   .btn-usp { animation: none; }
+  .btn-usp::before { animation: none; opacity: 0.5; }
   .btn-usp::after { animation: none; }
   .btn-usp:hover { transform: translateY(-1px); }
   .btn-usp:hover .btn-usp-icon { transform: none; }
