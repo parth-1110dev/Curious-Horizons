@@ -1,8 +1,6 @@
 import Lenis from "lenis";
 import "lenis/dist/lenis.css";
-import { initHeroAnimation } from "./js/animations/hero.js";
-import { initRevealAnimation } from "./js/animations/reveal.js";
-import { initHoverAnimations } from "./js/animations/hover.js";
+import { initInteractions } from "./js/animations/interactions.js";
 
 const topicForm = document.getElementById("topicForm");
 const topicInput = document.getElementById("topicInput");
@@ -84,6 +82,4 @@ const lenis = new Lenis({
   autoRaf: true,
 });
 
-initHeroAnimation();
-initRevealAnimation();
-initHoverAnimations();
+initInteractions();

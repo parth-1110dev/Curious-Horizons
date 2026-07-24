@@ -1,4 +1,5 @@
 console.log("KNOWLEDGE PACK JS LOADED");
+import { initInteractions } from "./js/animations/interactions.js";
 
 const STORAGE_TOPIC_KEY = "lockedin_selected_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
@@ -879,3 +880,5 @@ if (document.readyState === "loading") {
 } else {
   generateKnowledgePack();
 }
+
+initInteractions();

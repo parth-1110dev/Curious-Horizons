@@ -543,35 +543,17 @@ html::before {
 }
 
 /* Tier 2 — USP Actions (Gold foundation + premium motion) */
-/* Applied alongside btn-primary; adds motion-only differentiation. */
-
-@keyframes usp-shimmer {
-  0%   { background-position: -200% center; opacity: 0; }
-  15%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { background-position: 200% center; opacity: 0; }
-}
-
-@keyframes usp-glow-pulse {
-  0%, 100% { box-shadow: 0 8px 36px rgba(220, 180, 78, 0.28), 0 2px 8px rgba(0,0,0,0.3); }
-  50%       { box-shadow: 0 8px 48px rgba(220, 180, 78, 0.50), 0 2px 12px rgba(0,0,0,0.3), 0 0 40px rgba(220, 180, 78, 0.26); }
-}
-
-@keyframes usp-behind-glow {
-  0%, 100% { opacity: 0.50; transform: scale(1); }
-  50%       { opacity: 0.80; transform: scale(1.06); }
-}
+/* Motion is now driven by GSAP via js/animations/buttons.js */
 
 .btn-usp {
   position: relative;
-  overflow: visible; /* allow ::before to bleed outside button bounds */
+  overflow: visible; /* allow glow to bleed outside button bounds */
   isolation: isolate;
-  animation: usp-glow-pulse 4s ease-in-out infinite;
-  animation-delay: 2s; /* stagger so it doesn't fire on page load */
+  /* GSAP takes over hover/pulse */
 }
 
-/* Diffused glow blob — lives behind the button, never over text */
-.btn-usp::before {
+/* Diffused glow blob — injected by GSAP */
+.btn-usp-glow {
   content: '';
   position: absolute;
   inset: -8px -12px; /* bleed outside the button edge */
@@ -580,12 +562,11 @@ html::before {
   background: radial-gradient(ellipse at center, rgba(220, 180, 78, 0.30) 0%, transparent 70%);
   filter: blur(14px);
   pointer-events: none;
-  animation: usp-behind-glow 4s ease-in-out infinite;
-  animation-delay: 2s;
+  opacity: 0.5; /* Default state, animated by GSAP */
 }
 
-/* Shimmer sweep pseudo-element */
-.btn-usp::after {
+/* Shimmer sweep — injected by GSAP */
+.btn-usp-shimmer {
   content: '';
   position: absolute;
   inset: 0;
@@ -600,8 +581,6 @@ html::before {
   background-size: 200% 100%;
   opacity: 0;
   pointer-events: none;
-  animation: usp-shimmer 8s ease-in-out infinite;
-  animation-delay: 3.5s; /* first shimmer at 3.5s, then every 8s */
 }
 
 /* Icon styling */
@@ -611,43 +590,14 @@ html::before {
   font-size: 11px;
   margin-right: 5px;
   opacity: 0.8;
-  transition: transform 0.5s ease, opacity 0.3s ease;
   transform-origin: center;
+  /* GSAP handles rotation/scale */
 }
 
-/* Hover enhancements */
-.btn-usp:hover {
-  animation-play-state: paused; /* freeze pulse, swap to hover state */
-  box-shadow:
-    0 12px 44px rgba(220, 180, 78, 0.52),
-    0 2px 12px rgba(0, 0, 0, 0.3),
-    0 0 44px rgba(220, 180, 78, 0.28);
-  transform: translateY(-2px);
-}
-
-.btn-usp:hover::before {
-  opacity: 1;
-  transform: scale(1.12);
-  animation-play-state: paused;
-}
-
-.btn-usp:hover::after {
-  animation: usp-shimmer 1.4s ease forwards; /* trigger immediately on hover */
-  animation-delay: 0s;
-}
-
-.btn-usp:hover .btn-usp-icon {
-  transform: rotate(20deg) scale(1.15);
-  opacity: 1;
-}
-
-/* Respect reduced-motion preference */
+/* Respect reduced-motion preference (GSAP handles most logic, but fallback for safety) */
 @media (prefers-reduced-motion: reduce) {
-  .btn-usp { animation: none; }
-  .btn-usp::before { animation: none; opacity: 0.5; }
-  .btn-usp::after { animation: none; }
-  .btn-usp:hover { transform: translateY(-1px); }
-  .btn-usp:hover .btn-usp-icon { transform: none; }
+  .btn-usp-glow { opacity: 0.2; }
+  .btn-usp-shimmer { display: none; }
 }
 
 /* Upgrade/primary — Nebula Gold */

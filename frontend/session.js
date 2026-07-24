@@ -5,6 +5,8 @@ const STORAGE_EXPLANATION_MODE_KEY = "lockedin_explanation_mode";
 const STORAGE_EXPLANATION_TOPIC_KEY = "lockedin_explanation_mode_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
 
+import { initInteractions } from "./js/animations/interactions.js";
+
 const _host = window.location.hostname;
 const API_BASE =
   !window.location.hostname ||
@@ -1420,4 +1422,7 @@ if (feedbackBox) {
     window.localStorage.setItem("lockedin_last_feedback", feedbackBox.value);
   });
 }
+
+// Initialize GSAP microinteractions
+initInteractions();
 
