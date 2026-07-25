@@ -78,20 +78,6 @@
         <h1 class="complete-title">Session Complete.</h1>
         <p class="complete-subtitle">Knowledge synthesized successfully.</p>
 
-        <div class="rating-block" aria-label="Session rating">
-          <div class="rating-stars" role="radiogroup" aria-label="Select a rating from 1 to 5">
-            <button class="star-btn" type="button" data-value="1" aria-label="Rate 1 star">★</button>
-            <button class="star-btn" type="button" data-value="2" aria-label="Rate 2 stars">★</button>
-            <button class="star-btn" type="button" data-value="3" aria-label="Rate 3 stars">★</button>
-            <button class="star-btn" type="button" data-value="4" aria-label="Rate 4 stars">★</button>
-            <button class="star-btn" type="button" data-value="5" aria-label="Rate 5 stars">★</button>
-          </div>
-        </div>
-
-        <label for="feedbackBox" class="feedback-label">Optional Reflection</label>
-        <textarea id="feedbackBox" class="feedback-box" rows="3"
-          placeholder="What were your key takeaways from this session?"></textarea>
-
         <div class="complete-actions">
           <button id="startNewBtn" class="btn btn-primary" type="button">
             Start New Session
@@ -112,6 +98,24 @@
             Generate Archive
           </button>
         </section>
+
+        <div id="reflectionSection" class="reflection-section">
+          <hr class="divider reflection-divider" />
+          <h3 class="reflection-heading">Optional Reflection</h3>
+          
+          <div class="rating-block" aria-label="Session rating">
+            <div class="rating-stars" role="radiogroup" aria-label="Select a rating from 1 to 5">
+              <button class="star-btn" type="button" data-value="1" aria-label="Rate 1 star">★</button>
+              <button class="star-btn" type="button" data-value="2" aria-label="Rate 2 stars">★</button>
+              <button class="star-btn" type="button" data-value="3" aria-label="Rate 3 stars">★</button>
+              <button class="star-btn" type="button" data-value="4" aria-label="Rate 4 stars">★</button>
+              <button class="star-btn" type="button" data-value="5" aria-label="Rate 5 stars">★</button>
+            </div>
+          </div>
+  
+          <textarea id="feedbackBox" class="feedback-box" rows="3"
+            placeholder="What were your key takeaways from this session?"></textarea>
+        </div>
       </div>
     </section>
   </main>

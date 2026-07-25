@@ -1162,3 +1162,23 @@ body.session--complete .topbar {
   }
 }
 
+/* ── Optional Reflection Section ── */
+.reflection-section {
+  margin-top: 32px;
+  padding-top: 24px;
+}
+
+.reflection-divider {
+  opacity: 0.4; /* softer than normal divider */
+  margin-bottom: 24px;
+}
+
+.reflection-heading {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(190, 185, 210, 0.5); /* subdued */
+  text-align: center;
+  margin: 0 0 16px;
+}

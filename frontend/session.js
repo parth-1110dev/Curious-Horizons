@@ -9,6 +9,7 @@ import { initInteractions } from "./js/animations/interactions.js";
 import {
   triggerSuccessAnimation,
   triggerDiscoveryRipple,
+  animateSessionCompleteReveal,
 } from "./js/animations/effects.js";
 
 const _host = window.location.hostname;
@@ -210,6 +211,8 @@ function showCompleteScreen() {
 
   renderCompletionUpgradeConversion();
 
+  // Trigger entrance animation for the completion screen
+  animateSessionCompleteReveal(completeScreen);
 
   // After rendering completes, compute and set the Home button position so it
   // aligns with the Session Complete title row. Use rAF to ensure DOM measurements
@@ -293,9 +296,10 @@ function renderCompletionUpgradeConversion() {
   wrap.appendChild(textWrapEl);
   wrap.appendChild(actionsEl);
 
-  // Insert after the feedback textarea to keep layout stable.
-  if (feedbackBox) {
-    feedbackBox.insertAdjacentElement("afterend", wrap);
+  // Insert before the complete-actions block to match the new hierarchy.
+  const actionsContainer = completeCard.querySelector(".complete-actions");
+  if (actionsContainer) {
+    actionsContainer.insertAdjacentElement("beforebegin", wrap);
   } else {
     completeCard.appendChild(wrap);
   }

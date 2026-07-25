@@ -466,3 +466,58 @@ export function renderEmptyState(container, opts = {}) {
     </div>
   `;
 }
+
+// ─── PART 9: SESSION COMPLETE REVEAL ─────────────────────────────────────────
+
+export function animateSessionCompleteReveal(completeScreen) {
+  if (!completeScreen) return;
+
+  const title = completeScreen.querySelector(".complete-title");
+  const subtitle = completeScreen.querySelector(".complete-subtitle");
+  const summary = completeScreen.querySelector("#upgradeConversionSection");
+  const actions = completeScreen.querySelector(".complete-actions");
+  const archive = completeScreen.querySelector(".knowledge-pack-section");
+  const reflection = completeScreen.querySelector("#reflectionSection");
+
+  // Filter out any null elements
+  const elements = [title, subtitle, summary, actions, archive, reflection].filter(Boolean);
+
+  if (isReducedMotion()) {
+    gsap.set(elements, { opacity: 1, y: 0 });
+    return;
+  }
+
+  // Initial state
+  gsap.set(elements, { opacity: 0, y: 16 });
+  
+  // Specific initial state for reflection to make it fade more subtly
+  if (reflection) {
+    gsap.set(reflection, { opacity: 0, y: 8 });
+  }
+
+  const tl = gsap.timeline({ delay: 0.1 });
+
+  // 1-4. Main elements stagger in
+  const mainElements = elements.filter(e => e !== reflection);
+  if (mainElements.length > 0) {
+    tl.to(mainElements, {
+      opacity: 1,
+      y: 0,
+      duration: 0.6,
+      ease: "power2.out",
+      stagger: 0.1,
+      clearProps: "transform"
+    });
+  }
+
+  // 5. Reflection section fades in last, slowly
+  if (reflection) {
+    tl.to(reflection, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out",
+      clearProps: "transform"
+    }, "-=0.2"); // Overlaps slightly with the end of the main sequence
+  }
+}
