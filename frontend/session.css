@@ -1164,13 +1164,13 @@ body.session--complete .topbar {
 
 /* ── Optional Reflection Section ── */
 .reflection-section {
-  margin-top: 32px;
-  padding-top: 24px;
+  margin-top: 16px;
+  padding-top: 16px;
 }
 
 .reflection-divider {
   opacity: 0.4; /* softer than normal divider */
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .reflection-heading {
