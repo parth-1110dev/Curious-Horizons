@@ -1,25 +1,27 @@
 import gsap from "gsap";
+import { DURATION, EASE, MOTION_PROPS } from "./motion.js";
+import { isReducedMotion } from "./utils.js";
 
 /**
  * Initializes button interactions across the application (Levels 1-3).
  */
 export function initButtonInteractions() {
-  const isReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const reduced = isReducedMotion();
 
-  initLevel1Buttons();
-  initLevel2Buttons();
+  initLevel1Buttons(reduced);
+  initLevel2Buttons(reduced);
 
-  if (!isReducedMotion) {
+  if (!reduced) {
     initLevel3Buttons();
   } else {
     // Basic hover fallback for reduced motion on USP buttons
     const uspButtons = document.querySelectorAll(".btn-usp");
     uspButtons.forEach(btn => {
       btn.addEventListener("mouseenter", () => {
-        gsap.to(btn, { y: -1, duration: 0.2 });
+        gsap.to(btn, { y: -1, duration: DURATION.FAST, ease: EASE.snappy });
       });
       btn.addEventListener("mouseleave", () => {
-        gsap.to(btn, { y: 0, duration: 0.2 });
+        gsap.to(btn, { y: 0, duration: DURATION.FAST, ease: EASE.snappy });
       });
     });
   }
@@ -27,17 +29,17 @@ export function initButtonInteractions() {
 
 /**
  * Level 1: Standard/Utility Controls (.btn-outline)
- * Minimal hover interactions using CSS or basic GSAP.
+ * Minimal hover interactions using GSAP for physical feel.
  */
-function initLevel1Buttons() {
+function initLevel1Buttons(reduced) {
   const outlineButtons = document.querySelectorAll(".btn-outline");
   outlineButtons.forEach(btn => {
     btn.addEventListener("mouseenter", () => {
       gsap.to(btn, {
         backgroundColor: "rgba(255, 255, 255, 0.08)",
         borderColor: "rgba(255, 255, 255, 0.15)",
-        duration: 0.3,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.snappy,
         overwrite: "auto"
       });
     });
@@ -45,21 +47,21 @@ function initLevel1Buttons() {
       gsap.to(btn, {
         backgroundColor: "transparent",
         borderColor: "rgba(255, 255, 255, 0.08)",
-        duration: 0.3,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.snappy,
         overwrite: "auto"
       });
     });
     
     // Press state
     btn.addEventListener("mousedown", () => {
-      gsap.to(btn, { scale: 0.98, duration: 0.1 });
+      if (!reduced) gsap.to(btn, { scale: MOTION_PROPS.buttonScaleDown, duration: DURATION.FAST, ease: EASE.compress });
     });
     btn.addEventListener("mouseup", () => {
-      gsap.to(btn, { scale: 1, duration: 0.2, ease: "back.out(2)" });
+      if (!reduced) gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.rebound });
     });
     btn.addEventListener("mouseleave", () => {
-      gsap.to(btn, { scale: 1, duration: 0.2 }); // Reset if dragging off
+      if (!reduced) gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.smooth });
     });
   });
 }
@@ -68,17 +70,17 @@ function initLevel1Buttons() {
  * Level 2: Primary CTAs (.btn-primary without .btn-usp)
  * Hover elevation and shadow expansion.
  */
-function initLevel2Buttons() {
+function initLevel2Buttons(reduced) {
   // Select primary buttons that are NOT USP buttons
   const primaryButtons = document.querySelectorAll(".btn-primary:not(.btn-usp)");
   
   primaryButtons.forEach(btn => {
     btn.addEventListener("mouseenter", () => {
       gsap.to(btn, {
-        y: -2,
+        y: reduced ? 0 : MOTION_PROPS.buttonLift,
         boxShadow: "0 12px 32px rgba(220, 180, 78, 0.22), 0 2px 8px rgba(0,0,0,0.3)",
-        duration: 0.4,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.snappy,
         overwrite: "auto"
       });
     });
@@ -86,21 +88,21 @@ function initLevel2Buttons() {
       gsap.to(btn, {
         y: 0,
         boxShadow: "0 8px 24px rgba(220, 180, 78, 0.15), 0 2px 4px rgba(0,0,0,0.2)",
-        duration: 0.4,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.smooth,
         overwrite: "auto"
       });
     });
 
     // Press state
     btn.addEventListener("mousedown", () => {
-      gsap.to(btn, { scale: 0.96, duration: 0.1 });
+      if (!reduced) gsap.to(btn, { scale: MOTION_PROPS.buttonScaleDown, duration: DURATION.FAST, ease: EASE.compress });
     });
     btn.addEventListener("mouseup", () => {
-      gsap.to(btn, { scale: 1, duration: 0.3, ease: "back.out(1.5)" });
+      if (!reduced) gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.rebound });
     });
     btn.addEventListener("mouseleave", () => {
-      gsap.to(btn, { scale: 1, duration: 0.2 }); 
+      if (!reduced) gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.smooth }); 
     });
   });
 }
@@ -133,20 +135,15 @@ function initLevel3Buttons() {
     const icon = btn.querySelector(".btn-usp-icon");
 
     // 2. Idle Timeline: Breathing glow and box-shadow
-    // Runs infinitely in the background
     const idleGlowTl = gsap.timeline({ repeat: -1, yoyo: true });
-    
-    // Stagger start slightly to avoid perfect sync if multiple buttons
     const delay = Math.random() * 2; 
 
-    // Pulse button shadow
     idleGlowTl.fromTo(btn, 
       { boxShadow: "0 8px 36px rgba(220, 180, 78, 0.28), 0 2px 8px rgba(0,0,0,0.3)" },
       { boxShadow: "0 8px 48px rgba(220, 180, 78, 0.50), 0 2px 12px rgba(0,0,0,0.3), 0 0 40px rgba(220, 180, 78, 0.26)", duration: 2, ease: "power1.inOut" },
       0
     );
     
-    // Pulse behind-blob glow
     if (currentGlow) {
       idleGlowTl.fromTo(currentGlow,
         { opacity: 0.5, scale: 1 },
@@ -156,7 +153,6 @@ function initLevel3Buttons() {
     }
     
     // 3. Idle Timeline: Shimmer
-    // Runs every 8 seconds
     const idleShimmerTl = gsap.timeline({ repeat: -1, repeatDelay: 6.5, delay: delay + 1 });
     if (currentShimmer) {
       idleShimmerTl.fromTo(currentShimmer,
@@ -174,16 +170,14 @@ function initLevel3Buttons() {
 
     // 4. Hover Interactions
     btn.addEventListener("mouseenter", () => {
-      // Pause idle animations
       idleGlowTl.pause();
       idleShimmerTl.pause();
 
-      // Smoothly transition to hover state
       gsap.to(btn, {
-        y: -2,
+        y: MOTION_PROPS.buttonLift,
         boxShadow: "0 12px 44px rgba(220, 180, 78, 0.52), 0 2px 12px rgba(0, 0, 0, 0.3), 0 0 44px rgba(220, 180, 78, 0.28)",
-        duration: 0.4,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.snappy,
         overwrite: "auto"
       });
 
@@ -191,17 +185,16 @@ function initLevel3Buttons() {
         gsap.to(currentGlow, {
           opacity: 1,
           scale: 1.12,
-          duration: 0.4,
-          ease: "power2.out",
+          duration: DURATION.MEDIUM,
+          ease: EASE.snappy,
           overwrite: "auto"
         });
       }
 
-      // Trigger immediate shimmer on hover
       if (currentShimmer) {
         gsap.fromTo(currentShimmer,
           { backgroundPosition: "-200% center", opacity: 0 },
-          { backgroundPosition: "200% center", opacity: 1, duration: 1.2, ease: "power2.out",
+          { backgroundPosition: "200% center", opacity: 1, duration: 1.2, ease: EASE.snappy,
             keyframes: {
               "0%": { opacity: 0 },
               "15%": { opacity: 1 },
@@ -212,33 +205,31 @@ function initLevel3Buttons() {
         );
       }
 
-      // Icon subtle pop
       if (icon) {
         gsap.to(icon, {
           rotate: 20,
           scale: 1.15,
           opacity: 1,
-          duration: 0.4,
-          ease: "back.out(2)",
+          duration: DURATION.MEDIUM,
+          ease: EASE.rebound,
           overwrite: "auto"
         });
       }
     });
 
     btn.addEventListener("mouseleave", () => {
-      // Resume idle animations smoothly from current state
       gsap.to(btn, {
         y: 0,
-        duration: 0.5,
-        ease: "power2.out",
+        duration: DURATION.MEDIUM,
+        ease: EASE.smooth,
         overwrite: "auto",
-        onComplete: () => idleGlowTl.play() // Let timeline take over box-shadow again
+        onComplete: () => idleGlowTl.play() 
       });
 
       if (currentGlow) {
         gsap.to(currentGlow, {
-          duration: 0.5,
-          ease: "power2.out",
+          duration: DURATION.MEDIUM,
+          ease: EASE.smooth,
           overwrite: "auto"
         });
       }
@@ -248,37 +239,36 @@ function initLevel3Buttons() {
           rotate: 0,
           scale: 1,
           opacity: 0.8,
-          duration: 0.4,
-          ease: "power2.out",
+          duration: DURATION.MEDIUM,
+          ease: EASE.smooth,
           overwrite: "auto"
         });
       }
       
-      idleShimmerTl.restart(true); // restart shimmer cycle
+      idleShimmerTl.restart(true);
     });
 
     // 5. Click Feedback (Tasteful scale + burst)
     btn.addEventListener("mousedown", () => {
-      gsap.to(btn, { scale: 0.95, duration: 0.1 });
+      gsap.to(btn, { scale: MOTION_PROPS.buttonScaleDown, duration: DURATION.FAST, ease: EASE.compress });
       if (currentGlow) {
-        gsap.to(currentGlow, { scale: 0.9, opacity: 1, duration: 0.1 });
+        gsap.to(currentGlow, { scale: 0.9, opacity: 1, duration: DURATION.FAST, ease: EASE.compress });
       }
     });
     
     btn.addEventListener("mouseup", () => {
-      // Scale back up with a burst of glow
-      gsap.to(btn, { scale: 1, duration: 0.4, ease: "back.out(1.5)" });
+      gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.rebound });
       
       if (currentGlow) {
         gsap.fromTo(currentGlow, 
           { scale: 1.2, opacity: 1 }, 
-          { scale: 1.12, opacity: 0.9, duration: 0.6, ease: "power2.out" }
+          { scale: 1.12, opacity: 0.9, duration: DURATION.SLOW, ease: EASE.smooth }
         );
       }
     });
     
     btn.addEventListener("mouseleave", () => {
-      gsap.to(btn, { scale: 1, duration: 0.3 }); // Cancel press if dragged off
+      gsap.to(btn, { scale: 1, duration: DURATION.MEDIUM, ease: EASE.smooth }); 
     });
   });
 }
