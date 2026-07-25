@@ -1,5 +1,12 @@
 console.log("KNOWLEDGE PACK JS LOADED");
 import { initInteractions } from "./js/animations/interactions.js";
+import {
+  triggerKnowledgeConstellation,
+  initKnowledgePackReveal,
+  triggerArchiveCompletion,
+  triggerDiscoveryRipple,
+  triggerSuccessAnimation,
+} from "./js/animations/effects.js";
 
 const STORAGE_TOPIC_KEY = "lockedin_selected_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
@@ -572,6 +579,12 @@ function showLoadingState() {
 function showContentState() {
   loadingState.setAttribute("hidden", "");
   contentState.removeAttribute("hidden");
+
+  // Part 5 — Knowledge Pack Reveal: staggered progressive reveal
+  requestAnimationFrame(() => {
+    initKnowledgePackReveal();
+    triggerDiscoveryRipple(contentState);
+  });
 }
 
 async function generateKnowledgePack() {
@@ -614,6 +627,8 @@ async function generateKnowledgePack() {
       generatedNotes
     );
     showContentState();
+    // Part 1 — Knowledge Constellation: KP is ready
+    requestAnimationFrame(() => triggerKnowledgeConstellation(contentState));
     logKnowledgePackPerformance("notes generated", {
       plan,
       format: effectiveFormat,
@@ -819,6 +834,11 @@ async function downloadNotes() {
   } finally {
     if (loadingUi) {
       loadingUi.hideLoading();
+    }
+    // Part 6 + 9 — Archive Completion + Success Animation
+    if (downloadNotesBtn && !downloadNotesBtn.disabled) {
+      triggerArchiveCompletion(downloadNotesBtn);
+      triggerSuccessAnimation(downloadNotesBtn, { label: "✦ Archived" });
     }
     window.setTimeout(() => {
       isDownloading = false;

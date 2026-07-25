@@ -6,6 +6,11 @@ const STORAGE_EXPLANATION_TOPIC_KEY = "lockedin_explanation_mode_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
 
 import { initInteractions } from "./js/animations/interactions.js";
+import {
+  triggerKnowledgeConstellation,
+  triggerSuccessAnimation,
+  triggerDiscoveryRipple,
+} from "./js/animations/effects.js";
 
 const _host = window.location.hostname;
 const API_BASE =
@@ -205,6 +210,12 @@ function showCompleteScreen() {
   resetSessionViewState();
 
   renderCompletionUpgradeConversion();
+
+  // Part 1 — Knowledge Constellation fires on session complete
+  requestAnimationFrame(() => {
+    triggerKnowledgeConstellation(completeScreen || document.body);
+  });
+
   // After rendering completes, compute and set the Home button position so it
   // aligns with the Session Complete title row. Use rAF to ensure DOM measurements
   // reflect the final layout.
@@ -434,8 +445,12 @@ function handleGenerateNotes() {
     return;
   }
 
-  // Pro or Elite: navigate to knowledge pack page
-  window.location.href = "knowledge-pack.html";
+  // Part 3 — Discovery Ripple: archiving knowledge is a discovery moment
+  const btn = generateNotesBtn;
+  if (btn) triggerDiscoveryRipple(btn);
+
+  // Pro or Elite: navigate to knowledge pack page (slight delay for ripple to show)
+  setTimeout(() => { window.location.href = "knowledge-pack.html"; }, 180);
 }
 
 function syncPlanDependentState() {
