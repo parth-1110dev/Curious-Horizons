@@ -1,0 +1,30 @@
+/*
+ * Curious Horizons - Accessibility & Focus
+ * Better focus rings and accessibility improvements.
+ */
+
+:focus:not(:focus-visible) {
+  outline: none; /* Hide default focus ring for mouse clicks */
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold, #dcb44e);
+  outline-offset: 3px;
+  border-radius: inherit; /* Attempts to match element's border radius */
+}
+
+/* Ensure skip links are visible on focus */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--gold, #dcb44e);
+  color: #000;
+  padding: 8px;
+  z-index: 99999;
+  transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+  top: 0;
+}

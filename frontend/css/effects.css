@@ -154,6 +154,38 @@
   overflow: hidden;
 }
 
+/* ─── BUTTON LOADING SPINNER ─────────────────────────────────── */
+.btn.is-loading {
+  position: relative;
+  pointer-events: none;
+  color: transparent !important;
+}
+
+.btn.is-loading > * {
+  visibility: hidden;
+}
+
+.btn.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  margin-top: -9px;
+  margin-left: -9px;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: ch-spin 0.6s linear infinite;
+  visibility: visible;
+  color: white;
+}
+
+@keyframes ch-spin {
+  to { transform: rotate(360deg); }
+}
+
 /* ─── REDUCED MOTION ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .ch-constellation-canvas,

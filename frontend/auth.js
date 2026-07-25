@@ -1,4 +1,5 @@
 import supabase from './supabase.js'
+import { showToast } from './js/ui/toast.js'
 
 function getPlanState() {
   return window.LockedInPlanState || null
@@ -157,7 +158,7 @@ async function signUpWithEmail(email, password) {
   try {
     const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) {
-      alert('Sign up error: ' + error.message)
+      showToast('We couldn\'t create your account: ' + error.message, 'error')
       return
     }
 
@@ -183,7 +184,7 @@ async function signUpWithEmail(email, password) {
     // On success, redirect to auth page (auth flow handled there)
     window.location.href = 'auth.html'
   } catch (err) {
-    alert('Unexpected error: ' + err.message)
+    showToast('An unexpected error occurred. Please try again.', 'error')
   }
 }
 
@@ -191,7 +192,7 @@ async function signInWithEmail(email, password) {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) {
-      alert('Login error: ' + error.message)
+      showToast('We couldn\'t sign you in: ' + error.message, 'error')
       return
     }
 
@@ -208,7 +209,7 @@ async function signInWithEmail(email, password) {
 
     window.location.href = 'auth.html'
   } catch (err) {
-    alert('Unexpected error: ' + err.message)
+    showToast('An unexpected error occurred. Please try again.', 'error')
   }
 }
 
@@ -216,14 +217,14 @@ async function signOut() {
   try {
     const { error } = await supabase.auth.signOut()
     if (error) {
-      alert('Logout error: ' + error.message)
+      showToast('We couldn\'t sign you out: ' + error.message, 'error')
       return
     }
 
     // Immediately update navbar to logged-out state
     updateNavbarAuthState(null)
   } catch (err) {
-    alert('Unexpected error: ' + err.message)
+    showToast('An unexpected error occurred. Please try again.', 'error')
   }
 }
 

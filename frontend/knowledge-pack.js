@@ -7,6 +7,7 @@ import {
   triggerDiscoveryRipple,
   triggerSuccessAnimation,
 } from "./js/animations/effects.js";
+import { showToast } from "./js/ui/toast.js";
 
 const STORAGE_TOPIC_KEY = "lockedin_selected_topic";
 const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
@@ -616,7 +617,7 @@ async function generateKnowledgePack() {
     const data = await response.json().catch(() => ({}));
 
     if (!response.ok || data.error) {
-      alert(data.error || "Failed to generate notes. Please try again.");
+      showToast(data.error || "We couldn't generate your notes. Please try again.", 'error');
       showContentState();
       return;
     }
@@ -637,7 +638,7 @@ async function generateKnowledgePack() {
     });
   } catch (error) {
     console.error("Error generating notes:", error);
-    alert("Failed to generate notes. Please try again.");
+    showToast("We couldn't generate your notes. Please try again.", 'error');
     showContentState();
   } finally {
     isGenerating = false;
@@ -668,7 +669,7 @@ async function downloadNotes() {
     // No AI transformation. No summarization. The session IS the document.
     if (effectiveFormat === "pdf") {
       if (!rawSession) {
-        alert("No session content available. Please complete a learning session first.");
+        showToast("No session content available. Please complete a learning session first.", 'info');
         return;
       }
 
@@ -713,7 +714,7 @@ async function downloadNotes() {
     // The AI receives the complete session and transforms it into a revision doc.
     if (effectiveFormat === "exam") {
       if (!rawSession) {
-        alert("No session content available. Please complete a learning session first.");
+        showToast("No session content available. Please complete a learning session first.", 'info');
         return;
       }
 
@@ -744,13 +745,13 @@ async function downloadNotes() {
       const packData = await packResponse.json().catch(() => ({}));
 
       if (!packResponse.ok || packData.error) {
-        alert(packData.error || "Failed to generate Exam Cheat Sheet. Please try again.");
+        showToast(packData.error || "Failed to generate Exam Cheat Sheet. Please try again.", 'error');
         return;
       }
 
       const cheatSheetContent = packData.notes || "";
       if (!cheatSheetContent) {
-        alert("No content was generated. Please try again.");
+        showToast("No content was generated. Please try again.", 'error');
         return;
       }
 
@@ -787,7 +788,7 @@ async function downloadNotes() {
       }
       const content = normalizeContentOrNull();
       if (!content) {
-        alert("No notes available yet. Please generate notes first.");
+        showToast("No notes available yet. Please generate notes first.", 'info');
         return;
       }
 
@@ -830,7 +831,7 @@ async function downloadNotes() {
 
   } catch (_err) {
     console.error("Download failed:", _err);
-    alert("Download failed. Please try again.");
+    showToast("Download failed. Please try again.", 'error');
   } finally {
     if (loadingUi) {
       loadingUi.hideLoading();
@@ -853,14 +854,12 @@ function copyNotesToClipboard() {
   navigator.clipboard
     .writeText(generatedNotes)
     .then(() => {
-      const oldText = copyNotesBtn.textContent;
-      copyNotesBtn.textContent = "Copied!";
-      setTimeout(() => {
-        copyNotesBtn.textContent = oldText;
-      }, 2000);
+      if (copyNotesBtn) {
+        triggerSuccessAnimation(copyNotesBtn, { label: "✓ Copied!" });
+      }
     })
     .catch(() => {
-      alert("Failed to copy to clipboard");
+      showToast("Failed to copy to clipboard", 'error');
     });
 }
 

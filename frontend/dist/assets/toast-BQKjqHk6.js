@@ -1,0 +1,4 @@
+import{t as e}from"./gsap-Bi_c5vh2.js";var t=null;function n(){t||(t=document.createElement(`div`),t.className=`ch-toast-container`,t.setAttribute(`aria-live`,`polite`),document.body.appendChild(t))}function r(r,a=`info`,o=4e3){n();let s=document.createElement(`div`);s.className=`ch-toast ch-toast--${a}`;let c=``;a===`success`&&(c=`✦`),a===`error`&&(c=`⚠`),a===`info`&&(c=`ℹ`),s.innerHTML=`
+    <span class="ch-toast-icon" aria-hidden="true">${c}</span>
+    <span class="ch-toast-message">${r}</span>
+  `,s.addEventListener(`click`,()=>i(s)),t.appendChild(s),e.fromTo(s,{opacity:0,y:20,scale:.95},{opacity:1,y:0,scale:1,duration:.4,ease:`back.out(1.5)`}),o>0&&setTimeout(()=>{i(s)},o)}function i(t){!t||!t.parentNode||e.to(t,{opacity:0,scale:.9,y:-10,duration:.3,ease:`power2.in`,onComplete:()=>{t.parentNode&&t.remove()}})}export{r as t};

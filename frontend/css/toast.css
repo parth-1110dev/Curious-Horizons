@@ -1,0 +1,74 @@
+/*
+ * Curious Horizons - Toast Notification CSS
+ * Glassmorphism, fixed positioned, stackable.
+ */
+
+.ch-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 9999;
+  pointer-events: none; /* Let clicks pass through container */
+}
+
+.ch-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: rgba(20, 20, 30, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  pointer-events: all;
+  cursor: pointer;
+  will-change: transform, opacity;
+  color: var(--text, #f5f3ee);
+  max-width: 320px;
+}
+
+.ch-toast:hover {
+  background: rgba(30, 30, 45, 0.8);
+}
+
+.ch-toast-icon {
+  font-size: 16px;
+}
+
+.ch-toast--success .ch-toast-icon {
+  color: var(--gold, #dcb44e);
+}
+
+.ch-toast--error .ch-toast-icon {
+  color: #ff4d6d;
+}
+
+.ch-toast--info .ch-toast-icon {
+  color: #5078f0;
+}
+
+.ch-toast-message {
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .ch-toast-container {
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    align-items: center;
+  }
+  .ch-toast {
+    width: 100%;
+    max-width: none;
+    justify-content: center;
+  }
+}

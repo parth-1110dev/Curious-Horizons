@@ -5,6 +5,8 @@ import { initScrollChoreography } from "./scroll.js";
 import { initModalInteractions } from "./modals.js";
 import { initAmbientLighting } from "../ambient-light.js";
 import { initIconMotion, initCuriosityPulse } from "./effects.js";
+import { initKeyboardShortcuts } from "../ui/keyboard.js";
+import { initTooltips } from "../ui/tooltips.js";
 import { isReducedMotion } from "./utils.js";
 
 /**
@@ -44,4 +46,8 @@ export function initInteractions() {
   // Signature Identity Effects
   initIconMotion();
   initCuriosityPulse(document.querySelectorAll(".btn-usp, .btn-primary, .knowledge-pack-btn"));
+
+  // Frictionless UX
+  initKeyboardShortcuts();
+  initTooltips();
 }

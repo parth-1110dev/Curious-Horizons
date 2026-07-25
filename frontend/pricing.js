@@ -267,11 +267,12 @@ function setButtonBusy(button, busy) {
     }
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
-    button.textContent = "Processing...";
+    button.classList.add("is-loading");
     return;
   }
 
   button.removeAttribute("aria-busy");
+  button.classList.remove("is-loading");
   if (button.dataset.originalText) {
     button.textContent = button.dataset.originalText;
     delete button.dataset.originalText;
@@ -628,8 +629,9 @@ async function startCheckout(plan) {
     if (!currentUserId) {
       // Reset UI and show friendly prompt before redirecting to auth.
       resetCheckoutUi(button);
-      window.alert(
-        "Please create an account to securely save your subscription. You will be redirected to sign up."
+      showToast(
+        "Please create an account to securely save your subscription. You will be redirected to sign up.",
+        "info"
       );
       const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
       window.location.href = `auth.html?returnTo=${returnTo}`;
@@ -638,8 +640,9 @@ async function startCheckout(plan) {
   } catch (_e) {
     // On unexpected errors determining auth, be conservative and block checkout.
     resetCheckoutUi(button);
-    window.alert(
-      "Please sign in to purchase a plan. You will be redirected to the login page."
+    showToast(
+      "Please sign in to purchase a plan. You will be redirected to the login page.",
+      "info"
     );
     const returnTo = encodeURIComponent(window.location.pathname + window.location.search);
     window.location.href = `auth.html?returnTo=${returnTo}`;
@@ -739,7 +742,7 @@ async function startCheckout(plan) {
               }
 
               console.log("[PAYMENT HANDLER] SUCCESS: Showing success message to user");
-              window.alert("Plan upgraded successfully! Enjoy your premium features.");
+              showToast("Plan upgraded successfully! Enjoy your premium features.", "success");
 
               // Explicit navigation after successful explicit user action
               try { window.location.href = 'index.html'; } catch (_) {}
@@ -747,7 +750,7 @@ async function startCheckout(plan) {
               // Error occurred - show clear message but don't update plan state
               const message = error && error.message ? error.message : "Payment verification failed.";
               console.error("[PAYMENT HANDLER] Verification failed:", message);
-              window.alert(message);
+              showToast(message, "error");
             } finally {
               if (loadingUi) loadingUi.hideLoading();
               // ALWAYS reset UI after payment flow completes (success or failure)
@@ -762,20 +765,20 @@ async function startCheckout(plan) {
           console.log("[CHECKOUT] Payment failed in Razorpay:", response);
           if (loadingUi) loadingUi.hideLoading();
           resetCheckoutUi(button);
-          window.alert(`Payment failed: ${response.error.description}`);
+          showToast(`Payment failed: ${response.error.description}`, "error");
         });
       }
     } catch (error) {
       console.error("[CHECKOUT] Error opening Razorpay:", error);
       if (loadingUi) loadingUi.hideLoading();
       resetCheckoutUi(button);
-      window.alert(error && error.message ? error.message : "Unable to open checkout. Please try again.");
+      showToast(error && error.message ? error.message : "Unable to open checkout. Please try again.", "error");
     }
   } catch (error) {
     console.error("[CHECKOUT] Error starting checkout:", error);
     if (loadingUi) loadingUi.hideLoading();
     resetCheckoutUi(button);
-    window.alert(error && error.message ? error.message : "Unable to start checkout. Please try again.");
+    showToast(error && error.message ? error.message : "Unable to start checkout. Please try again.", "error");
   }
 }
 
