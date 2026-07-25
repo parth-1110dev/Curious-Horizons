@@ -746,16 +746,9 @@ html::before {
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.15),
     0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  /* Hover state fully owned by GSAP (cards.js) */
 }
 
-.hero-feature:hover {
-  transform: translateY(-2px);
-  border-color: rgba(220, 180, 78, 0.2);
-  box-shadow:
-    0 12px 48px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(220, 180, 78, 0.08);
-}
 
 /* Gold icon badge — top of each card */
 .hero-feature-icon {
@@ -1012,17 +1005,9 @@ html::before {
   box-shadow:
     0 12px 48px rgba(0, 0, 0, 0.15),
     0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  transition: transform 0.25s ease, border-color 0.25s ease,
-    box-shadow 0.25s ease;
+  /* Hover state fully owned by GSAP (cards.js) */
 }
 
-.feature-card:hover {
-  transform: translateY(-4px);
-  border-color: rgba(220, 180, 78, 0.25);
-  box-shadow:
-    0 20px 70px rgba(0, 0, 0, 0.2),
-    0 0 0 1px rgba(220, 180, 78, 0.08);
-}
 
 /* Gold icon badge */
 .feature-icon {
@@ -1074,13 +1059,9 @@ html::before {
   box-shadow:
     0 8px 32px rgba(0, 0, 0, 0.15),
     0 1px 0 rgba(255, 255, 255, 0.04) inset;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  /* Hover state fully owned by GSAP (cards.js) */
 }
 
-.step-card:hover {
-  border-color: rgba(220, 180, 78, 0.15);
-  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.18);
-}
 
 /* Gold icon badge — replaces old numeral */
 .step-number {

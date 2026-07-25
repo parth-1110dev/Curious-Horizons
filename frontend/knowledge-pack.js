@@ -1,7 +1,6 @@
 console.log("KNOWLEDGE PACK JS LOADED");
 import { initInteractions } from "./js/animations/interactions.js";
 import {
-  triggerKnowledgeConstellation,
   initKnowledgePackReveal,
   triggerArchiveCompletion,
   triggerDiscoveryRipple,
@@ -628,8 +627,6 @@ async function generateKnowledgePack() {
       generatedNotes
     );
     showContentState();
-    // Part 1 — Knowledge Constellation: KP is ready
-    requestAnimationFrame(() => triggerKnowledgeConstellation(contentState));
     logKnowledgePackPerformance("notes generated", {
       plan,
       format: effectiveFormat,

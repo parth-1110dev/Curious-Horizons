@@ -1,98 +1,92 @@
 /**
  * Curious Horizons - Intelligent Tooltips
- * Contextual tooltips that fade in/out cleanly.
+ * Contextual tooltips. Positioning powered by Floating UI.
+ * Animation powered by GSAP.
  */
 
 import { gsap } from "gsap";
+import { positionFloating } from "./floating.js";
+import { isReducedMotion } from "../animations/utils.js";
 
 let activeTooltip = null;
-let tooltipHideTimeout = null;
 
 export function initTooltips() {
   const elements = document.querySelectorAll('[data-tooltip]');
 
   elements.forEach((el) => {
-    // Only attach once
+    // Only attach once per element
     if (el.dataset.tooltipInitialized) return;
     el.dataset.tooltipInitialized = 'true';
 
-    el.addEventListener('mouseenter', handleMouseEnter);
-    el.addEventListener('mouseleave', handleMouseLeave);
-    el.addEventListener('focus', handleMouseEnter);
-    el.addEventListener('blur', handleMouseLeave);
+    el.addEventListener('mouseenter', handleShow);
+    el.addEventListener('mouseleave', handleHide);
+    el.addEventListener('focus',      handleShow);
+    el.addEventListener('blur',       handleHide);
   });
 }
 
-function handleMouseEnter(e) {
+function handleShow(e) {
   const target = e.currentTarget;
   const tooltipText = target.getAttribute('data-tooltip');
   if (!tooltipText) return;
 
-  // Clear any hiding timeouts
-  if (tooltipHideTimeout) {
-    clearTimeout(tooltipHideTimeout);
-    tooltipHideTimeout = null;
-  }
-
-  // Remove existing if any
+  // Dismiss any existing tooltip immediately
   if (activeTooltip) {
+    gsap.killTweensOf(activeTooltip);
     activeTooltip.remove();
     activeTooltip = null;
   }
 
-  // Create new tooltip
+  // Build tooltip element
   const tooltip = document.createElement('div');
   tooltip.className = 'ch-tooltip';
   tooltip.textContent = tooltipText;
   tooltip.setAttribute('role', 'tooltip');
+
+  // Must be in DOM before Floating UI can measure it
+  // Position using fixed so Floating UI can compute correctly
+  tooltip.style.position = 'fixed';
+  tooltip.style.top = '0';
+  tooltip.style.left = '0';
   document.body.appendChild(tooltip);
 
   activeTooltip = tooltip;
 
-  // Position it above the target
-  const rect = target.getBoundingClientRect();
-  const scrollY = window.scrollY || window.pageYOffset;
-  const scrollX = window.scrollX || window.pageXOffset;
+  // Floating UI positions it intelligently — flips to bottom if no room above
+  positionFloating(target, tooltip, { placement: 'top', offsetPx: 8 });
 
-  // Center horizontally relative to target
-  const top = rect.top + scrollY;
-  const left = rect.left + scrollX + (rect.width / 2);
+  // Skip animation for reduced motion — just show it
+  if (isReducedMotion()) {
+    tooltip.style.opacity = '1';
+    return;
+  }
 
-  tooltip.style.top = `${top}px`;
-  tooltip.style.left = `${left}px`;
-
-  // Animate in
-  gsap.to(tooltip, {
-    opacity: 1,
-    y: -4,
-    scale: 1,
-    duration: 0.2,
-    ease: "power2.out",
-    delay: 0.3 // Don't show immediately (prevents annoying flashes when moving mouse fast)
-  });
+  // Animate in with a brief delay to prevent flashing during fast mouse movements
+  gsap.fromTo(
+    tooltip,
+    { opacity: 0, y: 4, scale: 0.95 },
+    { opacity: 1, y: 0, scale: 1, duration: 0.2, ease: 'power2.out', delay: 0.25 }
+  );
 }
 
-function handleMouseLeave() {
+function handleHide() {
   if (!activeTooltip) return;
 
-  const currentTooltip = activeTooltip;
-  
-  // Clear any existing animation and animate out
-  gsap.killTweensOf(currentTooltip);
-  
-  gsap.to(currentTooltip, {
+  const current = activeTooltip;
+  activeTooltip = null;
+
+  if (isReducedMotion()) {
+    current.remove();
+    return;
+  }
+
+  gsap.killTweensOf(current);
+  gsap.to(current, {
     opacity: 0,
-    y: 0,
+    y: 2,
     scale: 0.95,
     duration: 0.15,
-    ease: "power2.in",
-    onComplete: () => {
-      if (currentTooltip.parentNode) {
-        currentTooltip.remove();
-      }
-      if (activeTooltip === currentTooltip) {
-        activeTooltip = null;
-      }
-    }
+    ease: 'power2.in',
+    onComplete: () => current.parentNode && current.remove(),
   });
 }

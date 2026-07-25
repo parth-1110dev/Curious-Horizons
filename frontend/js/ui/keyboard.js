@@ -4,7 +4,7 @@
  */
 
 import { gsap } from "gsap";
-import { showToast } from "./toast.js"; // We'll build this next
+import { showToast } from "./toast.js";
 
 export function initKeyboardShortcuts() {
   document.addEventListener('keydown', handleGlobalKeydown);

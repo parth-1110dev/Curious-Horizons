@@ -4,16 +4,6 @@
   All animations respect prefers-reduced-motion.
 */
 
-/* ─── CONSTELLATION CANVAS ──────────────────────────────────── */
-.ch-constellation-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0;
-  will-change: opacity;
-}
-
 /* ─── PARTICLES ──────────────────────────────────────────────── */
 .ch-particle {
   position: absolute;
@@ -188,7 +178,6 @@
 
 /* ─── REDUCED MOTION ─────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  .ch-constellation-canvas,
   .ch-discovery-ripple,
   .ch-particle,
   .ch-success-dot,

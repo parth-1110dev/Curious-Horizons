@@ -1,10 +1,10 @@
 /*
  * Curious Horizons - Intelligent Tooltips CSS
- * Clean, glassmorphic, fade in/out.
+ * Clean, glassmorphic. Positioning controlled by Floating UI (js/ui/floating.js).
  */
 
 .ch-tooltip {
-  position: absolute;
+  /* position: fixed is set by JS before Floating UI runs */
   z-index: 9000;
   pointer-events: none;
   padding: 6px 12px;
@@ -18,11 +18,7 @@
   font-weight: 500;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  /* Centered initially, GSAP will adjust */
-  top: 0;
-  left: 0;
+  /* GSAP controls opacity and scale on entrance/exit */
   opacity: 0;
-  transform: translate(-50%, -100%) scale(0.95);
-  margin-top: -8px; /* space between element and tooltip */
   will-change: transform, opacity;
 }

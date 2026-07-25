@@ -7,7 +7,6 @@ const STORAGE_SESSION_CONTENT_KEY = "lockedin_session_content";
 
 import { initInteractions } from "./js/animations/interactions.js";
 import {
-  triggerKnowledgeConstellation,
   triggerSuccessAnimation,
   triggerDiscoveryRipple,
 } from "./js/animations/effects.js";
@@ -211,10 +210,6 @@ function showCompleteScreen() {
 
   renderCompletionUpgradeConversion();
 
-  // Part 1 — Knowledge Constellation fires on session complete
-  requestAnimationFrame(() => {
-    triggerKnowledgeConstellation(completeScreen || document.body);
-  });
 
   // After rendering completes, compute and set the Home button position so it
   // aligns with the Session Complete title row. Use rAF to ensure DOM measurements
