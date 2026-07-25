@@ -1,0 +1,55 @@
+/* 
+  Curious Horizons Ambient Lighting System 
+  Provides deep cosmic depth and organic lighting without distracting from content.
+*/
+
+.ambient-light-container {
+  position: fixed;
+  inset: -300px; /* Bleed off screen to allow organic drift */
+  z-index: -1;
+  pointer-events: none;
+  transform: translateZ(0); /* Hardware acceleration */
+  overflow: hidden;
+  background-color: var(--base); /* Deep space background */
+  
+  /* Fallback static gradient for reduced motion */
+  background-image: 
+    radial-gradient(1200px circle at 50% 0%, rgba(130, 90, 220, 0.03), transparent 50%),
+    radial-gradient(800px circle at 15% 85%, rgba(60, 100, 220, 0.05), transparent 60%);
+}
+
+.ambient-layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px; /* Smooth rounded gradients */
+  transform: translateZ(0);
+  will-change: transform, opacity; /* Hint for browser optimization */
+}
+
+/* Layer 1: Primary Nebula - Deep Cosmic Blue, Large blur */
+.ambient-layer-1 {
+  background: radial-gradient(1000px circle at 50% 50%, rgba(80, 120, 240, 0.06), transparent 70%);
+  filter: blur(80px);
+  opacity: 0.8;
+}
+
+/* Layer 2: Gold Accent - Nebula Gold, Asymmetrical, Warmth */
+.ambient-layer-2 {
+  background: radial-gradient(700px circle at 50% 50%, rgba(220, 180, 78, 0.07), transparent 60%);
+  filter: blur(60px);
+  opacity: 0.6;
+}
+
+/* Layer 3: Distant Glow - Soft Violet / Indigo, Depth */
+.ambient-layer-3 {
+  background: radial-gradient(1200px circle at 50% 50%, rgba(120, 80, 200, 0.05), transparent 65%);
+  filter: blur(90px);
+  opacity: 0.7;
+}
+
+/* Support for reduced motion - hide moving layers, fallback handles static BG */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-layer {
+    display: none !important; 
+  }
+}

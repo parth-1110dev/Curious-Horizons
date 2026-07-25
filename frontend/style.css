@@ -115,51 +115,6 @@ body {
   }
 }
 
-/* Cosmic atmospheric background + CSS starfield */
-.aurora {
-  position: fixed;
-  inset: -220px;
-  z-index: -1;
-  pointer-events: none;
-  transform: translateZ(0);
-  /* Deeper midnight base with violet/blue ambient glows */
-  background:
-    radial-gradient(1400px circle at 50% -10%, rgba(130, 90, 220, 0.04), transparent 55%),
-    radial-gradient(1000px circle at 20% 80%, rgba(60, 100, 220, 0.07), transparent 60%),
-    radial-gradient(1200px circle at 80% 60%, rgba(90, 40, 140, 0.06), transparent 58%),
-    radial-gradient(1600px circle at 50% 55%, rgba(6, 6, 12, 0) 25%, rgba(6, 6, 12, 0.92) 72%, rgba(6, 6, 12, 1) 100%);
-}
-
-/* CSS-only starfield — tiny radial dots at fixed positions */
-.aurora::before,
-.aurora::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-  transform: translateZ(0);
-}
-
-.aurora::before {
-  background:
-    radial-gradient(820px circle at 18% 14%, rgba(200, 170, 80, 0.06), transparent 58%),
-    radial-gradient(700px circle at 75% 20%, rgba(80, 120, 240, 0.05), transparent 60%),
-    radial-gradient(600px circle at 50% 85%, rgba(120, 80, 200, 0.05), transparent 62%);
-  filter: blur(72px);
-  opacity: 0.85;
-  animation: aurora-float-1 24s ease-in-out infinite;
-}
-
-.aurora::after {
-  background:
-    radial-gradient(720px circle at 22% 68%, rgba(80, 40, 140, 0.06), transparent 60%),
-    radial-gradient(780px circle at 78% 42%, rgba(200, 170, 80, 0.04), transparent 62%),
-    radial-gradient(480px circle at 58% 12%, rgba(60, 140, 220, 0.05), transparent 55%);
-  filter: blur(56px);
-  opacity: 0.7;
-  animation: aurora-float-2 30s ease-in-out infinite;
-}
-
 /* Starfield pseudo-layer on html itself — subtle fixed dot pattern */
 html::before {
   content: "";
@@ -203,34 +158,6 @@ html::before {
     radial-gradient(1.2px 1.2px at 17% 52%, rgba(220, 180, 78, 0.3) 0%, transparent 100%),
     radial-gradient(1.2px 1.2px at 83% 37%, rgba(220, 180, 78, 0.25) 0%, transparent 100%);
   opacity: 1;
-}
-
-@keyframes aurora-float-1 {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  50% {
-    transform: translate3d(28px, -18px, 0);
-  }
-
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes aurora-float-2 {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-
-  50% {
-    transform: translate3d(-22px, 16px, 0);
-  }
-
-  100% {
-    transform: translate3d(0, 0, 0);
-  }
 }
 
 .nav {
