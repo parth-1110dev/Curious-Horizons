@@ -1,55 +1,79 @@
-/* 
-  Curious Horizons Ambient Lighting System 
+/*
+  Curious Horizons — Ambient Lighting System
+  Sprint 6: Adaptive performance scaling
+
   Provides deep cosmic depth and organic lighting without distracting from content.
+  Blur values are now applied dynamically by ambient-light.js based on
+  the active performance profile — CSS defaults serve as high-profile fallback only.
+
+  Performance profiles are applied via [data-perf-profile] attribute on <html>.
 */
 
 .ambient-light-container {
   position: fixed;
-  inset: -300px; /* Bleed off screen to allow organic drift */
+  inset: -200px; /* Bleed off screen to allow organic drift — reduced from -300px */
   z-index: -1;
   pointer-events: none;
-  transform: translateZ(0); /* Hardware acceleration */
   overflow: hidden;
   background-color: var(--base); /* Deep space background */
-  
-  /* Fallback static gradient for reduced motion */
-  background-image: 
+
+  /* Fallback static gradient for reduced motion / Lite profile */
+  background-image:
     radial-gradient(1200px circle at 50% 0%, rgba(130, 90, 220, 0.03), transparent 50%),
     radial-gradient(800px circle at 15% 85%, rgba(60, 100, 220, 0.05), transparent 60%);
+}
+
+/* Reduce inset on mobile — smaller painted area = less GPU memory bandwidth */
+@media (max-width: 768px) {
+  .ambient-light-container {
+    inset: -80px;
+  }
 }
 
 .ambient-layer {
   position: absolute;
   inset: 0;
-  border-radius: 999px; /* Smooth rounded gradients */
-  transform: translateZ(0);
-  will-change: transform, opacity; /* Hint for browser optimization */
+  border-radius: 999px;
+  /* NOTE: will-change is NOT applied here globally.
+     It is set per-element in JS before animation and cleared after.
+     Blanket will-change promotes ALL layers simultaneously — too many compositor layers. */
+  transform: translateZ(0); /* Minimal hardware acceleration hint */
 }
 
-/* Layer 1: Primary Nebula - Deep Cosmic Blue, Large blur */
+/* Layer 1: Primary Nebula — Deep Cosmic Blue */
+/* CSS blur values are defaults for High profile.
+   JS overrides these via element.style.filter based on active profile. */
 .ambient-layer-1 {
   background: radial-gradient(1000px circle at 50% 50%, rgba(80, 120, 240, 0.06), transparent 70%);
-  filter: blur(80px);
+  filter: blur(80px); /* Overridden by JS for balanced/lite */
   opacity: 0.8;
 }
 
-/* Layer 2: Gold Accent - Nebula Gold, Asymmetrical, Warmth */
+/* Layer 2: Gold Accent — Nebula Gold, Asymmetrical */
 .ambient-layer-2 {
   background: radial-gradient(700px circle at 50% 50%, rgba(220, 180, 78, 0.07), transparent 60%);
-  filter: blur(60px);
+  filter: blur(60px); /* Overridden by JS for balanced/lite */
   opacity: 0.6;
 }
 
-/* Layer 3: Distant Glow - Soft Violet / Indigo, Depth */
+/* Layer 3: Distant Glow — Soft Violet / Indigo */
 .ambient-layer-3 {
   background: radial-gradient(1200px circle at 50% 50%, rgba(120, 80, 200, 0.05), transparent 65%);
-  filter: blur(90px);
+  filter: blur(90px); /* Overridden by JS for balanced/lite */
   opacity: 0.7;
 }
 
-/* Support for reduced motion - hide moving layers, fallback handles static BG */
+/* ─── LITE PROFILE: Static ambient (no blur, no movement) ─────────────────── */
+/* When JS sets filter: none, the layers display as soft static color fields */
+[data-perf-profile="lite"] .ambient-layer {
+  /* Slightly more visible without blur to maintain atmospheric feel */
+  opacity: 0.5;
+  will-change: auto; /* Ensure no compositor promotion on static layers */
+}
+
+/* ─── REDUCED MOTION ───────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .ambient-layer {
-    display: none !important; 
+    display: none !important;
   }
 }

@@ -2,10 +2,11 @@ import json
 import os
 import time
 import traceback
+from typing import AsyncGenerator
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from openai import OpenAI
 from razorpay_config import get_razorpay_client as _get_razorpay_client
 from supabase import create_client
@@ -35,21 +36,11 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 SYSTEM_PROMPT_BASE = """You are Curious Horizons' learning engine.
 Write concise, high-signal lesson content in Markdown.
-HIGH-PRIORITY MATH FORMATTING:
-- Always format mathematical content in valid LaTeX.
-- Inline: $E = mc^2$
-- Display:
-$$
-a^2 + b^2 = c^2
-$$
-- # Display:
-$$
-\frac{\partial f}{\partial x}
-\lim_{h \to 0}
-\frac{f(x+h)-f(x)}{h}
-$$
-- Never output mathematical expressions, equations, fractions, superscripts, subscripts, derivatives, integrals, summations, matrices, scientific notation, chemistry notation, or ML formulas outside LaTeX delimiters.
-- Before returning the response, verify that every formula is wrapped in either $...$ or $$...$$.
+MATH FORMATTING (MANDATORY):
+- Always wrap mathematical content in LaTeX delimiters.
+- Inline math: $E = mc^2$
+- Display math (own line, centred): $$a^2 + b^2 = c^2$$
+- Never output equations, fractions, superscripts, subscripts, derivatives, integrals, summations, matrices, scientific notation, chemistry, or ML formulas outside $...$ or $$...$$ delimiters.
 Use exactly these sections in this order:
 1. Introduction
 2. Core Concepts
@@ -63,7 +54,7 @@ Rules:
 - Avoid filler, repetition, and chatbot-style replies.
 - Use short paragraphs and bullets when useful.
 - Do not ask the user questions.
-- When math, science, statistics, physics, chemistry, engineering, or machine learning notation appears, write formulas in valid LaTeX using $...$ for inline math and $$...$$ for display math.
+- Write all math/science/engineering formulas in valid LaTeX using $...$ for inline and $$...$$ for display math.
 - Preserve LaTeX delimiters exactly so the frontend can render them.
 - Return only the lesson content."""
 
@@ -860,23 +851,69 @@ async def verify_payment(data: dict):
         )
 
 
+# ─── SSE Helper ───────────────────────────────────────────────────────────────
+
+# Allowed origins — mirrors the CORS middleware config above
+_ALLOWED_ORIGINS = {
+    "http://localhost:5500",
+    "http://127.0.0.1:5500",
+    "https://curious-horizons.vercel.app",
+}
+
+def _sse_headers(request: Request) -> dict:
+    """
+    Build headers for a Server-Sent Events response.
+
+    FastAPI's CORSMiddleware does not reliably inject CORS headers into
+    StreamingResponse objects. We add them manually here so the browser
+    doesn't reject the stream due to a missing Access-Control-Allow-Origin.
+    """
+    origin = request.headers.get("origin", "")
+    allowed_origin = origin if origin in _ALLOWED_ORIGINS else ""
+
+    headers = {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache, no-store, no-transform",
+        "X-Accel-Buffering": "no",   # Disable nginx buffering on Render
+        "Connection": "keep-alive",
+    }
+    if allowed_origin:
+        headers["Access-Control-Allow-Origin"] = allowed_origin
+        headers["Access-Control-Allow-Credentials"] = "true"
+
+    return headers
+
+
 @app.post("/generate")
 async def generate_content(request: Request, data: dict):
     now = time.time()
+
     _prune_stale_rate_buckets(now)
     client_ip = _get_client_ip(request)
     if not _rate_limit_allow(client_ip, now):
-        return JSONResponse(
+        # Rate limited — return SSE error event so the client handles it uniformly
+        async def _rate_limit_stream():
+            yield "data: [ERROR] Too many requests. Please slow down.\n\n"
+        return StreamingResponse(
+            _rate_limit_stream(),
             status_code=429,
-            content={"error": "Too many requests. Please slow down."},
+            media_type="text/event-stream",
+            headers=_sse_headers(request),
         )
 
     try:
-        # Safe input handling.
+        # ── Input handling ────────────────────────────────────────────────────
         raw_topic = data.get("topic", "")
         topic = str(raw_topic).strip()
         if not topic:
-            return {"error": "Topic is required"}
+            async def _no_topic_stream():
+                yield "data: [ERROR] Topic is required.\n\n"
+            return StreamingResponse(
+                _no_topic_stream(),
+                status_code=400,
+                media_type="text/event-stream",
+                headers=_sse_headers(request),
+            )
 
         explanation_mode_raw = data.get("explanation_mode", "")
         explanation_mode = str(explanation_mode_raw).strip().lower()
@@ -912,53 +949,84 @@ async def generate_content(request: Request, data: dict):
         if explanation_mode_guidance:
             system_prompt = f"{system_prompt}\n\nExplain Like mode guidance: {explanation_mode_guidance}"
 
-        prompt = {
-            "topic": topic,
-            "session_length_minutes": duration_int,
-            "detail_level": detail_level,
-            "output_requirements": [
-                "Use Markdown headings ## and ### only.",
-                "Keep the 7 required sections in the exact order.",
-                "Match depth to the session length.",
-                "Stay on topic and do not invent unrelated modules.",
-                "Use valid LaTeX for any formulas, equations, symbols, or scientific notation.",
-                "Keep $...$ and $$...$$ delimiters intact in the output.",
-            ],
-        }
-
+        # ── User message: plain text (saves ~100 tokens vs JSON blob) ─────────
+        user_message_parts = [
+            f"Topic: {topic}",
+            f"Session length: {duration_int} minutes",
+            f"Detail level: {detail_level}",
+            "Output requirements:",
+            "- Use Markdown headings ## and ### only.",
+            "- Keep the 7 required sections in the exact order.",
+            "- Match depth to the session length.",
+            "- Stay on topic and do not invent unrelated modules.",
+            "- Use valid LaTeX for any formulas, equations, symbols, or scientific notation.",
+            "- Keep $...$ and $$...$$ delimiters intact in the output.",
+        ]
         if explanation_mode:
-            prompt["explanation_mode"] = explanation_mode
+            user_message_parts.append(f"Explanation mode: {explanation_mode}")
+        user_message = "\n".join(user_message_parts)
 
-        try:
-            response = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    {
-                        "role": "user",
-                        "content": json.dumps(prompt, ensure_ascii=False, separators=(",", ":")),
-                    },
-                ],
-                temperature=0.7,
-                max_tokens=max_tokens,
-            )
+        # ── SSE Generator ─────────────────────────────────────────────────────
+        async def _stream_generator() -> AsyncGenerator[str, None]:
+            """Streams OpenAI response as SSE events."""
+            token_count = 0
             finish_reason = None
-            if getattr(response, "choices", None):
-                finish_reason = getattr(response.choices[0], "finish_reason", None)
-            print(
-                f"[OpenAI][Generate] model={model} max_tokens={max_tokens} finish_reason={finish_reason}"
-            )
-            return {"content": response.choices[0].message.content}
-        except Exception as e:
-            print("ERROR OCCURRED:", str(e))
-            return {
-                "error": "API failed",
-                "details": str(e),
-            }
+            try:
+                stream = client.chat.completions.create(
+                    model=model,
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_message},
+                    ],
+                    temperature=0.7,
+                    max_tokens=max_tokens,
+                    stream=True,
+                )
+                for chunk in stream:
+                    if not chunk.choices:
+                        continue
+                    choice = chunk.choices[0]
+                    delta_content = getattr(choice.delta, "content", None)
+                    if delta_content:
+                        token_count += 1
+                        # Escape newlines inside the SSE data value
+                        # SSE spec: each "data:" field is one line; multi-line content
+                        # must be split across multiple "data:" lines.
+                        lines = delta_content.split("\n")
+                        sse_payload = "\n".join(f"data: {line}" for line in lines)
+                        yield f"{sse_payload}\n\n"
+                    finish_reason = getattr(choice, "finish_reason", None)
+
+                print(
+                    f"[OpenAI][Generate][Stream] model={model} max_tokens={max_tokens} "
+                    f"chunks={token_count} finish_reason={finish_reason}"
+                )
+                yield "data: [DONE]\n\n"
+
+            except Exception as e:
+                print(f"[OpenAI][Generate][Stream] ERROR: {e}")
+                traceback.print_exc()
+                error_msg = str(e).replace("\n", " ")
+                yield f"data: [ERROR] {error_msg}\n\n"
+
+        return StreamingResponse(
+            _stream_generator(),
+            media_type="text/event-stream",
+            headers=_sse_headers(request),
+        )
 
     except Exception as e:
-        print("UNEXPECTED ERROR:", str(e))
-        return {"error": "Internal error", "details": str(e)}
+        print("UNEXPECTED ERROR in /generate:", str(e))
+        traceback.print_exc()
+        async def _unexpected_error_stream():
+            yield f"data: [ERROR] Internal server error.\n\n"
+        return StreamingResponse(
+            _unexpected_error_stream(),
+            status_code=500,
+            media_type="text/event-stream",
+            headers=_sse_headers(request),
+        )
+
 
 
 @app.post("/generate-knowledge-pack")

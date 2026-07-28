@@ -1,0 +1,351 @@
+/*
+ * Curious Horizons — Touch-First Interaction Layer
+ * Sprint 6: Mobile Performance & Device Compatibility Framework
+ *
+ * Provides tactile feedback, proper tap targets, and safe-area support
+ * for touch-primary devices. Never overrides desktop hover behavior.
+ *
+ * Architecture:
+ *  - Global touch resets at the top
+ *  - @media (hover: none) blocks for touch-specific overrides
+ *  - Safe-area inset utilities
+ *  - Touch target enforcement
+ */
+
+/* ─── GLOBAL TOUCH RESETS ─────────────────────────────────────────────────── */
+
+/* Eliminate 300ms tap delay on all interactive elements */
+a,
+button,
+[role="button"],
+input,
+select,
+textarea,
+label,
+.btn {
+  touch-action: manipulation;
+}
+
+/* Remove browser tap highlight — we provide our own feedback */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent text selection during swipe/scroll interactions */
+.nav,
+.topbar,
+.account-sidebar {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* ─── SAFE-AREA INSETS ────────────────────────────────────────────────────── */
+/* Support for notched iOS devices and Android cutouts */
+
+/* Navigation bar — padded for notch on non-fixed top bars */
+.nav {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+
+/* Session topbar */
+.topbar {
+  padding-top: max(0px, env(safe-area-inset-top));
+}
+
+/* Hero section — ensure content isn't obscured by notch */
+.hero {
+  padding-top: max(120px, calc(96px + env(safe-area-inset-top)));
+}
+
+/* Account sidebar — safe area on right side for landscape */
+.account-sidebar {
+  padding-right: max(0px, env(safe-area-inset-right));
+}
+
+/* Bottom-anchored elements */
+.complete-actions,
+.session-actions-bar {
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
+}
+
+/* ─── MINIMUM TOUCH TARGET ENFORCEMENT ───────────────────────────────────── */
+/* WCAG 2.5.5: minimum 44×44px touch targets */
+
+@media (hover: none) and (pointer: coarse) {
+  /* Enforce minimum touch target height on all buttons */
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+  }
+
+  /* Nav buttons — ensure adequate tap area */
+  .nav-profile-btn {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 8px;
+  }
+
+  /* Close buttons — common culprit for too-small targets */
+  .account-sidebar-close {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* Topic pills — larger on touch for easy selection */
+  .topics {
+    gap: 10px;
+  }
+
+  .topic-pill {
+    padding: 10px 16px;
+    min-height: 40px;
+  }
+
+  /* ─── ACTIVE STATE FEEDBACK ─────────────────────────────────────────────── */
+  /* Replace hover-only effects with active-state equivalents for touch */
+
+  .btn:active {
+    transform: scale(0.97);
+    opacity: 0.9;
+    transition: transform 80ms ease, opacity 80ms ease;
+  }
+
+  .btn-primary:active {
+    transform: scale(0.97);
+    box-shadow: 0 4px 16px rgba(220, 180, 78, 0.2);
+    transition: transform 80ms ease, box-shadow 80ms ease;
+  }
+
+  .btn-usp:active {
+    transform: scale(0.96);
+    transition: transform 80ms ease;
+  }
+
+  .btn-outline:active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    transition: background 80ms ease, border-color 80ms ease;
+  }
+
+  /* Card touch feedback */
+  .feature-card:active,
+  .step-card:active {
+    border-color: rgba(220, 180, 78, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    transition: border-color 80ms ease, background 80ms ease;
+  }
+
+  /* ─── HOVER-ONLY ELEMENTS — HIDE ON TOUCH ───────────────────────────────── */
+  /* Elements that only make sense on pointer devices */
+
+  /* USP button shimmer pulse — hover-only interaction */
+  .ch-pulse-layer {
+    display: none !important;
+  }
+
+  /* Remove hover-only transforms — avoid ghost states on touch devices */
+  .btn-outline:hover {
+    transform: none;
+  }
+
+  .btn-primary:hover {
+    transform: none;
+  }
+
+  /* ─── SCROLL BEHAVIOR ───────────────────────────────────────────────────── */
+
+  /* Momentum scrolling on iOS for scrollable areas */
+  .topics,
+  .hero-features,
+  .preview-items,
+  .session-messages {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;          /* Firefox */
+    -ms-overflow-style: none;       /* IE/Edge */
+  }
+
+  .topics::-webkit-scrollbar,
+  .hero-features::-webkit-scrollbar,
+  .preview-items::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Overscroll containment */
+  .account-sidebar-inner,
+  .modal-content {
+    overscroll-behavior: contain;
+  }
+
+  /* ─── FORM INPUT MOBILE FIXES ───────────────────────────────────────────── */
+  /* iOS auto-zooms on inputs with font-size < 16px — prevent it */
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  textarea,
+  select {
+    font-size: 16px !important; /* Minimum to prevent iOS zoom */
+  }
+
+  /* ─── KEYBOARD OVERLAP ──────────────────────────────────────────────────── */
+  /* On mobile, the virtual keyboard can obscure input areas */
+
+  .learn-form {
+    /* Ensure form stays visible above keyboard when focused */
+    scroll-margin-bottom: 24px;
+  }
+
+  /* ─── LANDSCAPE ORIENTATION ─────────────────────────────────────────────── */
+}
+
+/* Compact layout for landscape mobile (phone on its side) */
+@media (hover: none) and (max-height: 500px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding: 80px 20px 40px;
+    align-items: flex-start;
+  }
+
+  .title {
+    font-size: clamp(28px, 6vw, 42px);
+    margin-top: 16px;
+  }
+
+  .subtext {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .learn-form {
+    margin-top: 16px;
+  }
+
+  .hero-features {
+    margin-top: 14px;
+  }
+
+  /* Session page landscape */
+  .topbar-inner {
+    padding: 8px 16px;
+  }
+}
+
+/* ─── TABLET LAYOUT ───────────────────────────────────────────────────────── */
+/* 600–900px viewport — intentionally designed, not just scaled down */
+
+@media (min-width: 600px) and (max-width: 900px) {
+  .hero {
+    padding: 108px 32px 72px;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .steps-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cta-panel {
+    padding: 64px 40px 60px;
+  }
+
+  .nav-inner {
+    padding: 14px 32px;
+  }
+}
+
+/* ─── PROFILE-BASED CSS ADAPTATIONS ──────────────────────────────────────── */
+/* Driven by data-perf-profile attribute set by PerformanceManager */
+
+/* Balanced: reduce expensive backdrop-filter */
+[data-perf-profile="balanced"] .nav {
+  backdrop-filter: blur(var(--adaptive-nav-blur, 12px)) saturate(130%);
+}
+
+[data-perf-profile="balanced"] .btn-outline {
+  backdrop-filter: blur(8px);
+}
+
+[data-perf-profile="balanced"] .account-sidebar-inner {
+  backdrop-filter: blur(14px);
+}
+
+[data-perf-profile="balanced"] .account-overlay {
+  backdrop-filter: blur(4px);
+}
+
+/* Lite: eliminate backdrop-filter entirely — use opaque fallbacks */
+[data-perf-profile="lite"] .nav {
+  backdrop-filter: none;
+  background: rgba(8, 8, 16, 0.92);
+}
+
+[data-perf-profile="lite"] .btn-outline {
+  backdrop-filter: none;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-perf-profile="lite"] .account-sidebar-inner {
+  backdrop-filter: none;
+  background: rgba(10, 10, 22, 0.96);
+}
+
+[data-perf-profile="lite"] .account-overlay {
+  backdrop-filter: none;
+  background: rgba(4, 4, 10, 0.8);
+}
+
+[data-perf-profile="lite"] .loading-card {
+  backdrop-filter: none;
+  background: rgba(12, 10, 28, 0.98);
+}
+
+/* Lite: reduce CSS filter on decorative elements */
+[data-perf-profile="lite"] .cta-panel::before {
+  filter: blur(20px);
+}
+
+/* Lite: disable the floating empty state icon animation */
+[data-perf-profile="lite"] .ch-empty-state-icon {
+  animation: none;
+}
+
+/* Lite: hide particles and complex overlays via CSS as additional safety net */
+[data-perf-profile="lite"] .ch-particle,
+[data-perf-profile="lite"] .ch-discovery-ripple,
+[data-perf-profile="lite"] .ch-pulse-layer {
+  display: none !important;
+}
+
+/* ─── REDUCED MOTION SAFE GUARDS ─────────────────────────────────────────── */
+/* Belt-and-suspenders for any elements that missed the JS checks */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Active states use instant transitions */
+  .btn:active,
+  .btn-primary:active,
+  .btn-usp:active {
+    transition: none;
+  }
+
+  /* Disable landscape hero shrink animation */
+  .hero {
+    animation: none !important;
+  }
+}
+
+/* ─── CONTENT-VISIBILITY OPTIMIZATION ────────────────────────────────────── */
+/* Skip rendering off-screen sections until they're near the viewport */
+/* Only applied on mobile to avoid affecting desktop layout stability */
+
+@media (max-width: 900px) {
+  .section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px; /* Estimated height hint */
+  }
+}

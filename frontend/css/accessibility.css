@@ -1,6 +1,12 @@
 /*
- * Curious Horizons - Accessibility & Focus
- * Better focus rings and accessibility improvements.
+ * Curious Horizons — Accessibility & Focus
+ * Sprint 6: Extended preference support
+ *
+ * Covers:
+ *  - prefers-reduced-motion (existing)
+ *  - prefers-reduced-transparency (glass elements)
+ *  - forced-colors / high contrast mode
+ *  - prefers-contrast: more
  */
 
 :focus:not(:focus-visible) {
@@ -10,7 +16,7 @@
 :focus-visible {
   outline: 2px solid var(--gold, #dcb44e);
   outline-offset: 3px;
-  border-radius: inherit; /* Attempts to match element's border radius */
+  border-radius: inherit;
 }
 
 /* Ensure skip links are visible on focus */
@@ -28,3 +34,116 @@
 .skip-link:focus {
   top: 0;
 }
+
+/* ─── REDUCED TRANSPARENCY ───────────────────────────────────────────────── */
+/* For users who find transparency/translucency uncomfortable or illegible     */
+
+@media (prefers-reduced-transparency: reduce) {
+  /* Increase glass element opacity significantly */
+  .nav {
+    background: rgba(8, 8, 16, 0.95) !important;
+    backdrop-filter: none !important;
+  }
+
+  .btn-outline {
+    background: rgba(30, 28, 48, 0.95) !important;
+    backdrop-filter: none !important;
+  }
+
+  .account-sidebar-inner {
+    background: rgba(10, 10, 22, 0.98) !important;
+    backdrop-filter: none !important;
+  }
+
+  .account-overlay {
+    background: rgba(4, 4, 10, 0.9) !important;
+    backdrop-filter: none !important;
+  }
+
+  /* Ensure text is always readable on opaque backgrounds */
+  .feature-card,
+  .step-card {
+    background: rgba(20, 18, 36, 0.98) !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* ─── HIGH CONTRAST / FORCED COLORS ─────────────────────────────────────── */
+/* For users on Windows High Contrast mode or similar accessibility overrides  */
+
+@media (forced-colors: active) {
+  /* Reset all custom box-shadows (invisible in forced-colors) */
+  .btn,
+  .feature-card,
+  .step-card,
+  .ambient-layer {
+    box-shadow: none !important;
+  }
+
+  /* Restore border visibility in forced-colors context */
+  .btn-outline,
+  .feature-card,
+  .step-card {
+    border: 2px solid ButtonText;
+  }
+
+  .btn-primary {
+    background: ButtonText;
+    color: ButtonFace;
+    border: 2px solid ButtonText;
+  }
+
+  /* Ambient lighting layers — invisible in forced-colors, hide cleanly */
+  .ambient-light-container {
+    display: none !important;
+  }
+
+  /* Starfield — hide */
+  html::before {
+    display: none !important;
+  }
+
+  /* Particles and decorative overlays */
+  .ch-particle,
+  .ch-discovery-ripple,
+  .ch-pulse-layer,
+  .ch-formation-overlay,
+  .horizon-system {
+    display: none !important;
+  }
+}
+
+/* ─── INCREASED CONTRAST ─────────────────────────────────────────────────── */
+/* For users who request more contrast but haven't enabled forced-colors        */
+
+@media (prefers-contrast: more) {
+  /* Increase text opacity on secondary text */
+  .subtext,
+  .step-text,
+  .account-email {
+    color: rgba(245, 243, 238, 0.95) !important;
+  }
+
+  .text-secondary,
+  [class*="secondary"] {
+    opacity: 0.85;
+  }
+
+  /* Strengthen borders on interactive elements */
+  .btn-outline {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+  }
+
+  .feature-card,
+  .step-card {
+    border-color: rgba(255, 255, 255, 0.18) !important;
+  }
+
+  /* Ensure gold text stays legible */
+  .gold,
+  .topic-badge-value,
+  .account-identity {
+    opacity: 1;
+  }
+}
+

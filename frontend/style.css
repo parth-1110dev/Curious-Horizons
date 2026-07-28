@@ -167,9 +167,11 @@ html::before {
   right: 0;
   z-index: 10;
   background: rgba(8, 8, 16, 0.55);
-  backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(var(--adaptive-nav-blur, 20px)) saturate(140%);
   border-bottom: 1px solid rgba(220, 180, 78, 0.1);
   transition: border-color 0.3s ease;
+  /* Safe-area: pad top for iOS notch / Dynamic Island */
+  padding-top: env(safe-area-inset-top);
 }
 
 .nav-inner {
@@ -551,6 +553,8 @@ html::before {
   padding: 120px 20px 80px;
   position: relative;
   overflow: hidden;
+  /* Safe-area: ensure hero content is below notch */
+  padding-top: max(120px, calc(96px + env(safe-area-inset-top)));
 }
 
 /* Old horizon system removed. Replaced by strict 5-layer architecture below */
@@ -804,6 +808,13 @@ html::before {
   outline: none;
   box-shadow: 0 16px 60px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.03);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Prevent iOS keyboard auto-zoom — requires font-size >= 16px on mobile */
+@media (max-width: 768px) {
+  .input-glass input {
+    font-size: 16px;
+  }
 }
 
 .input-glass input::placeholder {
@@ -1135,6 +1146,13 @@ html::before {
   filter: blur(40px);
   opacity: 0.9;
   pointer-events: none;
+}
+
+/* Reduce blur on mobile — 40px filter is very expensive on mobile GPUs */
+@media (max-width: 768px) {
+  .cta-panel::before {
+    filter: blur(20px);
+  }
 }
 
 .cta-title,

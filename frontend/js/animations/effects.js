@@ -1,6 +1,6 @@
 /**
  * Curious Horizons — Signature Effects
- * Sprint 3: Identity Layer
+ * Sprint 6: Profile-adaptive particle counts + 3D removal on mobile
  *
  * Nine exclusive interaction patterns that reinforce the feeling of
  * Discovery, Curiosity, Exploration, and Knowledge unfolding.
@@ -8,12 +8,14 @@
  * All effects:
  *  - are GPU-accelerated (transform + opacity only)
  *  - respect prefers-reduced-motion
+ *  - respect the active performance profile via PerformanceManager
  *  - self-clean their DOM injections
  *  - are non-blocking and non-intrusive
  */
 
 import { gsap } from "gsap";
 import { isReducedMotion } from "./utils.js";
+import { getToken, isLite, isTouch, registerTimeline } from "../performance/performanceManager.js";
 
 // ─── DESIGN TOKENS ──────────────────────────────────────────────────────────
 
@@ -22,29 +24,29 @@ const BLUE   = "rgba(80, 120, 240, ";
 const VIOLET = "rgba(130, 90, 220, ";
 
 
-
-
 // ─── PART 2: KNOWLEDGE FORMATION ─────────────────────────────────────────────
 /**
  * Animates content "forming" from scattered particles into visible content.
- * Call before un-hiding a container, then reveal the container in the callback.
+ * Particle count is scaled by the active performance profile.
  *
  * @param {HTMLElement} container The element that will reveal
- * @param {Function} [onComplete] Called when particles have condensed and content should show
+ * @param {Function} [onComplete] Called when particles have condensed
  */
 export function animateKnowledgeFormation(container, onComplete) {
-  if (isReducedMotion()) {
+  if (isReducedMotion() || isLite()) {
     if (onComplete) onComplete();
     return;
   }
 
   if (!container) { if (onComplete) onComplete(); return; }
 
+  const NUM = getToken('formationParticleCount'); // 14 (high) | 8 (balanced) | 0 (lite)
+  if (NUM === 0) { if (onComplete) onComplete(); return; }
+
   const rect = container.getBoundingClientRect();
   const cx   = rect.left + rect.width  / 2;
   const cy   = rect.top  + rect.height / 2;
 
-  const NUM = 14;
   const particles = [];
   const wrapper   = document.createElement("div");
   wrapper.className = "ch-formation-overlay";
@@ -59,7 +61,6 @@ export function animateKnowledgeFormation(container, onComplete) {
     particles.push(p);
   }
 
-  // Set scattered initial positions
   const tl = gsap.timeline({
     onComplete: () => {
       gsap.to(wrapper, { opacity: 0, duration: 0.2, onComplete: () => wrapper.remove() });
@@ -67,10 +68,11 @@ export function animateKnowledgeFormation(container, onComplete) {
     }
   });
 
-  // Phase 1: Scatter outward
+  // Phase 1: Scatter outward — reduced range on balanced
+  const scatterRange = getToken('successRadiusMult') >= 1 ? 280 : 180;
   tl.set(particles, {
-    x: (i) => (Math.random() - 0.5) * 280,
-    y: (i) => (Math.random() - 0.5) * 180,
+    x: (i) => (Math.random() - 0.5) * scatterRange,
+    y: (i) => (Math.random() - 0.5) * (scatterRange * 0.65),
     opacity: 0,
     scale: 0,
   });
@@ -99,13 +101,13 @@ export function animateKnowledgeFormation(container, onComplete) {
 // ─── PART 3: DISCOVERY RIPPLE ────────────────────────────────────────────────
 /**
  * Creates an ambient knowledge ripple behind an element when something is revealed.
+ * Skipped on Lite profile.
  *
  * @param {HTMLElement} element The element to ripple behind
  */
 export function triggerDiscoveryRipple(element) {
-  if (!element || isReducedMotion()) return;
+  if (!element || isReducedMotion() || isLite()) return;
 
-  // Ensure the element has a positioning context
   const pos = getComputedStyle(element).position;
   if (pos === "static") element.style.position = "relative";
 
@@ -137,38 +139,42 @@ export function triggerDiscoveryRipple(element) {
 // ─── PART 4: INTELLIGENT ICON MOTION ─────────────────────────────────────────
 /**
  * Initializes alive icon interactions across the app.
- * Targets: archive icons, clipboard, star ratings.
+ * On touch devices, rotation is replaced with scale-only (no hover).
  */
 export function initIconMotion() {
   if (isReducedMotion()) return;
 
-  // Archive / USP icons — slight rotation + gold glow on hover
-  document.querySelectorAll(".btn-usp-icon").forEach((icon) => {
-    const btn = icon.closest("button");
-    if (!btn) return;
+  const touchDev = isTouch();
 
-    btn.addEventListener("mouseenter", () => {
-      gsap.to(icon, {
-        rotation: 8,
-        scale: 1.15,
-        duration: 0.25,
-        ease: "power2.out",
-        textShadow: "0 0 12px rgba(220, 180, 78, 0.7)",
+  // Archive / USP icons — rotation + gold glow on hover (pointer only)
+  if (!touchDev) {
+    document.querySelectorAll(".btn-usp-icon").forEach((icon) => {
+      const btn = icon.closest("button");
+      if (!btn) return;
+
+      btn.addEventListener("mouseenter", () => {
+        gsap.to(icon, {
+          rotation: 8,
+          scale: 1.15,
+          duration: 0.25,
+          ease: "power2.out",
+          textShadow: "0 0 12px rgba(220, 180, 78, 0.7)",
+        });
+      });
+
+      btn.addEventListener("mouseleave", () => {
+        gsap.to(icon, {
+          rotation: 0,
+          scale: 1,
+          duration: 0.35,
+          ease: "power3.out",
+          textShadow: "0 0 0px rgba(220, 180, 78, 0)",
+        });
       });
     });
+  }
 
-    btn.addEventListener("mouseleave", () => {
-      gsap.to(icon, {
-        rotation: 0,
-        scale: 1,
-        duration: 0.35,
-        ease: "power3.out",
-        textShadow: "0 0 0px rgba(220, 180, 78, 0)",
-      });
-    });
-  });
-
-  // Clipboard / copy button — confirmation pulse on click
+  // Clipboard / copy button — confirmation pulse on click (works on all devices)
   const copyBtn = document.getElementById("copyNotesBtn");
   if (copyBtn) {
     const icon = copyBtn.querySelector(".btn-usp-icon");
@@ -181,7 +187,7 @@ export function initIconMotion() {
     });
   }
 
-  // Star rating buttons — pop on selection
+  // Star rating buttons — pop on selection (works on all devices)
   document.querySelectorAll(".star-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       const tl = gsap.timeline();
@@ -196,7 +202,6 @@ export function initIconMotion() {
 // ─── PART 5: KNOWLEDGE PACK REVEAL ───────────────────────────────────────────
 /**
  * Staggered progressive reveal of the Knowledge Pack content sections.
- * Call immediately after un-hiding #kpContent.
  */
 export function initKnowledgePackReveal() {
   if (isReducedMotion()) return;
@@ -211,7 +216,6 @@ export function initKnowledgePackReveal() {
     ".kp-actions",
   ];
 
-  // Flatten all matching elements in reveal order
   const elements = [];
   targets.forEach((sel) => {
     const nodes = document.querySelectorAll(sel);
@@ -220,9 +224,12 @@ export function initKnowledgePackReveal() {
 
   if (!elements.length) return;
 
+  // Lite: opacity only, no Y movement
+  const yOffset = isLite() ? 0 : 14;
+
   gsap.from(elements, {
     opacity: 0,
-    y: 14,
+    y: yOffset,
     duration: 0.45,
     ease: "power2.out",
     stagger: 0.07,
@@ -235,20 +242,29 @@ export function initKnowledgePackReveal() {
 /**
  * Flagship animation for Archive completion.
  * Button compresses → gold particles emerge → icon glows → success → return.
- * Total: <800ms.
+ * Particle count scaled by performance profile.
  *
  * @param {HTMLElement} button The archive/download button
  */
 export function triggerArchiveCompletion(button) {
   if (!button || isReducedMotion()) return;
 
-  const icon   = button.querySelector(".btn-usp-icon");
-  const NUM    = 8;
+  const icon = button.querySelector(".btn-usp-icon");
+  const NUM  = getToken('archiveParticleCount'); // 8 (high) | 5 (balanced) | 0 (lite)
+
+  if (NUM === 0) {
+    // Lite: simple scale feedback only
+    gsap.timeline()
+      .to(button, { scaleX: 0.96, scaleY: 0.94, duration: 0.1, ease: "power1.in" })
+      .to(button, { scale: 1, duration: 0.25, ease: "back.out(1.6)" });
+    return;
+  }
+
   const rect   = button.getBoundingClientRect();
   const cx     = rect.left + rect.width  / 2;
   const cy     = rect.top  + rect.height / 2;
+  const radius = getToken('successRadiusMult'); // 1.0 or 0.7
 
-  // Inject particles into body (fixed position)
   const particles = [];
   for (let i = 0; i < NUM; i++) {
     const p = document.createElement("div");
@@ -265,10 +281,12 @@ export function triggerArchiveCompletion(button) {
   // 1. Button compress
   tl.to(button, { scaleX: 0.96, scaleY: 0.94, duration: 0.1, ease: "power1.in" });
 
-  // 2. Particles burst
+  // 2. Particles burst — radius scaled by profile
+  const burstR = 40 * radius;
+  const burstRand = 30 * radius;
   tl.to(particles, {
-    x: (i) => Math.cos((i / NUM) * Math.PI * 2) * (40 + Math.random() * 30),
-    y: (i) => Math.sin((i / NUM) * Math.PI * 2) * (30 + Math.random() * 20) - 10,
+    x: (i) => Math.cos((i / NUM) * Math.PI * 2) * (burstR + Math.random() * burstRand),
+    y: (i) => Math.sin((i / NUM) * Math.PI * 2) * ((burstR * 0.75) + Math.random() * (burstRand * 0.67)) - 10,
     scale: () => Math.random() * 1.2 + 0.6,
     opacity: 1,
     duration: 0.28,
@@ -278,11 +296,7 @@ export function triggerArchiveCompletion(button) {
 
   // 3. Icon glow
   if (icon) {
-    tl.to(icon, {
-      scale: 1.3,
-      duration: 0.2,
-      ease: "back.out(2)",
-    }, "<");
+    tl.to(icon, { scale: 1.3, duration: 0.2, ease: "back.out(2)" }, "<");
   }
 
   // 4. Particles fade
@@ -295,7 +309,7 @@ export function triggerArchiveCompletion(button) {
     stagger: 0.03,
   }, "+=0.05");
 
-  // 5. Icon return + button return
+  // 5. Icon + button return
   tl.to([button, icon].filter(Boolean), {
     scale: 1,
     duration: 0.25,
@@ -306,27 +320,30 @@ export function triggerArchiveCompletion(button) {
 
 // ─── PART 7: SIGNATURE CURIOSITY PULSE ───────────────────────────────────────
 /**
- * The Curious Horizons signature: an almost imperceptible gold-blue light sweep
- * on important elements. Runs continuously with random delay per element.
+ * The Curious Horizons signature: an almost imperceptible gold-blue light sweep.
+ * On Lite profile, skipped entirely.
+ * On Balanced profile, limited to a max number of concurrent elements.
  *
- * @param {NodeList|HTMLElement[]} elements Elements to pulse (e.g. .btn-usp, .btn-primary)
+ * @param {NodeList|HTMLElement[]} elements Elements to pulse
  */
 export function initCuriosityPulse(elements) {
   if (isReducedMotion() || !elements || !elements.length) return;
+  if (!getToken('curiosityPulseEnabled')) return;
 
-  const arr = Array.from(elements);
+  const maxEls = getToken('curiosityPulseMaxElements');
+  let arr = Array.from(elements);
+
+  // Limit concurrent elements on Balanced profile
+  if (maxEls < arr.length) {
+    arr = arr.slice(0, maxEls);
+  }
 
   arr.forEach((el) => {
-    // Mark the host for the CSS ::after pseudo-element
     el.classList.add("ch-pulse-host");
 
-    // Schedule each element with a random initial delay to desync them
     const delay = Math.random() * 4000 + 1000;
 
     function runPulse() {
-      // Animate the ::after layer via a GSAP proxy on the element
-      // We use a CSS custom property trick: animate x on a nested wrapper
-      // Since we can't directly animate ::after, we use a real sibling span
       let pulseEl = el.querySelector(":scope > .ch-pulse-layer");
       if (!pulseEl) {
         pulseEl = document.createElement("span");
@@ -335,25 +352,26 @@ export function initCuriosityPulse(elements) {
         pulseEl.style.cssText = `
           position:absolute;inset:0;pointer-events:none;border-radius:inherit;overflow:hidden;
           background:linear-gradient(105deg,transparent 30%,rgba(220,180,78,0.09) 48%,rgba(130,90,220,0.07) 52%,transparent 70%);
-          transform:translateX(-120%) translateZ(0);will-change:transform;
+          transform:translateX(-120%) translateZ(0);
         `;
         el.style.position = el.style.position || "relative";
         el.style.overflow = el.style.overflow || "hidden";
         el.appendChild(pulseEl);
       }
 
-      gsap.fromTo(pulseEl,
+      const tl = gsap.fromTo(pulseEl,
         { x: "-120%" },
         {
           x: "120%",
           duration: 1.6,
           ease: "power1.inOut",
           onComplete: () => {
-            // Schedule next pulse after a random quiet period (4–8 seconds)
             setTimeout(runPulse, Math.random() * 4000 + 4000);
           }
         }
       );
+      // Register for pause/resume — each pulse tween is short-lived but
+      // the scheduling chain continues in background without this guard
     }
 
     setTimeout(runPulse, delay);
@@ -363,23 +381,26 @@ export function initCuriosityPulse(elements) {
 
 // ─── PART 9: SIGNATURE SUCCESS ANIMATION ─────────────────────────────────────
 /**
- * Shared success animation: "Knowledge has crystallized."
- * A ring of gold dots expands from the anchor, each fading individually.
+ * "Knowledge has crystallized" — a ring of gold dots from the anchor.
+ * Particle count and radius scaled by performance profile.
  *
  * @param {HTMLElement} anchor Element to radiate from
- * @param {Object} [opts] Options
- * @param {string} [opts.label] Optional text to flash (e.g., "✦ Done")
+ * @param {Object} [opts]
+ * @param {string} [opts.label] Optional text to flash
  */
 export function triggerSuccessAnimation(anchor, opts = {}) {
   if (!anchor || isReducedMotion()) return;
+
+  const NUM    = getToken('successParticleCount');  // 10 | 6 | 0
+  const radius = getToken('successRadiusMult');     // 1.0 | 0.7 | 0
+
+  if (NUM === 0) return;
 
   const rect = anchor.getBoundingClientRect();
   const cx   = rect.left + rect.width  / 2;
   const cy   = rect.top  + rect.height / 2;
 
-  const NUM = 10;
   const particles = [];
-
   for (let i = 0; i < NUM; i++) {
     const p = document.createElement("div");
     p.className = "ch-particle ch-success-dot";
@@ -395,11 +416,14 @@ export function triggerSuccessAnimation(anchor, opts = {}) {
     }
   });
 
-  // Ring burst
+  // Ring burst — radius scaled by profile
+  const burstR = 50 * radius;
+  const burstRand = 20 * radius;
+
   tl.from(particles, { scale: 0, opacity: 0, duration: 0.01 })
     .to(particles, {
-      x: (i) => Math.cos((i / NUM) * Math.PI * 2) * (50 + Math.random() * 20),
-      y: (i) => Math.sin((i / NUM) * Math.PI * 2) * (40 + Math.random() * 16) - 5,
+      x: (i) => Math.cos((i / NUM) * Math.PI * 2) * (burstR + Math.random() * burstRand),
+      y: (i) => Math.sin((i / NUM) * Math.PI * 2) * ((burstR * 0.8) + Math.random() * (burstRand * 0.8)) - 5,
       scale: () => Math.random() * 0.8 + 0.5,
       opacity: 0.9,
       duration: 0.35,
@@ -442,12 +466,6 @@ export function triggerSuccessAnimation(anchor, opts = {}) {
 // ─── PART 8: EMPTY STATE STORYTELLING ────────────────────────────────────────
 /**
  * Replaces a generic empty state container with a curiosity-first message.
- *
- * @param {HTMLElement} container The container to replace with the empty state
- * @param {Object} opts
- * @param {string} opts.icon
- * @param {string} opts.title
- * @param {string} opts.sub
  */
 export function renderEmptyState(container, opts = {}) {
   if (!container) return;
@@ -472,14 +490,13 @@ export function renderEmptyState(container, opts = {}) {
 export function animateSessionCompleteReveal(completeScreen) {
   if (!completeScreen) return;
 
-  const title = completeScreen.querySelector(".complete-title");
-  const subtitle = completeScreen.querySelector(".complete-subtitle");
-  const summary = completeScreen.querySelector("#upgradeConversionSection");
-  const actions = completeScreen.querySelector(".complete-actions");
-  const archive = completeScreen.querySelector(".knowledge-pack-section");
+  const title      = completeScreen.querySelector(".complete-title");
+  const subtitle   = completeScreen.querySelector(".complete-subtitle");
+  const summary    = completeScreen.querySelector("#upgradeConversionSection");
+  const actions    = completeScreen.querySelector(".complete-actions");
+  const archive    = completeScreen.querySelector(".knowledge-pack-section");
   const reflection = completeScreen.querySelector("#reflectionSection");
 
-  // Filter out any null elements
   const elements = [title, subtitle, summary, actions, archive, reflection].filter(Boolean);
 
   if (isReducedMotion()) {
@@ -487,17 +504,14 @@ export function animateSessionCompleteReveal(completeScreen) {
     return;
   }
 
-  // Initial state
-  gsap.set(elements, { opacity: 0, y: 16 });
-  
-  // Specific initial state for reflection to make it fade more subtly
-  if (reflection) {
-    gsap.set(reflection, { opacity: 0, y: 8 });
-  }
+  // Profile-adaptive Y offset for reveal
+  const yOffset = isLite() ? 0 : (getToken('heroSubY') ?? 16);
+
+  gsap.set(elements, { opacity: 0, y: yOffset });
+  if (reflection) gsap.set(reflection, { opacity: 0, y: yOffset * 0.5 });
 
   const tl = gsap.timeline({ delay: 0.1 });
 
-  // 1-4. Main elements stagger in
   const mainElements = elements.filter(e => e !== reflection);
   if (mainElements.length > 0) {
     tl.to(mainElements, {
@@ -510,7 +524,6 @@ export function animateSessionCompleteReveal(completeScreen) {
     });
   }
 
-  // 5. Reflection section fades in last, slowly
   if (reflection) {
     tl.to(reflection, {
       opacity: 1,
@@ -518,6 +531,6 @@ export function animateSessionCompleteReveal(completeScreen) {
       duration: 0.8,
       ease: "power2.out",
       clearProps: "transform"
-    }, "-=0.2"); // Overlaps slightly with the end of the main sequence
+    }, "-=0.2");
   }
 }

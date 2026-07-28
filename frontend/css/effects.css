@@ -9,7 +9,10 @@
   position: absolute;
   border-radius: 50%;
   pointer-events: none;
-  will-change: transform, opacity;
+  /* will-change is NOT applied globally here.
+     Each particle animation sets and clears will-change via GSAP per-tween.
+     Global will-change on all particles simultaneously creates too many
+     compositor layers, especially on mobile GPUs. */
   transform: translateZ(0);
 }
 
@@ -110,8 +113,14 @@
   font-size: 32px;
   opacity: 0.5;
   display: block;
-  will-change: transform;
-  animation: ch-float 4s ease-in-out infinite;
+}
+
+/* Apply float animation only when motion is not reduced */
+@media (prefers-reduced-motion: no-preference) {
+  .ch-empty-state-icon {
+    will-change: transform;
+    animation: ch-float 4s ease-in-out infinite;
+  }
 }
 
 .ch-empty-state-title {
@@ -142,6 +151,8 @@
   z-index: 10;
   border-radius: inherit;
   overflow: hidden;
+  /* Contain layout recalculations to this element */
+  contain: layout style;
 }
 
 /* ─── BUTTON LOADING SPINNER ─────────────────────────────────── */

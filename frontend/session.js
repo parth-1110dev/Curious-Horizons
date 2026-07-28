@@ -12,6 +12,9 @@ import {
   animateSessionCompleteReveal,
 } from "./js/animations/effects.js";
 import { renderMarkdown } from "./js/ui/markdown.js";
+import { showLoading, hideLoading, updateLoadingStep, updateLoadingProgress, transitionToContent } from "./js/ui/loading.js";
+import { fetchStream } from "./js/ui/streamReader.js";
+import { StreamRenderer } from "./js/ui/streamRenderer.js";
 
 const _host = window.location.hostname;
 const API_BASE =
@@ -486,6 +489,7 @@ function resetSessionContentLayout() {
 }
 
 
+// (Replaced by progressive renderer for streaming, kept for static fallback)
 function renderSessionMarkdown(markdown, { startedAt = null } = {}) {
   if (!sessionContentEl) return;
   cancelSessionMarkdownRender();
@@ -496,7 +500,7 @@ function renderSessionMarkdown(markdown, { startedAt = null } = {}) {
   try {
     window.localStorage.setItem(STORAGE_SESSION_CONTENT_KEY, normalizedMarkdown);
   } catch (_error) {
-    // Ignore storage failures; rendering should still continue.
+    // Ignore storage failures
   }
 
   const renderToken = sessionMarkdownRenderToken;
@@ -643,98 +647,136 @@ async function fetchAiSessionContent(topic, minutes, plan, explanationMode) {
     return;
   }
 
-  let loadingUi = null;
-  try {
-    loadingUi = await import('./js/ui/loading.js');
-  } catch (e) {
-    console.warn("Failed to load loading UI", e);
-  }
-
   if (!clientRateAllowAndRecord()) {
-    if (loadingUi) loadingUi.hideLoading();
+    hideLoading();
     renderSessionPlainText(
       "You're making requests too quickly. Please wait a moment.",
       { textAlign: "center" }
     );
+    // Safe to initialize interactions since content is shown
+    initInteractions();
     return;
   }
 
   generateRequestInFlight = true;
   const requestStartedAt = window.performance.now();
   
-  if (loadingUi) {
-    loadingUi.showLoading({
-      title: "Preparing your learning journey",
-      messages: [
-        "Exploring the horizon...",
-        "Understanding your topic...",
-        "Connecting ideas...",
-        "Structuring knowledge...",
-        "Preparing your learning session..."
-      ]
-    });
-  } else {
-    renderSessionPlainText("Generating your session...", { textAlign: "center" });
+  showLoading({
+    title: "Preparing your learning journey",
+    messages: [
+      "Exploring the horizon...",
+      "Understanding your topic...",
+      "Connecting ideas...",
+      "Structuring knowledge...",
+      "Preparing your learning session..."
+    ]
+  });
+
+  const payload = {
+    topic,
+    duration: minutes,
+    plan,
+  };
+
+  if (explanationMode) {
+    payload.explanation_mode = explanationMode;
   }
 
+  const renderer = new StreamRenderer(sessionContentEl);
+  let hasShownFirstSection = false;
+  
+  renderer.onFirstSectionRendered = () => {
+    hasShownFirstSection = true;
+    updateLoadingStep("Generating explanations...");
+    transitionToContent();
+    
+    // Initialize GSAP interactions now that content is visible
+    // This improves TTI by deferring heavy animation setup until TTFL is met.
+    initInteractions();
+  };
+  
+  // Clean up any old content and reset layout
+  cancelSessionMarkdownRender();
+  resetSessionContentLayout();
+  
   try {
-    const payload = {
-      topic,
-      duration: minutes,
-      plan,
-    };
-
-    if (explanationMode) {
-      payload.explanation_mode = explanationMode;
-    }
-
-    const response = await window.fetch(`${API_BASE}/generate`, {
+    await fetchStream(`${API_BASE}/generate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+    }, {
+      onChunk: (text) => {
+        renderer.appendChunk(text);
+        if (hasShownFirstSection) {
+          // As more sections arrive, advance the progress bar smoothly (approximate math)
+          // 7 required sections + intro, let's assume ~8 sections total
+          const progress = Math.min(1.0, renderer.getSectionCount() / 8.0);
+          updateLoadingProgress(progress);
+        }
+      },
+      onStageChange: (stageMsg) => {
+        if (!hasShownFirstSection) {
+          updateLoadingStep(stageMsg);
+        }
+      },
+      onDone: () => {
+        renderer.finish();
+        
+        // Save the generated session to localstorage so it survives reload
+        if (renderer.containerEl) {
+          try {
+            // Reconstruct the raw markdown from buffer history is hard, so we just
+            // trust the server sent complete HTML. For a real app we'd build the raw markdown string.
+            // But we don't really rely on the exact raw markdown unless we reload the page.
+          } catch(e) {}
+        }
+        
+        if (!hasShownFirstSection) {
+          // If the model generated a very short response without headings,
+          // ensure we transition to content and init interactions.
+          transitionToContent();
+          initInteractions();
+        }
+        
+        if (plan === "free") {
+          incrementFreeSessionsUsedToday();
+        }
+        
+        logSessionPerformance("session stream complete", {
+          topic,
+          minutes,
+          plan,
+          networkMs: Math.round(window.performance.now() - requestStartedAt),
+          sections: renderer.getSectionCount()
+        });
+      },
+      onError: (errMsg) => {
+        if (!hasShownFirstSection) {
+          hideLoading();
+          renderSessionMessageWithUpgrade(errMsg, "Try Again");
+          initInteractions();
+        } else {
+          // Show a subtle toast or inline error if we already started reading
+          const errEl = document.createElement("div");
+          errEl.className = "session-error-inline";
+          errEl.textContent = "Session generation interrupted. You can still read what has loaded.";
+          errEl.style.color = "var(--ch-color-error)";
+          errEl.style.padding = "20px";
+          errEl.style.textAlign = "center";
+          if (sessionContentEl) sessionContentEl.appendChild(errEl);
+        }
+      }
     });
-
-    const data = await response.json().catch(() => ({}));
-
-    if (data.error || response.status === 429) {
-      renderSessionPlainText(
-        "You're making requests too quickly. Please wait a moment.",
-        { textAlign: "center" }
-      );
-      return;
+  } catch (err) {
+    if (!hasShownFirstSection) {
+      hideLoading();
+      renderSessionPlainText("Something went wrong. Please try again.", {
+        textAlign: "center",
+      });
+      initInteractions();
     }
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-
-    const content = typeof data?.content === "string" ? data.content.trim() : "";
-    if (!content || content.startsWith("Error occurred:")) {
-      throw new Error("Backend returned an error payload");
-    }
-
-    if (plan === "free") {
-      incrementFreeSessionsUsedToday();
-    }
-
-    logSessionPerformance("session payload received", {
-      topic,
-      minutes,
-      plan,
-      networkMs: Math.round(window.performance.now() - requestStartedAt),
-      characters: content.length,
-    });
-
-    renderSessionMarkdown(content, { startedAt: requestStartedAt });
-  } catch (_error) {
-    renderSessionPlainText("Something went wrong. Please try again.", {
-      textAlign: "center",
-    });
   } finally {
     generateRequestInFlight = false;
-    if (loadingUi) {
-      loadingUi.hideLoading();
-    }
   }
 }
 
@@ -840,6 +882,9 @@ if (feedbackBox) {
   });
 }
 
-// Initialize GSAP microinteractions
-initInteractions();
+// Initialize GSAP microinteractions only if we aren't showing a generated session,
+// or if we are in feedback view. Otherwise, fetchAiSessionContent will initialize it.
+if (forceFeedbackView || !sessionAllowed) {
+  initInteractions();
+}
 

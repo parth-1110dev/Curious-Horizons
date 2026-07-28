@@ -56,9 +56,11 @@ body {
   right: 0;
   z-index: 10;
   background: rgba(8, 8, 16, 0.6);
-  backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(var(--adaptive-nav-blur, 20px)) saturate(140%);
   transform: translateZ(0);
   border-bottom: 1px solid rgba(220, 180, 78, 0.08);
+  /* Safe-area: pad for iOS notch / Dynamic Island */
+  padding-top: env(safe-area-inset-top);
 }
 
 body.session--complete .topbar {

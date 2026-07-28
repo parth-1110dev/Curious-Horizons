@@ -248,3 +248,42 @@ export const hideLoading = () => {
     ease: 'power2.inOut'
   });
 };
+
+/**
+ * Updates the loading progress bar to a specific fraction (0.0 to 1.0)
+ * Kills the infinite runner timeline and takes manual control.
+ * @param {number} fraction
+ */
+export const updateLoadingProgress = (fraction) => {
+  if (!isShowing || !progressRunner) return;
+  
+  if (runnerTl) {
+    runnerTl.kill();
+    runnerTl = null;
+  }
+  
+  const targetX = Math.max(-100, Math.min(100, (fraction * 200) - 100)); // Map 0-1 to -100 to 100
+  
+  gsap.to(progressRunner, {
+    xPercent: targetX,
+    scaleX: 1,
+    duration: 0.4,
+    ease: 'power2.out'
+  });
+};
+
+/**
+ * Smoothly transitions from the loading overlay to the content
+ * by hiding the loading screen. 
+ */
+export const transitionToContent = () => {
+  if (!isShowing) return;
+  
+  // Force progress bar to 100% just before hiding
+  updateLoadingProgress(1.0);
+  
+  // Slight delay to let the progress bar visually finish
+  setTimeout(() => {
+    hideLoading();
+  }, 200);
+};
