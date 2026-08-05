@@ -486,10 +486,6 @@ function resetSessionContentLayout() {
 }
 
 
-function isMathTokenLine(trimmedLine) {
-  return typeof trimmedLine === "string" && sessionMathBlocks.has(trimmedLine);
-}
-
 function createMarkdownBlock(tagName, className, rawText) {
   const element = document.createElement(tagName);
   if (className) {
