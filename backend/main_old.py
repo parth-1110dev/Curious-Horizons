@@ -1,12 +1,11 @@
-import json
+﻿import json
 import os
 import time
 import traceback
-from typing import AsyncGenerator
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 from openai import OpenAI
 from razorpay_config import get_razorpay_client as _get_razorpay_client
 from supabase import create_client
@@ -36,11 +35,21 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 SYSTEM_PROMPT_BASE = """You are Curious Horizons' learning engine.
 Write concise, high-signal lesson content in Markdown.
-MATH FORMATTING (MANDATORY):
-- Always wrap mathematical content in LaTeX delimiters.
-- Inline math: $E = mc^2$
-- Display math (own line, centred): $$a^2 + b^2 = c^2$$
-- Never output equations, fractions, superscripts, subscripts, derivatives, integrals, summations, matrices, scientific notation, chemistry, or ML formulas outside $...$ or $$...$$ delimiters.
+HIGH-PRIORITY MATH FORMATTING:
+- Always format mathematical content in valid LaTeX.
+- Inline: $E = mc^2$
+- Display:
+$$
+a^2 + b^2 = c^2
+$$
+- # Display:
+$$
+\frac{\partial f}{\partial x}
+\lim_{h \to 0}
+\frac{f(x+h)-f(x)}{h}
+$$
+- Never output mathematical expressions, equations, fractions, superscripts, subscripts, derivatives, integrals, summations, matrices, scientific notation, chemistry notation, or ML formulas outside LaTeX delimiters.
+- Before returning the response, verify that every formula is wrapped in either $...$ or $$...$$.
 Use exactly these sections in this order:
 1. Introduction
 2. Core Concepts
@@ -54,7 +63,7 @@ Rules:
 - Avoid filler, repetition, and chatbot-style replies.
 - Use short paragraphs and bullets when useful.
 - Do not ask the user questions.
-- Write all math/science/engineering formulas in valid LaTeX using $...$ for inline and $$...$$ for display math.
+- When math, science, statistics, physics, chemistry, engineering, or machine learning notation appears, write formulas in valid LaTeX using $...$ for inline math and $$...$$ for display math.
 - Preserve LaTeX delimiters exactly so the frontend can render them.
 - Return only the lesson content."""
 
@@ -96,19 +105,19 @@ DEEP KNOWLEDGE MODE OVERRIDE:
     A. STRUCTURED EXPLANATION - Clear step-by-step breakdown from fundamentals to advanced concepts; include key mechanisms and processes.
     B. KEY COMPONENTS / FACTORS - Bullet breakdown of major elements.
     C. REAL-WORLD CONTEXT - Timeline, examples, or applications.
-    D. SIMPLIFIED SUMMARY - 3–5 lines max.
+    D. SIMPLIFIED SUMMARY - 3ΓÇô5 lines max.
 - Go deeper than Pro by covering mechanisms, systems, and cause-effect relationships.
-- For knowledge topics, keep length at 1.5x–2x Pro length, with no fluff and no coaching tone.
+- For knowledge topics, keep length at 1.5xΓÇô2x Pro length, with no fluff and no coaching tone.
 - Use a clear, structured, expert-level tone with no personalization and no "you are likely" statements.
 
 MANDATORY RESPONSE STRUCTURE:
-1. CORE INSIGHT (2–4 lines) - Sharp insight that makes the user feel understood
-2. WHY THIS HAPPENS (DEEP EDGE) - 3–5 bullets max; each bullet 1–2 lines; include high-value concepts (for example: temporal discounting, emotional avoidance, self-regulation failure); no long explanations and no textbook tone
-3. YOUR SITUATION - Identify 2–3 specific reasons the user is struggling; use direct language like "Right now, your main problem is..." and "You are likely facing..."
+1. CORE INSIGHT (2ΓÇô4 lines) - Sharp insight that makes the user feel understood
+2. WHY THIS HAPPENS (DEEP EDGE) - 3ΓÇô5 bullets max; each bullet 1ΓÇô2 lines; include high-value concepts (for example: temporal discounting, emotional avoidance, self-regulation failure); no long explanations and no textbook tone
+3. YOUR SITUATION - Identify 2ΓÇô3 specific reasons the user is struggling; use direct language like "Right now, your main problem is..." and "You are likely facing..."
 4. LIKELY USER DIAGNOSIS - Keep it personalized even without user input; do NOT stay generic
-5. EXECUTION PLAN (TODAY) - Replace generic practice/tips content with 3 steps only: Step 1 = extremely small action (2–5 minutes), Step 2 = next logical step, Step 3 = reinforcement step; make each step specific, time-bound, and immediately actionable
+5. EXECUTION PLAN (TODAY) - Replace generic practice/tips content with 3 steps only: Step 1 = extremely small action (2ΓÇô5 minutes), Step 2 = next logical step, Step 3 = reinforcement step; make each step specific, time-bound, and immediately actionable
 6. IMMEDIATE NEXT STEP - Exactly what to do RIGHT NOW (within 5 minutes)
-7. START NOW - Give ONE clear instruction, with no explanation, doable in the next 2–5 minutes
+7. START NOW - Give ONE clear instruction, with no explanation, doable in the next 2ΓÇô5 minutes
 
 EXECUTION PRIORITY RULES:
 - EXECUTION PLAN (TODAY) must always be the most detailed and dominant section.
@@ -545,7 +554,7 @@ def _update_user_plan_in_supabase(user_id: str, selected_plan: str) -> tuple[boo
             
             # SUCCESS
             print(
-                f"[Supabase] SUCCESS ✓ attempt={attempt} user_id={user_id} plan={updated_plan} "
+                f"[Supabase] SUCCESS Γ£ô attempt={attempt} user_id={user_id} plan={updated_plan} "
                 f"update_elapsed_ms={update_elapsed_ms} confirm_elapsed_ms={confirm_elapsed_ms}"
             )
             return True, updated_plan
@@ -783,7 +792,7 @@ async def verify_payment(data: dict):
                     "razorpay_signature": signature,
                 }
             )
-            print("VERIFY PAYMENT [STEP 4]: Razorpay signature verification PASSED ✓")
+            print("VERIFY PAYMENT [STEP 4]: Razorpay signature verification PASSED Γ£ô")
         except Exception as error:
             traceback.print_exc()
             print(f"VERIFY PAYMENT [STEP 4]: Razorpay signature verification FAILED - {str(error)}")
@@ -809,10 +818,10 @@ async def verify_payment(data: dict):
             }
             return JSONResponse(status_code=502, content=error_response)
 
-        print(f"VERIFY PAYMENT [STEP 5]: Supabase plan update PASSED ✓ - updated_plan={update_result}")
+        print(f"VERIFY PAYMENT [STEP 5]: Supabase plan update PASSED Γ£ô - updated_plan={update_result}")
 
         # STEP 6: BUILD FINAL SUCCESS RESPONSE
-        print("VERIFY PAYMENT [STEP 6]: All verification steps PASSED ✓ - Building final response")
+        print("VERIFY PAYMENT [STEP 6]: All verification steps PASSED Γ£ô - Building final response")
         verification_elapsed_ms = round((time.time() - verification_start) * 1000, 2)
         
         success_response = {
@@ -830,7 +839,7 @@ async def verify_payment(data: dict):
         _set_idempotency_cache(user_id, payment_id, success_response, now)
         
         print("=" * 80)
-        print(f"VERIFY PAYMENT: SUCCESS ✓ - user_id={user_id}, plan={update_result}, elapsed_ms={verification_elapsed_ms}")
+        print(f"VERIFY PAYMENT: SUCCESS Γ£ô - user_id={user_id}, plan={update_result}, elapsed_ms={verification_elapsed_ms}")
         print("=" * 80)
         
         return success_response
@@ -849,39 +858,6 @@ async def verify_payment(data: dict):
                 "elapsed_ms": verification_elapsed_ms,
             },
         )
-
-
-# ─── SSE Helper ───────────────────────────────────────────────────────────────
-
-# Allowed origins — mirrors the CORS middleware config above
-_ALLOWED_ORIGINS = {
-    "http://localhost:5500",
-    "http://127.0.0.1:5500",
-    "https://curious-horizons.vercel.app",
-}
-
-def _sse_headers(request: Request) -> dict:
-    """
-    Build headers for a Server-Sent Events response.
-
-    FastAPI's CORSMiddleware does not reliably inject CORS headers into
-    StreamingResponse objects. We add them manually here so the browser
-    doesn't reject the stream due to a missing Access-Control-Allow-Origin.
-    """
-    origin = request.headers.get("origin", "")
-    allowed_origin = origin if origin in _ALLOWED_ORIGINS else ""
-
-    headers = {
-        "Content-Type": "text/event-stream",
-        "Cache-Control": "no-cache, no-store, no-transform",
-        "X-Accel-Buffering": "no",   # Disable nginx buffering on Render
-        "Connection": "keep-alive",
-    }
-    if allowed_origin:
-        headers["Access-Control-Allow-Origin"] = allowed_origin
-        headers["Access-Control-Allow-Credentials"] = "true"
-
-    return headers
 
 
 @app.post("/generate")
@@ -974,9 +950,7 @@ async def generate_content(request: Request, data: dict):
             )
             return {"content": response.choices[0].message.content}
         except Exception as e:
-            print(f"[OpenAI][Generate] ERROR OCCURRED: {e}")
-            import traceback
-            traceback.print_exc()
+            print("ERROR OCCURRED:", str(e))
             return {
                 "error": "API failed",
                 "details": str(e),
@@ -984,10 +958,7 @@ async def generate_content(request: Request, data: dict):
 
     except Exception as e:
         print("UNEXPECTED ERROR:", str(e))
-        import traceback
-        traceback.print_exc()
-        from fastapi.responses import JSONResponse
-        return JSONResponse(status_code=500, content={"error": "Internal error", "details": str(e)})
+        return {"error": "Internal error", "details": str(e)}
 
 
 @app.post("/generate-knowledge-pack")
@@ -1066,7 +1037,7 @@ FORMAT using these exact section headings:
 ## Quick Revision Checklist
 ## Three Things to Remember
 
-TARGET: 2–4 dense, scannable pages.
+TARGET: 2ΓÇô4 dense, scannable pages.
 Every line must justify its existence.
 Preserve all LaTeX notation exactly as it appears using $...$ and $$...$$."""
             elif note_format == "markdown":
