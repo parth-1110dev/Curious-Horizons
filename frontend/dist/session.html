@@ -15,17 +15,17 @@
   <noscript>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" />
   </noscript>
-
+
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script type="module" crossorigin src="/assets/session-DvvxRsrF.js"></script>
+  <script type="module" crossorigin src="/assets/session-BhlraYl1.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/gsap-Bi_c5vh2.js">
   <link rel="modulepreload" crossorigin href="/assets/toast-BQKjqHk6.js">
   <link rel="modulepreload" crossorigin href="/assets/interactions-DzZy1dpn.js">
   <link rel="modulepreload" crossorigin href="/assets/tooltips-Cu7pmqkH.js">
+  <link rel="modulepreload" crossorigin href="/assets/preload-helper-Czpn1I53.js">
   <link rel="modulepreload" crossorigin href="/assets/plan-state-DN7Bm0zS.js">
-  <link rel="modulepreload" crossorigin href="/assets/loading-CfXVvRE-.js">
   <link rel="stylesheet" crossorigin href="/assets/tooltips-DSyRVTNt.css">
-  <link rel="stylesheet" crossorigin href="/assets/session-B2y-j_n9.css">
+  <link rel="stylesheet" crossorigin href="/assets/session-BUvZttYP.css">
   <link rel="stylesheet" crossorigin href="/assets/style-CqNY1KE_.css">
   <link rel="stylesheet" crossorigin href="/assets/touch-DqdFPKXO.css">
   <link rel="stylesheet" crossorigin href="/assets/loading-vU8GxvVC.css">
@@ -81,6 +81,15 @@
       <div class="complete-card">
         <h1 class="complete-title">Session Complete.</h1>
         <p class="complete-subtitle">Knowledge synthesized successfully.</p>
+
+        <!-- Curiosity Paths Integration -->
+        <section id="curiosity-paths-container" class="cp-section" hidden>
+           <h3 class="cp-heading">What could you explore next?</h3>
+           <p class="cp-subtitle">Based on your recent exploration</p>
+           <div id="constellation-container" class="cp-constellation-container">
+               <svg class="cp-connections-layer" id="connections-layer"></svg>
+           </div>
+        </section>
 
         <div class="complete-actions">
           <button id="startNewBtn" class="btn btn-primary" type="button">
